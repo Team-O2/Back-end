@@ -1,0 +1,86 @@
+import mongoose from "mongoose";
+import { IUser } from "../interfaces/IUser";
+
+const UserSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  nickname: {
+    type: String,
+    required: true,
+  },
+  interest: {
+    type: [String],
+    required: true,
+  },
+  marpolicy: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  gender: {
+    type: Number,
+    required: false,
+  },
+  challengeCNT: {
+    // 일주일 작성 개수
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  challengebadgeCNT: {
+    // 챌린지 배지
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  badgeCNT: {
+    // 일반 배지
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  likes: [
+    // 좋아요한 게시글
+    {
+      chanllengeLikes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Callenge",
+      },
+      concertLikes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Concert",
+      },
+    },
+  ],
+  scraps: [
+    // 스크랩한 게시글
+    {
+      chanllengeScraps: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Callenge",
+      },
+      concertScraps: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Concert",
+      },
+    },
+  ],
+  userType: {
+    type: Number, // 0: normal, 1: admin
+    requried: true,
+    default: 0,
+  },
+});
+
+export default mongoose.model<IUser & mongoose.Document>("User", UserSchema);
