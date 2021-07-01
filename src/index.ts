@@ -8,6 +8,8 @@ connectDB();
 app.use(express.urlencoded());
 app.use(express.json());
 
+app.use("/auth", require("./controller/auth"));
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -22,11 +24,15 @@ app.use(function (err, req, res, next) {
 const port = 5000;
 app
   .listen(port, () => {
-    console.log(`
+    console.log(
+      `
     ################################################
-    🛡️  Server listening on port: `+port+` 🛡️
+    🛡️  Server listening on port: ` +
+        port +
+        ` 🛡️
     ################################################
-  `);
+  `
+    );
   })
   .on("error", (err) => {
     console.error(err);

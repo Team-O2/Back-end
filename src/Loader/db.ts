@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import config from "../config";
+import User from "../models/User";
 
 const connectDB = async () => {
   try {
@@ -7,6 +8,10 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
+    });
+
+    User.createCollection().then(function (collection) {
+      console.log("User Collection is created!");
     });
 
     console.log("Mongoose Connected ...");
