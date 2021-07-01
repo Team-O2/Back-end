@@ -18,14 +18,11 @@ const router = express.Router();
 router.post(
   "/signup",
   [
-    check("email", "Please include a valid email").not().isEmail(),
+    check("email", "Please include a valid email").isEmail(),
     check(
       "password",
       "Please enter a password with 6 or more characters"
     ).isLength({ min: 6 }),
-    check("nickname", "nickname is required").not().isEmpty(),
-    check("marpolicy", "marpolicy is required").not().isEmpty(),
-    check("interest", "intererst is required").not().isEmpty(),
   ],
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -33,17 +30,19 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      const { userInfo, token } = await authService.postSignup(req.body);
+      const data = await authService.postSignup(req.body);
 
       // 요청 바디가 부족할 경우
-      if (userInfo == -1) {
+      if (data == -1) {
         response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
       }
 
       // 이미 존재하는 아이디
-      if (userInfo == -2) {
+      if (data == -2) {
         response(res, returnCode.CONFLICT, "중복된 아이디 입니다");
       }
+
+      const { userInfo, token } = data;
 
       dataTokenResponse(
         res,

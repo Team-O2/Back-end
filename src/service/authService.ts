@@ -1,5 +1,3 @@
-const authDao = require("../dao/authDao");
-const jwt = require("../library/jwt");
 import User from "../models/User";
 
 import jwt from "jsonwebtoken";
@@ -16,10 +14,10 @@ import config from "../config";
  */
 
 async function postSignup(body) {
-  const { email, password, nickname, marpolicy, interest } = body;
+  const { email, password, nickname, gender, marpolicy, interest } = body;
 
   // 1. 요청 바디 부족
-  if (!email || !password || !nickname || !marpolicy || !interest) {
+  if (!email || !password || !nickname || !interest) {
     return -1;
   }
 
@@ -29,27 +27,33 @@ async function postSignup(body) {
     return -2;
   }
 
-  let userInfo = new User({
+  user = new User({
     email,
     password,
     nickname,
+    gender,
     marpolicy,
     interest,
   });
+
   // Encrpyt password
   const salt = await bcrypt.genSalt(10);
-  const hashPW = await bcrypt.hash(password, salt);
+  user.password = await bcrypt.hash(password, salt);
+
+  await user.save();
 
   // Return jsonwebtoken
   const payload = {
     user: {
-      id: userInfo.id,
+      id: user.id,
     },
   };
-  jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
-    if (err) throw err;
-    return { userInfo, token };
-  });
+
+  // access 토큰 발급
+  // 유효기간 14일
+  let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
+
+  return { user, token };
 }
 module.exports = {
   postSignup,
