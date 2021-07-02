@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { IConcert } from "../interfaces/IConcert";
-
 const validate = require("mongoose-validator");
 
 const textValidator = [

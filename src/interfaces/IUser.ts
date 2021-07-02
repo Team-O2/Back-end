@@ -16,6 +16,7 @@ export interface IUser {
   likes: [ILikes];
   scraps: [IScraps];
   userType: Number;
+  img: string;
 }
 
 export interface IUserDTO {

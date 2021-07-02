@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
   },
   gender: {
     type: Number,
-    required: false,
+    required: true,
   },
   challengeCNT: {
     // 일주일 작성 개수
@@ -74,8 +74,12 @@ const UserSchema = new mongoose.Schema({
   ],
   userType: {
     type: Number, // 0: normal, 1: admin
-    requried: true,
+    required: true,
     default: 0,
+  },
+  img: {
+    type: String,
+    required: false,
   },
 });
 

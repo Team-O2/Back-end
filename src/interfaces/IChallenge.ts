@@ -15,9 +15,9 @@ export interface IChallenge {
 export interface IChallengeDTO {
   createdAt: Date;
   updatedAt: Date;
-  author: mongoose.Schema.Types.ObjectId;
-  good: string;
-  learn: string;
+  auod: string;
+  lethor: mongoose.Schema.Types.ObjectId;
+  goarn: string;
   bad: string;
   likes: Number;
   generation: Number;

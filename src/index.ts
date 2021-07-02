@@ -8,8 +8,9 @@ connectDB();
 app.use(express.urlencoded());
 app.use(express.json());
 
+// route
 app.use("/auth", require("./controller/auth"));
-
+app.use("/concert", require("./controller/concert"))
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
