@@ -23,3 +23,21 @@ export interface IChallengeDTO {
   generation: Number;
   interest: [string];
 }
+
+interface IUser {
+  _id: mongoose.Schema.Types.ObjectId;
+  nickname: string; 
+}
+
+export interface IChallengePostDTO {
+  _id: mongoose.Schema.Types.ObjectId;
+  createdAt: Date;
+  upDatedAt: Date;
+  user: IUser;
+  good: string;
+  bad: string;
+  learn: string;
+  likes: number;
+  generation: number;
+  interest: [string];
+}

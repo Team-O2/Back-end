@@ -13,7 +13,7 @@ import config from "../config";
  *      2. 아이디 중복
  */
 
-async function postSignup(body) {
+export async function postSignup(body) {
   const { email, password, nickname, gender, marpolicy, interest } = body;
 
   // 1. 요청 바디 부족
@@ -66,7 +66,7 @@ async function postSignup(body) {
  *      3. 패스워드가 올바르지 않음
  */
 
-async function postSignin(body) {
+export async function postSignin(body) {
   const { email, password } = body;
 
   // 1. 요청 바디 부족
@@ -100,7 +100,3 @@ async function postSignin(body) {
   let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
   return { user, token };
 }
-module.exports = {
-  postSignup,
-  postSignin,
-};

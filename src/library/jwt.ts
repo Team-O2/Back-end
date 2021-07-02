@@ -1,10 +1,9 @@
-const randToken = require("rand-token");
-const jwt = require("jsonwebtoken");
-const returnCode = require("../library/returnCode");
-const response = require("../library/response");
-import config from "../config";
+import jwt from "jsonwebtoken";
+import { returnCode } from "library/returnCode";
+import { response } from "library/response";
+import config from "config";
 
-function verify(authorization) {
+export function verify(authorization) {
   // verify를 통해 토큰 값을 decode 한다.
   let decoded;
   try {
@@ -24,7 +23,7 @@ function verify(authorization) {
   }
 }
 
-function isLogin(req, res, next) {
+export function isLogin(req, res, next) {
   const { authorization } = req.headers;
 
   if (authorization == undefined) {
@@ -45,7 +44,7 @@ function isLogin(req, res, next) {
   }
 }
 
-function checkLogin(req, res, next) {
+export function checkLogin(req, res, next) {
   const { authorization } = req.headers;
 
   try {
@@ -57,9 +56,3 @@ function checkLogin(req, res, next) {
     response(res, returnCode.UNAUTHORIZED, error.message);
   }
 }
-
-module.exports = {
-  verify,
-  isLogin,
-  checkLogin,
-};

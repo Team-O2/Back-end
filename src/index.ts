@@ -9,8 +9,10 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 // route
-app.use("/auth", require("./controller/auth"));
-app.use("/concert", require("./controller/concert"))
+app.use("/auth", require("controller/auth"));
+app.use("/concert", require("controller/concert"))
+app.use("/challenge", require("controller/challenge"));
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
