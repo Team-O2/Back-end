@@ -4,10 +4,10 @@ import { ILikes } from "./ILikes";
 
 export interface IUser {
   _id: mongoose.Schema.Types.ObjectId;
-  email: String;
-  password: String;
-  nickname: String;
-  interest: [String];
+  email: string;
+  password: string;
+  nickname: string;
+  interest: [string];
   marpolicy: Boolean;
   gender: Number;
   challengeCNT: Number;
@@ -20,10 +20,10 @@ export interface IUser {
 
 export interface IUserDTO {
   _id: mongoose.Schema.Types.ObjectId;
-  email: String;
-  password: String;
-  nickname: String;
-  interest: [String];
+  email: string;
+  password: string;
+  nickname: string;
+  interest: [string];
   marpolicy: Boolean;
   gender: Number;
   challengeCNT: Number;
