@@ -46,32 +46,28 @@ const UserSchema = new mongoose.Schema({
     required: false,
     default: 0,
   },
-  likes: [
+  likes: {
     // 좋아요한 게시글
-    {
-      chanllengeLikes: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Callenge",
-      },
-      concertLikes: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Concert",
-      },
+    chanllengeLikes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Callenge",
     },
-  ],
-  scraps: [
+    concertLikes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Concert",
+    },
+  },
+  scraps: {
     // 스크랩한 게시글
-    {
-      chanllengeScraps: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Callenge",
-      },
-      concertScraps: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Concert",
-      },
+    chanllengeScraps: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Callenge",
     },
-  ],
+    concertScraps: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Concert",
+    },
+  },
   userType: {
     type: Number, // 0: normal, 1: admin
     required: true,
