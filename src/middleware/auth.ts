@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import config from "../config";
+import config from "src/config";
 
 export default (req, res, next) => {
   // Get token from header

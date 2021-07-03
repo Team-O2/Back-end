@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { IChallenge } from "../interfaces/IChallenge";
-
-const validate = require("mongoose-validator");
+import { IChallenge } from "src/interfaces/IChallenge";
+import validate from "mongoose-validator";
 
 const textValidator = [
   validate({
@@ -18,8 +17,9 @@ const ChallengeSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date,
+    default: Date.now,
   },
-  author: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -41,16 +41,28 @@ const ChallengeSchema = new mongoose.Schema({
   },
   likes: {
     type: Number,
-    required: true,
+    required: false,
+    default: 0,
   },
   generation: {
     type: Number,
-    required: true,
+    default: 0,
   },
   interest: {
     // 관심분야(해시태그)
     type: [String],
     required: true,
+  },
+  isDeleted: {
+		// 삭제 여부
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+  comments: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Comment",
+    default: [],
   },
 });
 

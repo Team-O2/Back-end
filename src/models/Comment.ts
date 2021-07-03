@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IComment } from "../interfaces/IComment";
+import { IComment } from "src/interfaces/IComment";
 
 const CommentSchema = new mongoose.Schema({
   postModel: {
@@ -12,7 +12,7 @@ const CommentSchema = new mongoose.Schema({
     refPath: "postModel",
     required: true,
   },
-  author: {
+  userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -25,6 +25,7 @@ const CommentSchema = new mongoose.Schema({
   childrenComment: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Comment",
+    default: [],
   },
   text: {
     type: String,
@@ -32,6 +33,7 @@ const CommentSchema = new mongoose.Schema({
   },
   isDeleted: {
     type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
@@ -39,6 +41,7 @@ const CommentSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date,
+    default: Date.now,
   },
 });
 

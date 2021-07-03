@@ -13,9 +13,10 @@ export interface IUser {
   challengeCNT: Number;
   challengebadgeCNT: Number;
   badgeCNT: Number;
-  likes: [ILikes];
-  scraps: [IScraps];
+  likes: ILikes;
+  scraps: IScraps;
   userType: Number;
+  img: string;
 }
 
 export interface IUserDTO {
@@ -29,7 +30,7 @@ export interface IUserDTO {
   challengeCNT: Number;
   challengebadgeCNT: Number;
   badgeCNT: Number;
-  likes: [ILikes];
-  scraps: [IScraps];
+  likes: ILikes;
+  scraps: IScraps;
   userType: Number;
 }
