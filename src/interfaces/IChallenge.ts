@@ -10,6 +10,8 @@ export interface IChallenge {
   likes: Number;
   generation: Number;
   interest: [string];
+  isDeleted: Boolean;
+  comments: [mongoose.Schema.Types.ObjectId];
 }
 
 export interface IChallengeDTO {
@@ -22,6 +24,8 @@ export interface IChallengeDTO {
   likes: Number;
   generation: Number;
   interest: [string];
+  isDeleted: Boolean;
+  comments: [mongoose.Schema.Types.ObjectId];
 }
 
 interface IUser {

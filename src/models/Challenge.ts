@@ -53,6 +53,17 @@ const ChallengeSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  isDeleted: {
+		// 삭제 여부
+		type: Boolean,
+		required: true,
+		default: false,
+	},
+  comments: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Comment",
+    default: [],
+  },
 });
 
 export default mongoose.model<IChallenge & mongoose.Document>(
