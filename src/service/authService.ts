@@ -1,8 +1,8 @@
-import User from "../models/User";
+import User from "src/models/User";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import config from "../config";
+import config from "src/config";
 
 /**
  *  @회원가입

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import { returnCode } from "library/returnCode";
-import { response } from "library/response";
-import config from "config";
+import { returnCode } from "src/library/returnCode";
+import { response } from "src/library/response";
+import config from "src/config";
 
 export function verify(authorization) {
   // verify를 통해 토큰 값을 decode 한다.

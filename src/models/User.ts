@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUser } from "../interfaces/IUser";
+import { IUser } from "src/interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
   email: {

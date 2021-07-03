@@ -1,6 +1,6 @@
 import express from "express";
 const app = express();
-import connectDB from "./Loader/db";
+import connectDB from "src/Loader/db";
 
 // Connect Database
 connectDB();
@@ -9,9 +9,9 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 // route
-app.use("/auth", require("controller/auth"));
-app.use("/concert", require("controller/concert"))
-app.use("/challenge", require("controller/challenge"));
+app.use("/auth", require("src/controller/auth"));
+app.use("/challenge", require("src/controller/challenge"));
+// app.use("/concert", require("src/controller/concert"))
 
 // error handler
 app.use(function (err, req, res, next) {

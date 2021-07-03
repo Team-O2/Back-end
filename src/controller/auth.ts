@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { check, validationResult } from "express-validator";
-import { returnCode } from "library/returnCode";
-import { postSignin, postSignup } from "service/authService";
-import { response, dataTokenResponse } from "library/response";
+import { returnCode } from "src/library/returnCode";
+import { postSignin, postSignup } from "src/service/authService";
+import { response, dataTokenResponse } from "src/library/response";
 
-const router = express.Router();
+const router = Router();
 
 /**
  *  @회원가입
