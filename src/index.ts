@@ -11,6 +11,7 @@ app.use(express.json());
 // route
 app.use("/auth", require("src/controller/auth"));
 app.use("/challenge", require("src/controller/challenge"));
+app.use("/admin", require("src/controller/admin"));
 // app.use("/concert", require("src/controller/concert"))
 
 // error handler

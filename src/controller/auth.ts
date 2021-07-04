@@ -1,12 +1,12 @@
-import { Router, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { returnCode } from "src/library/returnCode";
 import { postSignin, postSignup } from "src/service/authService";
 import { response, dataTokenResponse } from "src/library/response";
 
-const router = Router();
+const router = express.Router();
 
-/**
+/**yar
  *  @회원가입
  *  @route Post auth/signup
  *  @access Public
