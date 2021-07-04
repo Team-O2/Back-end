@@ -139,6 +139,7 @@ export const postChallenge = async (userID, body) => {
  *  @body good, bad, learn
  *  @error
  *      1. 회고록 id 잘못됨
+ *      2. 요청 바디 부족
  */
 export const patchChallenge = async (challengeID, body) => {
   const { good, bad, learn } = body;
@@ -147,6 +148,10 @@ export const patchChallenge = async (challengeID, body) => {
   const challenge = await Challenge.findById(challengeID);
   if (!challenge) {
     return -1;
+  }
+  // 2. 요청 바디 부족
+  if (!good || !bad || !learn) {
+    return -2;
   }
 
   const updateDate = new Date();
