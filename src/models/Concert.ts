@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IConcert } from "src/interfaces/IConcert";
+import { IConcert } from "../interfaces/IConcert";
 const validate = require("mongoose-validator");
 
 const textValidator = [
@@ -17,15 +17,11 @@ const ConcertSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date,
+    default: Date.now,
   },
   title: {
     type: String,
     required: true,
-  },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
   },
   videoLink: {
     // 게시물 안에 들어갈 동영상 링크
@@ -46,9 +42,13 @@ const ConcertSchema = new mongoose.Schema({
     required: true,
   },
   interest: {
-    // 관심분야(해시태그)
+    // 관심분야
     type: [String],
     required: true,
+  },
+  hashtag: {
+    //해시태그
+    type: [String],
   },
 });
 

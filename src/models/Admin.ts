@@ -1,16 +1,24 @@
 import mongoose from "mongoose";
-import { IAdmin } from "src/interfaces/IAdmin";
+import { IAdmin } from "../interfaces/IAdmin";
 
 const AdminSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  startDT: {
+  registerStartDT: {
     type: Date,
     required: true,
   },
-  endDT: {
+  registerEndDT: {
+    type: Date,
+    required: true,
+  },
+  challengeStartDT: {
+    type: Date,
+    required: true,
+  },
+  challengeEndDT: {
     type: Date,
     required: true,
   },
@@ -24,6 +32,11 @@ const AdminSchema = new mongoose.Schema({
   },
   img: {
     data: String,
+  },
+  createdDT: {
+    type: Date,
+    required: true,
+    default: Date.now,
   },
 });
 
