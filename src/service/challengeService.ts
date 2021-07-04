@@ -9,7 +9,6 @@ import { IChallengePostDTO } from "src/interfaces/IChallenge";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-
 export const getChallengeAll = async () => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
@@ -41,9 +40,7 @@ export const getChallengeAll = async () => {
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
  */
-
 export const getChallengeSearch = async (tag, isMine, keyword, userID) => {
-  console.log(tag, isMine, keyword, userID);
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
   const challenges = await Challenge.find({ isDeleted: false })
@@ -106,7 +103,6 @@ export const getChallengeSearch = async (tag, isMine, keyword, userID) => {
  *      1. 요청 바디 부족
  *      2. 유저 id 잘못됨
  */
-
 export const postChallenge = async (userID, body) => {
   const { good, bad, learn, interest, generation } = body;
 
@@ -144,7 +140,6 @@ export const postChallenge = async (userID, body) => {
  *  @error
  *      1. 회고록 id 잘못됨
  */
-
 export const patchChallenge = async (challengeID, body) => {
   const { good, bad, learn } = body;
 
@@ -173,7 +168,6 @@ export const patchChallenge = async (challengeID, body) => {
  *  @error
  *      1. 회고록 id 잘못됨
  */
-
 export const deleteChallenge = async (challengeID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
@@ -197,7 +191,6 @@ export const deleteChallenge = async (challengeID) => {
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-
 export const postChallengeComment = async (challengeID, userID, body) => {
   const { parentID, text } = body;
 
@@ -260,14 +253,20 @@ export const postChallengeComment = async (challengeID, userID, body) => {
  *  @route POST /challenge/like/:challengeID
  *  @error
  *      1. 회고록 id 잘못됨
+ *      2. 이미 좋아요 한 글일 경우
  */
-
 export const postChallengeLike = async (challengeID, userID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
 
   if (!challenge) {
     return -1;
+  }
+
+  const user = await User.findById(userID);
+  // 2. 이미 좋아요 한 글일 경우
+  if (user.likes.challengeLikes.includes(challengeID)) {
+    return -2;
   }
 
   // 챌린지 글의 like 1 증가
@@ -278,8 +277,7 @@ export const postChallengeLike = async (challengeID, userID) => {
     }
   );
   // 유저 likes 필드에 챌린지 id 추가
-  const user = await User.findById(userID);
-  user.likes.chanllengeLikes.push(challengeID);
+  user.likes.challengeLikes.push(challengeID);
   await user.save();
 
   return { _id: challengeID };
@@ -290,15 +288,17 @@ export const postChallengeLike = async (challengeID, userID) => {
  *  @route DELETE /challenge/like/:challengeID
  *  @error
  *      1. 회고록 id 잘못됨
+ *      2. 좋아요 개수가 0
  */
-
 export const deleteChallengeLike = async (challengeID, userID) => {
-  // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
 
+  // 1. 회고록 id 잘못됨
   if (!challenge) {
     return -1;
   }
+
+  // 2. 좋아요 개수가 0
   if (challenge.likes === 0) {
     return -2;
   }
@@ -311,16 +311,63 @@ export const deleteChallengeLike = async (challengeID, userID) => {
     }
   );
   // 유저 likes 필드에 챌린지 id 삭제
-  await User.findOneAndUpdate(
-    { _id: userID },
-    {
-      $set: {
-        likes: {
-          $pullAll: { challengeLikes: [challengeID] },
-        },
-      },
-    }
-  );
+  const user = await User.findById(userID);
+  user.likes.challengeLikes.pull(challengeID);
+  await user.save();
+
+  return { _id: challengeID };
+};
+
+/**
+ *  @유저_챌린지_회고_스크랩하기
+ *  @route Post /user/challenge/:challengeID
+ *  @error
+ *      1. 회고록 id 잘못됨
+ *      2. 이미 스크랩 한 회고일 경우
+ */
+export const postChallengeScrap = async (challengeID, userID) => {
+  // 1. 회고 id 잘못됨
+  let challenge = await Challenge.findById(challengeID);
+  if (!challenge) {
+    return -1;
+  }
+
+  const user = await User.findById(userID);
+
+  // 2. 이미 스크랩 한 회고인 경우
+  if (user.scraps.challengeScraps.includes(challengeID)) {
+    return -2;
+  }
+
+  user.scraps.challengeScraps.push(challengeID);
+  await user.save();
+
+  return { _id: challengeID };
+};
+
+/**
+ *  @유저_챌린지_회고_스크랩_취소하기
+ *  @route Delete /user/challenge/:challengeID
+ *  @error
+ *      1. 회고록 id 잘못됨
+ *      2. 스크랩 하지 않은 글일 경우
+ */
+export const deleteChallengeScrap = async (challengeID, userID) => {
+  // 1. 회고 id 잘못됨
+  let challenge = await Challenge.findById(challengeID);
+  if (!challenge) {
+    return -1;
+  }
+
+  const user = await User.findById(userID);
+  // 2. 스크랩하지 않은 글일 경우
+  if (!user.scraps.challengeScraps.includes(challengeID)) {
+    return -2;
+  }
+
+  // 유저 likes 필드에 챌린지 id 삭제
+  user.scraps.challengeScraps.pull(challengeID);
+  await user.save();
 
   return { _id: challengeID };
 };
