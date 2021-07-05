@@ -3,26 +3,50 @@ import mongoose from "mongoose";
 export interface IConcert {
   createdAt: Date;
   updatedAt: Date;
+  user: IUser;
   title: string;
-  userId: mongoose.Schema.Types.ObjectId;
   videoLink: string;
   text: string;
   likes: Number;
   generation: Number;
   interest: [string];
   hashtag: [string];
+  isDeleted: Boolean;
+  comments: [mongoose.Schema.Types.ObjectId];
 }
 
 export interface IConcertDTO {
   createdAt: Date;
   updatedAt: Date;
+  user: mongoose.Schema.Types.ObjectId;
   title: string;
   videoLink: string;
   text: string;
   likes: Number;
   generation: Number;
   interest: [string];
-  hashtag?: [string];
+  hashtag: [string];
+  isDeleted: Boolean;
+  comments: [mongoose.Schema.Types.ObjectId];
+}
+
+interface IUser {
+  _id: mongoose.Schema.Types.ObjectId;
+  nickname: string;
+}
+
+export interface IConcertPostDTO {
+  _id: mongoose.Schema.Types.ObjectId;
+  createdAt: Date;
+  upDatedAt: Date;
+  user: IUser;
+  title: string;
+  videoLink: string;
+  text: string;
+  likes: Number;
+  generation: Number;
+  interest: [string];
+  hashtag: [string];
 }
 
 export interface IConcertAdminDTO {
