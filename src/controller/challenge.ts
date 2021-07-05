@@ -180,6 +180,10 @@ router.patch("/:id", async (req: Request, res: Response) => {
     if (data === -1) {
       response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
     }
+    // 요청 바디가 부족한 경우
+    if(data===-2){
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+    }
     //회고 수정 성공
     const challenge = data;
     dataResponse(res, returnCode.OK, "회고 수정 성공", challenge);

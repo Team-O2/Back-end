@@ -69,7 +69,7 @@ export const getChallengeSearch = async (tag, isMine, keyword, userID) => {
   // 관심분야 필터링
   if (tag !== "") {
     filteredData = filteredData.filter((fd) => {
-      if (fd.interest.includes(tag)) return fd;
+      if (fd.interest.includes(tag.toLowerCase())) return fd;
     });
   }
 
@@ -84,9 +84,9 @@ export const getChallengeSearch = async (tag, isMine, keyword, userID) => {
   if (keyword !== "") {
     filteredData = filteredData.filter((fd) => {
       if (
-        fd.good.includes(keyword) ||
-        fd.bad.includes(keyword) ||
-        fd.learn.includes(keyword)
+        fd.good.includes(keyword.toLowerCase()) ||
+        fd.bad.includes(keyword.toLowerCase()) ||
+        fd.learn.includes(keyword.toLowerCase())
       )
         return fd;
     });
@@ -119,16 +119,16 @@ export const postChallenge = async (userID, body) => {
 
   const challenge = new Challenge({
     user: userID,
-    good,
-    bad,
-    learn,
-    interest,
+    good: good.toLowerCase(),
+    bad: bad.toLowerCase(),
+    learn: learn.toLowerCase(),
+    interest: interest.map((it) => it.toLowerCase()),
     generation,
   });
 
   await challenge.save();
 
-  let data = Challenge.findOne({ user: userID }).populate("user", ["nickname"]);
+  let data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
 
   return data;
 };
@@ -139,6 +139,7 @@ export const postChallenge = async (userID, body) => {
  *  @body good, bad, learn
  *  @error
  *      1. 회고록 id 잘못됨
+ *      2. 요청 바디 부족
  */
 export const patchChallenge = async (challengeID, body) => {
   const { good, bad, learn } = body;
@@ -148,15 +149,19 @@ export const patchChallenge = async (challengeID, body) => {
   if (!challenge) {
     return -1;
   }
+  // 2. 요청 바디 부족
+  if (!good || !bad || !learn) {
+    return -2;
+  }
 
   const updateDate = new Date();
 
   await Challenge.update(
     { _id: challengeID },
     {
-      good,
-      bad,
-      learn,
+      good: good.toLowerCase(),
+      bad: bad.toLowerCase(),
+      learn: learn.toLowerCase(),
       updatedAt: updateDate,
     }
   );
