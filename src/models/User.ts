@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema({
   },
   likes: {
     // 좋아요한 게시글
-    chanllengeLikes: {
+    challengeLikes: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Callenge",
     },
@@ -59,7 +59,7 @@ const UserSchema = new mongoose.Schema({
   },
   scraps: {
     // 스크랩한 게시글
-    chanllengeScraps: {
+    challengeScraps: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Callenge",
     },
