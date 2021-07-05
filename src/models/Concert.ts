@@ -19,6 +19,11 @@ const ConcertSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -49,6 +54,17 @@ const ConcertSchema = new mongoose.Schema({
   hashtag: {
     //해시태그
     type: [String],
+  },
+  isDeleted: {
+    // 삭제 여부
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  comments: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Comment",
+    default: [],
   },
 });
 
