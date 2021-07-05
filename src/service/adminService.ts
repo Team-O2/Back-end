@@ -190,6 +190,7 @@ export const postAdminConcert = async (userID, body) => {
   }
   const concert = new Concert({
     title,
+    user: userID,
     createdAt: stringToDate(createdAt),
     videoLink,
     text,
