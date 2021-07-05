@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 
+interface IUserNickName {
+  _id: mongoose.Schema.Types.ObjectId;
+  nickname: string;
+}
+
 export interface IChallenge {
   createdAt: Date;
   updatedAt: Date;
-  author: mongoose.Schema.Types.ObjectId;
+  user: IUserNickName;
   good: string;
   learn: string;
   bad: string;
@@ -17,9 +22,9 @@ export interface IChallenge {
 export interface IChallengeDTO {
   createdAt: Date;
   updatedAt: Date;
-  auod: string;
-  lethor: mongoose.Schema.Types.ObjectId;
-  goarn: string;
+  user: IUserNickName;
+  good: string;
+  learn: string;
   bad: string;
   likes: Number;
   generation: Number;
@@ -28,34 +33,11 @@ export interface IChallengeDTO {
   comments: [mongoose.Schema.Types.ObjectId];
 }
 
-interface IUser {
-  _id: mongoose.Schema.Types.ObjectId;
-  nickname: string; 
-}
-
 export interface IChallengePostDTO {
   _id: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   upDatedAt: Date;
-  user: IUser;
-  good: string;
-  bad: string;
-  learn: string;
-  likes: number;
-  generation: number;
-  interest: [string];
-}
-
-interface IUser {
-  _id: mongoose.Schema.Types.ObjectId;
-  nickname: string; 
-}
-
-export interface IChallengePostDTO {
-  _id: mongoose.Schema.Types.ObjectId;
-  createdAt: Date;
-  upDatedAt: Date;
-  user: IUser;
+  user: IUserNickName;
   good: string;
   bad: string;
   learn: string;
