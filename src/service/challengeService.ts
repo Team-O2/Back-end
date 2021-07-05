@@ -317,7 +317,8 @@ export const deleteChallengeLike = async (challengeID, userID) => {
   );
   // 유저 likes 필드에 챌린지 id 삭제
   const user = await User.findById(userID);
-  user.likes.challengeLikes.pull(challengeID);
+  const idx = user.likes.challengeLikes.indexOf(challengeID);
+  user.likes.challengeLikes.splice(idx, 1);
   await user.save();
 
   return { _id: challengeID };
@@ -370,8 +371,9 @@ export const deleteChallengeScrap = async (challengeID, userID) => {
     return -2;
   }
 
-  // 유저 likes 필드에 챌린지 id 삭제
-  user.scraps.challengeScraps.pull(challengeID);
+  // 유저 scraps 필드에 챌린지 id 삭제
+  const idx = user.scraps.challengeScraps.indexOf(challengeID);
+  user.scraps.challengeScraps.splice(idx, 1);
   await user.save();
 
   return { _id: challengeID };

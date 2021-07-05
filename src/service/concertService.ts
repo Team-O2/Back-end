@@ -225,7 +225,10 @@ export const deleteConcertLike = async (concertID, userID) => {
   );
   // 유저 likes 필드에 챌린지 id 삭제
   const user = await User.findById(userID);
-  user.likes.concertLikes.pull(concertID);
+
+  const idx = user.likes.concertLikes.indexOf(concertID);
+  user.likes.concertLikes.splice(idx, 1);
+
   await user.save();
 
   return { _id: concertID };
@@ -279,7 +282,8 @@ export const deleteConcertScrap = async (concertID, userID) => {
   }
 
   // 유저 likes 필드에 챌린지 id 삭제
-  user.scraps.concertScraps.pull(concertID);
+  const idx = user.scraps.concertScraps.indexOf(concertID);
+  user.scraps.concertScraps.splice(idx, 1);
   await user.save();
 
   return { _id: concertID };
