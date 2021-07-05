@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "ts-node src",
-    "build": "tsc && node dist",
+    "build": "tsc -p tsconfig.json",
     "test": "nodemon"
   },
   "devDependencies": {
