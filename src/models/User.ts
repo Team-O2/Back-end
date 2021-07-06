@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
   badge: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Badge",
-    required: true,
+    required: false,
   },
   badgeCNT: {
     // 일반 배지
