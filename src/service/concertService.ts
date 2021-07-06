@@ -37,6 +37,37 @@ export const getConcertAll = async () => {
 };
 
 /**
+ *  @오투콘서트_Detail
+ *  @route Get /concert/:concertID
+ */
+export const getConcertOne = async (concertID) => {
+  // 댓글, 답글 populate
+  // isDelete = true 인 애들만 가져오기
+  const concert = await Concert.find({ _id: concertID }, { isDeleted: false })
+    .populate("user", ["nickname"])
+    .populate({
+      path: "comments",
+      select: { userID: 1, text: 1 },
+      populate: [
+        {
+          path: "childrenComment",
+          select: { userID: 1, text: 1 },
+          populate: {
+            path: "userID",
+            select: ["nickname"],
+          },
+        },
+        {
+          path: "userID",
+          select: ["nickname"],
+        },
+      ],
+    });
+
+  return concert;
+};
+
+/**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
@@ -149,6 +180,8 @@ export const postConcertComment = async (concertID, userID, body) => {
     });
 
     await comment.save();
+    await concert.comments.push(comment._id);
+    await concert.save();
   }
 
   const user = await User.findById(userID);
