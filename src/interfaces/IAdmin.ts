@@ -4,11 +4,11 @@ export interface IAdmin {
   registerEndDT: Date;
   challengeStartDT: Date;
   challengeEndDT: Date;
-
   cardiNum: Number;
   limitNum: Number;
   img: String;
   createdDT: Date;
+  applyNum: Number;
 }
 
 export interface IAdminDTO {

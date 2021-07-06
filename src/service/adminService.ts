@@ -5,7 +5,6 @@ import Concert from "src/models/Concert";
 
 // library
 import { stringToDate } from "src/library/date";
-import { IAdminListDTO } from "src/interfaces/IAdmin";
 import Challenge from "src/models/Challenge";
 
 /**
@@ -43,14 +42,16 @@ export const postAdminList = async (userID) => {
         {
           $group: {
             _id: "$user",
-            // 신청 인원
-            apply: { $sum: 1 },
             // 참여 인원
-            participants: { $sum: 1 },
+            total: { $sum: 1 },
           },
         },
         { $project: { _id: 0 } },
       ]);
+      let participants = 0;
+      if (totalNum[0]) {
+        participants = totalNum[0]["total"];
+      }
       const admintemp = {
         registerStartDT: admin.registerStartDT,
         registerEndDT: admin.registerEndDT,
@@ -59,7 +60,9 @@ export const postAdminList = async (userID) => {
         cardiNum: admin.cardiNum,
         createdDT: admin.createdDT,
         // 신청 인원
-        totalNum: totalNum[0],
+        applyNum: admin.applyNum,
+        // 참여 인원
+        participants,
         postNum: await Challenge.find({ generation: admin.cardiNum }).count(),
       };
       return admintemp;
