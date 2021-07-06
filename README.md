@@ -7,6 +7,7 @@
 
 <br></br>
 # 서버 아키텍쳐
+```
 📦src
  ┣ 📂config
  ┃ ┗ 📜index.ts
@@ -48,8 +49,8 @@
  ┃ ┣ 📜challenge.ts
  ┃ ┗ 📜concert.ts
  ┗ 📜index.ts
-
-
+```
+<br></br>
 # dependencies module
 ```json
   "devDependencies": {
