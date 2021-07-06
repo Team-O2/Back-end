@@ -38,6 +38,11 @@ const AdminSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
+  applyNum: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 });
 
 export default mongoose.model<IAdmin & mongoose.Document>("Admin", AdminSchema);
