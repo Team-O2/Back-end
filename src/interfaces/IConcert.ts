@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 
+interface IUserNickName {
+  _id: mongoose.Schema.Types.ObjectId;
+  nickname: string;
+}
+
 export interface IConcert {
   createdAt: Date;
   updatedAt: Date;
-  user: IUser;
+  user: IUserNickName;
   title: string;
   videoLink: string;
   text: string;
@@ -18,7 +23,7 @@ export interface IConcert {
 export interface IConcertDTO {
   createdAt: Date;
   updatedAt: Date;
-  user: mongoose.Schema.Types.ObjectId;
+  user: IUserNickName;
   title: string;
   videoLink: string;
   text: string;
@@ -30,16 +35,11 @@ export interface IConcertDTO {
   comments: [mongoose.Schema.Types.ObjectId];
 }
 
-interface IUser {
-  _id: mongoose.Schema.Types.ObjectId;
-  nickname: string;
-}
-
 export interface IConcertPostDTO {
   _id: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   upDatedAt: Date;
-  user: IUser;
+  user: IUserNickName;
   title: string;
   videoLink: string;
   text: string;
