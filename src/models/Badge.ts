@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IBadge } from "../interfaces/IBadge";
+import { IBadge } from "src/interfaces/IBadge";
 
 const BadgeSchema = new mongoose.Schema({
   welcomeBadge: {

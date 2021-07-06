@@ -1,4 +1,4 @@
-export interface IAdmin {
+export interface IBadge {
   welcomeBadge: Boolean;
   firstJoinBadge: Boolean;
   firstWriteBadge: Boolean;

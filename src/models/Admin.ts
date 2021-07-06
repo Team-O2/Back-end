@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IAdmin } from "../interfaces/IAdmin";
+import { IAdmin } from "src/interfaces/IAdmin";
 
 const AdminSchema = new mongoose.Schema({
   title: {
