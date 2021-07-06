@@ -34,11 +34,10 @@ const UserSchema = new mongoose.Schema({
     required: false,
     default: 0,
   },
-  challengebadgeCNT: {
-    // 챌린지 배지
-    type: Number,
-    required: false,
-    default: 0,
+  badge: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Badge",
+    required: true,
   },
   badgeCNT: {
     // 일반 배지
@@ -50,7 +49,7 @@ const UserSchema = new mongoose.Schema({
     // 좋아요한 게시글
     challengeLikes: {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Challenge",
+      ref: "Callenge",
     },
     concertLikes: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -61,7 +60,7 @@ const UserSchema = new mongoose.Schema({
     // 스크랩한 게시글
     challengeScraps: {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Challenge",
+      ref: "Callenge",
     },
     concertScraps: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -75,6 +74,17 @@ const UserSchema = new mongoose.Schema({
   },
   img: {
     type: String,
+    required: false,
+  },
+  ischallenge: {
+    //챌린지 참여 여부
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  generation: {
+    // 참여기수 참여시 갱신
+    type: Number,
     required: false,
   },
 });
