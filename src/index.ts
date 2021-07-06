@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 const app = express();
 import connectDB from "src/Loader/db";
 
@@ -7,6 +8,7 @@ connectDB();
 
 app.use(express.urlencoded());
 app.use(express.json());
+app.use(cors());
 
 // route
 app.use("/auth", require("src/controller/auth"));
