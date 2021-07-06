@@ -6,7 +6,7 @@ import {
   dataTokenResponse,
 } from "src/library/response";
 import { verify } from "src/library/jwt";
-import { IAdminDTO, IAdminListDTO } from "src/interfaces/IAdmin";
+import { IAdminDTO, IAdmin } from "src/interfaces/IAdmin";
 import { IConcertAdminDTO } from "src/interfaces/IConcert";
 import {
   postAdminList,
@@ -21,7 +21,7 @@ const router = express.Router();
  *  @route Get admin
  *  @access Public
  */
-router.get<unknown, unknown, IAdminDTO>(
+router.get<unknown, unknown, IAdmin>(
   "/",
   async (req: Request, res: Response) => {
     try {
@@ -48,7 +48,7 @@ router.get<unknown, unknown, IAdminDTO>(
       if (data === -2) {
         response(res, returnCode.NOT_FOUND, "관리자 아이디가 아닙니다");
       }
-      // 관리자 챌린지 등록 성공
+      // 관리자 챌린지 조회 성공
       else {
         dataResponse(res, returnCode.OK, "관리자 페이지 조회 성공", data);
       }
