@@ -241,6 +241,8 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     });
 
     await comment.save();
+    challenge.comments.push(comment._id);
+    await challenge.save();
   }
 
   const user = await User.findById(userID);
