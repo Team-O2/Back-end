@@ -4,6 +4,7 @@ import Challenge from "src/models/Challenge";
 import Concert from "src/models/Concert";
 import User from "src/models/User";
 import Admin from "src/models/Admin";
+import Badge from "src/models/Badge";
 import Comment from "src/models/Comment";
 
 const connectDB = async () => {
@@ -28,6 +29,9 @@ const connectDB = async () => {
     });
     Admin.createCollection().then(function (collection) {
       console.log("Admin Collection is created!");
+    });
+    Badge.createCollection().then(function (collection) {
+      console.log("Badge Collection is created!");
     });
 
     console.log("Mongoose Connected ...");
