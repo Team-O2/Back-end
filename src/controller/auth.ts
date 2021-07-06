@@ -2,7 +2,11 @@ import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { returnCode } from "src/library/returnCode";
 import { postSignin, postSignup } from "src/service/authService";
-import { response, dataTokenResponse } from "src/library/response";
+import {
+  response,
+  dataTokenResponse,
+  tokenResponse,
+} from "src/library/response";
 
 const router = express.Router();
 
@@ -88,7 +92,7 @@ router.post(
       // 로그인 성공
       else {
         const { user, token } = data;
-        dataTokenResponse(res, returnCode.OK, "로그인 성공", user, token);
+        tokenResponse(res, returnCode.OK, "로그인 성공", token);
       }
     } catch (err) {
       console.error(err.message);
