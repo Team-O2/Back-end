@@ -134,13 +134,13 @@ export async function postEmail(body) {
   }
 
   const mailOptions = {
-    front: "구글 이메일",
+    front: "hyunjin5697@gmail.com",
     to: email,
     subject: "메일 제목",
     text: "메일 내용",
   }
 
-  await smtpTransport.sendMail(mailOptions, (error, responses) =>{
+  await smtpTransport.sendMail(mailOptions, (error, res) =>{
     if(error){
         res.json({msg:'err'});
     }else{
@@ -148,6 +148,7 @@ export async function postEmail(body) {
     }
     smtpTransport.close();
   });
+  return 0;
 }
 
 
@@ -205,11 +206,12 @@ export async function patchPassword(body) {
 }
 
 
+// admin email 주소랑 비밀번호 -> .env에 넣어놓기
 const smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-      user: "구글계정@gmail.com",
-      pass: "해당계정의 비밀번호"
+      user: "hyunjin5697@gmail.com",
+      pass: "password"
   },
   tls: {
       rejectUnauthorized: false

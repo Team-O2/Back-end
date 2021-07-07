@@ -95,4 +95,40 @@ router.post(
   }
 );
 
+/**
+ *  @이메일_인증번호_전송
+ *  @route Post auth/mail
+ *  @desc Authenticate user & get token
+ *  @access Public
+ */
+
+ router.post(
+  "/email",
+  [check("email", "Please include a valid email").isEmail()],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const data = await postSignin(req.body);
+
+      // 요청 바디가 부족할 경우
+      if (data == -1) {
+        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+      }
+      // email이 DB에 없을 경우
+      if (data == -2) {
+        response(res, returnCode.BAD_REQUEST, "아이디가 존재하지 않습니다");
+      }
+      // 성공
+      response(res, returnCode.OK, "로그인 성공");
+    } catch (err) {
+      console.error(err.message);
+      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+  }
+);
+
 module.exports = router;
