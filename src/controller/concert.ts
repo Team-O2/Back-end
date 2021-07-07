@@ -97,6 +97,7 @@ router.get("/:id", async (req: Request, res: Response) => {
  */
 
 router.get("/search", async (req: Request, res: Response) => {
+  console.log("aaa");
   try {
     // 토큰 검사
     if (req.headers.authorization == null) {

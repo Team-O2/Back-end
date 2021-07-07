@@ -78,11 +78,11 @@ export const getConcertSearch = async (tag, isMine, keyword, userID) => {
     .populate("user", ["nickname"])
     .populate({
       path: "comments",
-      select: ["userID, text"],
+      select: { userID: 1, text: 1 },
       populate: [
         {
           path: "childrenComment",
-          select: ["userID", "text"],
+          select: { userID: 1, text: 1 },
           populate: {
             path: "userID",
             select: ["nickname"],
