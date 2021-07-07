@@ -11,9 +11,6 @@ app.use(express.json());
 // allow cors
 var cors = require("cors")();
 app.use(cors);
-app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-});
 
 // route
 app.use("/auth", require("src/controller/auth"));
