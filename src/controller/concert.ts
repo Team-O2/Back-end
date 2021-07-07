@@ -11,6 +11,7 @@ import {
   getConcertSearch,
   postConcertScrap,
   deleteConcertScrap,
+  getConcertOne,
 } from "src/service/concertService";
 // DTO
 import { IConcertPostDTO } from "src/interfaces/IConcert";
@@ -46,6 +47,43 @@ router.get("/", async (req: Request, res: Response) => {
     // 회고 전체 불러오기 성공
     const concert = data;
     dataResponse(res, returnCode.OK, "콘서트 전체 불러오기 성공", concert);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @오투콘서트_Detail
+ *  @route Get /concert/:concertID
+ */
+router.get("/:id", async (req: Request, res: Response) => {
+  try {
+    // 토큰 검사
+    if (req.headers.authorization == null) {
+      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
+    }
+
+    //토큰
+    const token = req.headers.authorization;
+    const decoded = verify(token);
+
+    // 토큰 확인
+    if (decoded === -3) {
+      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
+    }
+    if (decoded === -2) {
+      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
+    }
+    const data = await getConcertOne(req.params.id);
+
+    const concert = data;
+    dataResponse(
+      res,
+      returnCode.OK,
+      "해당 콘서트 게시글 불러오기 성공",
+      concert
+    );
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
