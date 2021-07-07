@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import { IUser } from "src/interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
@@ -37,7 +37,6 @@ const UserSchema = new mongoose.Schema({
   badge: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Badge",
-    required: false,
   },
   badgeCNT: {
     // 일반 배지
