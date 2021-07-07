@@ -4,7 +4,9 @@ import Badge from "src/models/Badge";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "src/config";
+
 import nodemailer from 'nodemailer';
+import ejs from 'ejs';
 
 /**
  *  @회원가입
@@ -133,11 +135,19 @@ export async function postEmail(body) {
     return -2;
   }
 
+  const authNum = Math.random().toString().substr(2,6);
+  let emailTemplate; 
+  ejs.renderFile('src/libray/emailTemplete.ejs', {authCode: authNum}, (err, data)=>{
+    if(err){console.log(err)}
+    emailTemplate = data;
+  })
+
   const mailOptions = {
     front: "hyunjin5697@gmail.com",
     to: email,
     subject: "메일 제목",
     text: "메일 내용",
+    html: emailTemplate
   }
 
   await smtpTransport.sendMail(mailOptions, (error, res) =>{
