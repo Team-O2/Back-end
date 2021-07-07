@@ -28,7 +28,6 @@ export const postAdminList = async (userID) => {
       _id: false,
       title: false,
       limitNum: false,
-      img: false,
       __v: false,
     }
   );
@@ -64,6 +63,7 @@ export const postAdminList = async (userID) => {
         // 참여 인원
         participants,
         postNum: await Challenge.find({ generation: admin.cardiNum }).count(),
+        img: admin.img,
       };
       return admintemp;
     })
