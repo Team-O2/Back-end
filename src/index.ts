@@ -15,6 +15,7 @@ app.use("/auth", require("src/controller/auth"));
 app.use("/challenge", require("src/controller/challenge"));
 app.use("/admin", require("src/controller/admin"));
 app.use("/concert", require("src/controller/concert"));
+app.use("/user", require("src/controller/user"));
 
 // error handler
 app.use(function (err, req, res, next) {
