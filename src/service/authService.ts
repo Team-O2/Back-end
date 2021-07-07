@@ -5,8 +5,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "src/config";
 
-import nodemailer from 'nodemailer';
-import ejs from 'ejs';
+import nodemailer from "nodemailer";
+import ejs from "ejs";
 
 /**
  *  @회원가입
@@ -112,7 +112,6 @@ export async function postSignin(body) {
   return { user, token };
 }
 
-
 /**
  *  @이메일_인증번호_전송
  *  @route Post auth/email
@@ -136,32 +135,40 @@ export async function postEmail(body) {
   }
 
   // authNum을 db에 저장 해놔야 할 듯.
-  const authNum = Math.random().toString().substr(2,6);
-  let emailTemplate; 
-  ejs.renderFile('src/libray/emailTemplete.ejs', {authCode: authNum}, (err, data)=>{
-    if(err){console.log(err)}
-    emailTemplate = data;
-  })
+  const authNum = Math.random().toString().substr(2, 6);
+  let emailTemplate;
+  ejs.renderFile(
+    "src/library/emailTemplete.ejs",
+    { authCode: authNum },
+    (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      emailTemplate = data;
+    }
+  );
 
   const mailOptions = {
     front: "hyunjin5697@gmail.com",
     to: email,
     subject: "메일 제목",
     text: "메일 내용",
-    html: emailTemplate
-  }
+    html: emailTemplate,
+  };
 
-  await smtpTransport.sendMail(mailOptions, (error, res) =>{
-    if(error){
-        res.json({msg:'err'});
-    }else{
-        res.json({msg:'sucess'});
+  await smtpTransport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      // res.json({ msg: "err" });
+      console.log(error);
+    } else {
+      // res.json({ msg: "sucess" });
+      console.log("success");
     }
     smtpTransport.close();
   });
+
   return 0;
 }
-
 
 /**
  *  @인증번호_인증
@@ -174,7 +181,6 @@ export async function postEmail(body) {
 export async function postCode(body) {
   // 저장해놓은 authNum이랑 body로 온 인증번호랑 비교
 }
-
 
 /**
  *  @비밀번호_재설정
@@ -216,16 +222,14 @@ export async function patchPassword(body) {
   };
 }
 
-
 // admin email 주소랑 비밀번호 -> .env에 넣어놓기
 const smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-      user: "hyunjin5697@gmail.com",
-      pass: "password"
+    user: "hyunjin5697@gmail.com",
+    pass: "비밀번호",
   },
   tls: {
-      rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
-

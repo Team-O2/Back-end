@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { returnCode } from "src/library/returnCode";
-import { postSignin, postSignup } from "src/service/authService";
+import { postEmail, postSignin, postSignup } from "src/service/authService";
 import {
   response,
   dataTokenResponse,
@@ -112,7 +112,7 @@ router.post(
     }
 
     try {
-      const data = await postSignin(req.body);
+      const data = await postEmail(req.body);
 
       // 요청 바디가 부족할 경우
       if (data == -1) {
