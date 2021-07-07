@@ -135,6 +135,7 @@ export async function postEmail(body) {
     return -2;
   }
 
+  // authNum을 db에 저장 해놔야 할 듯.
   const authNum = Math.random().toString().substr(2,6);
   let emailTemplate; 
   ejs.renderFile('src/libray/emailTemplete.ejs', {authCode: authNum}, (err, data)=>{
@@ -171,7 +172,7 @@ export async function postEmail(body) {
  *      2. 인증번호가 일치하지 않음
  */
 export async function postCode(body) {
-  
+  // 저장해놓은 authNum이랑 body로 온 인증번호랑 비교
 }
 
 
