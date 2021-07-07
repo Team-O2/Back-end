@@ -1,4 +1,5 @@
 import User from "src/models/User";
+import Badge from "src/models/Badge";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -36,11 +37,18 @@ export async function postSignup(body) {
     interest,
   });
 
+  const badge = new Badge({
+    user: user.id,
+  });
+  await badge.save();
+
   // Encrpyt password
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
 
   await user.save();
+  // console.log(user);
+  await user.updateOne({ badge: badge._id });
 
   // Return jsonwebtoken
   const payload = {
