@@ -12,10 +12,12 @@ export interface IUser {
   marpolicy: Boolean;
   gender: Number;
   challengeCNT: Number;
-  Badge: IBadge;
+  badge: IBadge;
   badgeCNT: Number;
   likes: ILikes;
   scraps: IScraps;
   userType: Number;
   img: string;
+  ischallenge: Boolean;
+  generation: Number;
 }

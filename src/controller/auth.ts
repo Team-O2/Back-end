@@ -43,13 +43,7 @@ router.post(
       // 회원가입 성공
       else {
         const { user, token } = data;
-        dataTokenResponse(
-          res,
-          returnCode.CREATED,
-          "회원가입 성공",
-          user,
-          token
-        );
+        tokenResponse(res, returnCode.CREATED, "회원가입 성공", token);
       }
     } catch (err) {
       console.error(err.message);

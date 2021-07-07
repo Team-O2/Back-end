@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import { IBadge } from "src/interfaces/IBadge";
 
 const BadgeSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   welcomeBadge: {
     type: Boolean,
     required: true,
