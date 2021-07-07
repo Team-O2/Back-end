@@ -4,6 +4,7 @@ import Badge from "src/models/Badge";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "src/config";
+import nodemailer from 'nodemailer';
 
 /**
  *  @회원가입
@@ -108,3 +109,110 @@ export async function postSignin(body) {
   let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
   return { user, token };
 }
+
+
+/**
+ *  @이메일_인증번호_전송
+ *  @route Post auth/email
+ *  @body email
+ *  @error
+ *      1. 요청 바디 부족
+ *      2. 아이디가 존재하지 않음
+ */
+export async function postEmail(body) {
+  const { email } = body;
+
+  // 1. 요청 바디 부족
+  if (!email) {
+    return -1;
+  }
+
+  // 2. email이 DB에 존재하지 않음
+  let user = await User.findOne({ email });
+  if (!user) {
+    return -2;
+  }
+
+  const mailOptions = {
+    front: "구글 이메일",
+    to: email,
+    subject: "메일 제목",
+    text: "메일 내용",
+  }
+
+  await smtpTransport.sendMail(mailOptions, (error, responses) =>{
+    if(error){
+        res.json({msg:'err'});
+    }else{
+        res.json({msg:'sucess'});
+    }
+    smtpTransport.close();
+  });
+}
+
+
+/**
+ *  @인증번호_인증
+ *  @route Post auth/code
+ *  @body email
+ *  @error
+ *      1. 요청 바디 부족
+ *      2. 인증번호가 일치하지 않음
+ */
+export async function postCode(body) {
+  
+}
+
+
+/**
+ *  @비밀번호_재설정
+ *  @route Post auth/email
+ *  @body email
+ *  @error
+ *      1. 요청 바디 부족
+ *      2. 아이디가 존재하지 않음
+ *      3. 비밀번호가 형식에 맞지 않음
+ */
+export async function patchPassword(body) {
+  const { email, password } = body;
+
+  // 1. 요청 바디 부족
+  if (!email || !password) {
+    return -1;
+  }
+
+  // 2. email이 DB에 존재하지 않음
+  let user = await User.findOne({ email });
+  if (!user) {
+    return -2;
+  }
+
+  // 3. password가 올바르지 않음
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return -3;
+  }
+
+  // 비밀번호 변경 로직
+
+  await user.save();
+
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
+}
+
+
+const smtpTransport = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+      user: "구글계정@gmail.com",
+      pass: "해당계정의 비밀번호"
+  },
+  tls: {
+      rejectUnauthorized: false
+  }
+});
+
