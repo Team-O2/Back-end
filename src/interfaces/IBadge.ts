@@ -1,4 +1,7 @@
+import { IUser } from "src/interfaces/IUser";
+
 export interface IBadge {
+  user: IUser;
   welcomeBadge: Boolean;
   firstJoinBadge: Boolean;
   firstWriteBadge: Boolean;
