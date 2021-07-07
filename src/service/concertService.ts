@@ -71,29 +71,27 @@ export const getConcertOne = async (concertID) => {
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-export const getConcertSearch = async (tag, isMine, keyword, userID) => {
+export const getConcertSearch = async (tag, keyword) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
-  const concerts = await Concert.find({ isDeleted: false })
-    .populate("user", ["nickname"])
-    .populate({
-      path: "comments",
-      select: { userID: 1, text: 1 },
-      populate: [
-        {
-          path: "childrenComment",
-          select: { userID: 1, text: 1 },
-          populate: {
-            path: "userID",
-            select: ["nickname"],
-          },
-        },
-        {
+  const concerts = await Concert.find({ isDeleted: false }).populate({
+    path: "comments",
+    select: { userID: 1, text: 1 },
+    populate: [
+      {
+        path: "childrenComment",
+        select: { userID: 1, text: 1 },
+        populate: {
           path: "userID",
           select: ["nickname"],
         },
-      ],
-    });
+      },
+      {
+        path: "userID",
+        select: ["nickname"],
+      },
+    ],
+  });
 
   let filteredData = concerts;
 
@@ -101,13 +99,6 @@ export const getConcertSearch = async (tag, isMine, keyword, userID) => {
   if (tag !== "") {
     filteredData = filteredData.filter((fd) => {
       if (fd.interest.includes(tag)) return fd;
-    });
-  }
-
-  // 내가 쓴 글 필터링
-  if (isMine === "1") {
-    filteredData = filteredData.filter((fd) => {
-      if (fd.user._id === userID) return fd;
     });
   }
 

@@ -53,6 +53,44 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
+
+/**
+ *  @오투콘서트_검색_또는_필터
+ *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
+ *  @access Private
+ */
+
+ router.get("/search", async (req: Request, res: Response) => {
+  try {
+    // 토큰 검사
+    if (req.headers.authorization == null) {
+      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
+    }
+
+    //토큰
+    const token = req.headers.authorization;
+    const decoded = verify(token);
+
+    // 토큰 확인
+    if (decoded === -3) {
+      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
+    }
+    if (decoded === -2) {
+      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
+    }
+    
+    const data = await getConcertSearch(req.query.tag, req.query.keyword);
+
+    // 검색 불러오기 성공
+    const concertSearch = data;
+    dataResponse(res, returnCode.OK, "검색 성공", concertSearch);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+
 /**
  *  @오투콘서트_Detail
  *  @route Get /concert/:concertID
@@ -90,47 +128,6 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-/**
- *  @오투콘서트_검색_또는_필터
- *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
- *  @access Private
- */
-
-router.get("/search", async (req: Request, res: Response) => {
-  console.log("aaa");
-  try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const data = await getConcertSearch(
-      req.query.tag,
-      req.query.isMine,
-      req.query.keyword,
-      decoded.user.id
-    );
-
-    // 검색 불러오기 성공
-    const concertSearch = data;
-    dataResponse(res, returnCode.OK, "검색 성공", concertSearch);
-  } catch (err) {
-    console.error(err.message);
-    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
-  }
-});
 
 /**
  *  @콘서트_댓글_등록
