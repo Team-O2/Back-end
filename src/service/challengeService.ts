@@ -9,30 +9,59 @@ import { IChallengePostDTO } from "src/interfaces/IChallenge";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-export const getChallengeAll = async () => {
+export const getChallengeAll = async (offset) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
-  const challenges = await Challenge.find({ isDeleted: false })
-    .populate("user", ["nickname"])
-    .populate({
-      path: "comments",
-      select: { userID: 1, text: 1 },
-      populate: [
-        {
-          path: "childrenComment",
-          select: { userID: 1, text: 1 },
-          populate: {
+  // offset 뒤에서 부터 가져오기
+  let challenges
+  if (offset) {
+    challenges = await Challenge
+      .find({ isDeleted: false, _id: { $gt: offset } })
+      .limit(Number(process.env.PAGE_SIZE))
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
             path: "userID",
             select: ["nickname"],
           },
-        },
-        {
-          path: "userID",
-          select: ["nickname"],
-        },
-      ],
-    });
-
+        ],
+      });
+  }
+  else {
+    challenges = await Challenge
+      .find({ isDeleted: false })
+      .limit(Number(process.env.PAGE_SIZE))
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
   return challenges;
 };
 

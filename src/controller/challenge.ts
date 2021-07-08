@@ -44,7 +44,7 @@ router.get("/", async (req: Request, res: Response) => {
     if (decoded === -2) {
       response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
     }
-    const data = await getChallengeAll();
+    const data = await getChallengeAll(req.query.offset);
 
     // 회고 전체 불러오기 성공
     const challengeAll = data;
