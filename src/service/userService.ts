@@ -4,6 +4,7 @@ import User from "src/models/User";
 import Badge from "src/models/Badge";
 import Concert from "src/models/Concert";
 import Challenge from "src/models/Challenge";
+import Comment from "src/models/Comment";
 
 // library
 import { dateToNumber, period } from "src/library/date";
@@ -293,4 +294,82 @@ export const deleteMypageChallenge = async (userID, challengeID) => {
   await user.save();
 
   return { _id: challengeID };
+};
+
+/**
+ *  @마이페이지_내가_쓴_글
+ *  @route Get user/mypage/write
+ *  @error
+ *    1.
+ */
+export const getMyWritings = async (userID, offset) => {
+  let challenges;
+  if (offset) {
+    challenges = await Challenge.find({
+      isDeleted: false,
+      _id: { $gt: offset },
+      user: userID,
+    })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  } else {
+    challenges = await Challenge.find({ isDeleted: false, user: userID })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
+  return challenges;
+};
+
+/**
+ *  @마이페이지_내가_쓴_댓글
+ *  @route Get user/mypage/comment
+ */
+export const getMyComments = async (userID) => {
+  const comments = await Comment.find({
+    isDeleted: false,
+    userID,
+  }).sort({ _id: -1 });
+  return comments;
 };

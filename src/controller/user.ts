@@ -1,11 +1,12 @@
 import { Router, Request, Response } from "express";
 import { returnCode } from "src/library/returnCode";
-import {
-  response,
-  dataResponse,
-  dataTokenResponse,
-} from "src/library/response";
+import { response, dataResponse } from "src/library/response";
 import { verify } from "src/library/jwt";
+// allow cors
+import cors from "cors";
+// middlewate
+import auth from "src/middleware/auth";
+// service
 import {
   postRegister,
   getMypageConcert,
@@ -13,6 +14,8 @@ import {
   deleteMypageChallenge,
   getMypageInfo,
   postRegister,
+  getMyWritings,
+  getMyComments,
 } from "src/service/userService";
 
 // middleware
@@ -165,5 +168,37 @@ router.delete(
     }
   }
 );
+
+/**
+ *  @마이페이지_내가_쓴_글
+ *  @route Get user/mypage/write/:userID
+ *  @access Private
+ */
+
+router.get("/mypage/write", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMyWritings(req.body.userID.id, req.query.offset);
+    response(res, returnCode.OK, data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @마이페이지_내가_쓴_댓글
+ *  @route Get user/mypage/comment
+ *  @access Private
+ */
+
+router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMyComments(req.body.userID.id);
+    response(res, returnCode.OK, data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
 
 module.exports = router;
