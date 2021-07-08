@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import { verify } from "src/library/jwt";
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
 // middleware
@@ -77,8 +76,7 @@ router.post<unknown, unknown, IChallengePostDTO>(
   auth,
   async (req: Request, res: Response) => {
     try {
-      console.log(req.body);
-      const data = await postChallenge(req.body.userID, req.body);
+      const data = await postChallenge(req.body.userID.id, req.body);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -104,25 +102,8 @@ router.post<unknown, unknown, IChallengePostDTO>(
  *  @access Private
  */
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
     const data = await patchChallenge(req.params.id, req.body);
 
     // 회고 id가 잘못된 경우
@@ -148,24 +129,8 @@ router.patch("/:id", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    } else if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
     const data = await deleteChallenge(req.params.id);
 
     // 회고 id가 잘못된 경우
@@ -187,27 +152,9 @@ router.delete("/:id", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.post("/comment/:id", async (req: Request, res: Response) => {
+router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await postChallengeComment(req.params.id, userID, req.body);
+    const data = await postChallengeComment(req.params.id, req.body.userID.id, req.body);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -236,27 +183,9 @@ router.post("/comment/:id", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.post("/like/:id", async (req: Request, res: Response) => {
+router.post("/like/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await postChallengeLike(req.params.id, userID);
+    const data = await postChallengeLike(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -283,25 +212,7 @@ router.post("/like/:id", async (req: Request, res: Response) => {
 
 router.delete("/like/:id", async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await deleteChallengeLike(req.params.id, userID);
+    const data = await deleteChallengeLike(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -326,23 +237,7 @@ router.delete("/like/:id", async (req: Request, res: Response) => {
  */
 router.post("/scrap/:id", async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-    const data = await postChallengeScrap(req.params.id, decoded.user.id);
+    const data = await postChallengeScrap(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -367,23 +262,7 @@ router.post("/scrap/:id", async (req: Request, res: Response) => {
  */
 router.delete("/scrap/:id", async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-    const data = await deleteChallengeScrap(req.params.id, decoded.user.id);
+    const data = await deleteChallengeScrap(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {

@@ -15,10 +15,12 @@ export const getChallengeAll = async (offset) => {
   // 최신순으로 정렬
   // 댓글, 답글 populate
   // 댓글, 답글 최신순으로 정렬
-  let challenges
+  let challenges;
   if (offset) {
-    challenges = await Challenge
-      .find({ isDeleted: false, _id: { $gt: offset } })
+    challenges = await Challenge.find({
+      isDeleted: false,
+      _id: { $gt: offset },
+    })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
@@ -42,10 +44,8 @@ export const getChallengeAll = async (offset) => {
           },
         ],
       });
-  }
-  else {
-    challenges = await Challenge
-      .find({ isDeleted: false })
+  } else {
+    challenges = await Challenge.find({ isDeleted: false })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
@@ -77,15 +77,23 @@ export const getChallengeAll = async (offset) => {
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
  */
-export const getChallengeSearch = async (tag, isMine, keyword, offset, userID) => {
+export const getChallengeSearch = async (
+  tag,
+  isMine,
+  keyword,
+  offset,
+  userID
+) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
   let challenges;
   if (offset) {
-    challenges = await Challenge
-      .find({ isDeleted: false, _id: { $gt: offset } })
+    challenges = await Challenge.find({
+      isDeleted: false,
+      _id: { $gt: offset },
+    })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
@@ -109,8 +117,7 @@ export const getChallengeSearch = async (tag, isMine, keyword, offset, userID) =
           },
         ],
       });
-  }
-  else {
+  } else {
     challenges = await Challenge.find({ isDeleted: false })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
@@ -219,7 +226,7 @@ export const patchChallenge = async (challengeID, body) => {
 
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
   // 2. 요청 바디 부족
@@ -249,7 +256,7 @@ export const patchChallenge = async (challengeID, body) => {
 export const deleteChallenge = async (challengeID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
 
@@ -275,7 +282,7 @@ export const postChallengeComment = async (challengeID, userID, body) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
 
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
   // 2. 요청 바디 부족
@@ -339,7 +346,7 @@ export const postChallengeLike = async (challengeID, userID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
 
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
 
@@ -374,7 +381,7 @@ export const deleteChallengeLike = async (challengeID, userID) => {
   const challenge = await Challenge.findById(challengeID);
 
   // 1. 회고록 id 잘못됨
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
 
@@ -409,7 +416,7 @@ export const deleteChallengeLike = async (challengeID, userID) => {
 export const postChallengeScrap = async (challengeID, userID) => {
   // 1. 회고 id 잘못됨
   let challenge = await Challenge.findById(challengeID);
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
 
@@ -436,7 +443,7 @@ export const postChallengeScrap = async (challengeID, userID) => {
 export const deleteChallengeScrap = async (challengeID, userID) => {
   // 1. 회고 id 잘못됨
   let challenge = await Challenge.findById(challengeID);
-  if (!challenge) {
+  if (!challenge || challenge.isDeleted) {
     return -1;
   }
 
