@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { verify } from "src/library/jwt";
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
+// middleware
+import auth from 'src/middleware/auth';
 // service
 import {
   getChallengeAll,
@@ -26,24 +28,8 @@ const router = Router();
  *  @access Private
  */
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
     const data = await getChallengeAll(req.query.offset);
 
     // 회고 전체 불러오기 성공
@@ -61,31 +47,14 @@ router.get("/", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.get("/search", async (req: Request, res: Response) => {
+router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
     const data = await getChallengeSearch(
       req.query.tag,
       req.query.isMine,
       req.query.keyword,
       req.query.offset,
-      decoded.user.id
+      req.body.userId,
     );
 
     // 회고 전체 불러오기 성공
@@ -105,27 +74,11 @@ router.get("/search", async (req: Request, res: Response) => {
 
 router.post<unknown, unknown, IChallengePostDTO>(
   "/",
+  auth,
   async (req: Request, res: Response) => {
     try {
-      // 토큰 검사
-      if (req.headers.authorization == null) {
-        response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-      }
-
-      //토큰
-      const token = req.headers.authorization;
-      const decoded = verify(token);
-
-      // 토큰 확인
-      if (decoded === -3) {
-        response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-      }
-      if (decoded === -2) {
-        response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-      }
-
-      const userID = decoded.user.id;
-      const data = await postChallenge(userID, req.body);
+      console.log(req.body);
+      const data = await postChallenge(req.body.userID, req.body);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
