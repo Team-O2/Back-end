@@ -231,6 +231,8 @@ export async function patchPassword(body) {
   }
 
   // 비밀번호 변경 로직
-  user.password = password;
+  // Encrpyt password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
   await user.save();
 }
