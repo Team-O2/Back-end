@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { returnCode } from "src/library/returnCode";
 import {
   response,
@@ -7,8 +7,14 @@ import {
 } from "src/library/response";
 import { verify } from "src/library/jwt";
 import { postRegister } from "src/service/userService";
+// allow cors
+import cors from 'cors';
 
-const router = express.Router();
+const router = Router();
+
+router.use(cors({
+  credentials: true
+}))
 
 /**yar
  *  @User_챌린지_신청하기

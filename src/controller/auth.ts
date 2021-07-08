@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import { returnCode } from "src/library/returnCode";
 import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
@@ -7,8 +7,14 @@ import {
   dataResponse,
   tokenResponse,
 } from "src/library/response";
+// allow cors
+import cors from 'cors';
 
-const router = express.Router();
+const router = Router();
+
+router.use(cors({
+  credentials: true
+}))
 
 /**yar
  *  @회원가입

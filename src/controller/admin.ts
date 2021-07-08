@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { returnCode } from "src/library/returnCode";
 import {
   response,
@@ -13,8 +13,14 @@ import {
   postAdminChallenge,
   postAdminConcert,
 } from "src/service/adminService";
+// allow cors
+import cors from 'cors';
 
-const router = express.Router();
+const router = Router();
+
+router.use(cors({
+  credentials: true
+}))
 
 /**
  *  @관리자_페이지_조회

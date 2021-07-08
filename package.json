@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.11",
     "@types/ejs": "^3.0.7",
     "@types/express": "^4.17.12",
     "@types/mongoose": "^5.11.97",

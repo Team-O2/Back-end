@@ -8,9 +8,9 @@ connectDB();
 app.use(express.urlencoded());
 app.use(express.json());
 
-// allow cors
-var cors = require("cors")();
-app.use(cors);
+// // allow cors
+// import cors from 'cors';
+// app.use(cors);
 
 // route
 app.use("/auth", require("src/controller/auth"));

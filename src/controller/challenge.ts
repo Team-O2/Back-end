@@ -17,8 +17,14 @@ import {
 } from "src/service/challengeService";
 // DTO
 import { IChallengePostDTO } from "src/interfaces/IChallenge";
+// allow cors
+import cors from 'cors';
 
 const router = Router();
+
+router.use(cors({
+  credentials: true
+}))
 
 /**
  *  @챌린지_회고_전체_가져오기
