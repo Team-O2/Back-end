@@ -11,9 +11,11 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/ejs": "^3.0.7",
     "@types/express": "^4.17.12",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^15.12.5",
+    "@types/nodemailer": "^6.4.2",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",
@@ -32,6 +34,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-validator": "^6.12.0",
     "jsonwebtoken": "^8.5.1",
@@ -40,6 +43,7 @@
     "mongoose-validator": "^2.1.0",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
+    "nodemailer": "^6.6.2",
     "request": "^2.88.2"
   },
   "author": "",

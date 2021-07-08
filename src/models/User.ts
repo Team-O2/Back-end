@@ -86,6 +86,11 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  emailCode: {
+    // 이메일로 받은 인증번호
+    type: String,
+    required: false,
+  }
 });
 
 export default mongoose.model<IUser & mongoose.Document>("User", UserSchema);

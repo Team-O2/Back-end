@@ -20,4 +20,5 @@ export interface IUser {
   img: string;
   ischallenge: Boolean;
   generation: Number;
+  emailCode: string;
 }
