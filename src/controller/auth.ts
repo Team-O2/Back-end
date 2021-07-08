@@ -7,8 +7,14 @@ import {
   dataResponse,
   tokenResponse,
 } from "src/library/response";
+// allow cors
+import cors from 'cors';
 
 const router = Router();
+
+router.use(cors({
+  credentials: true
+}))
 
 /**yar
  *  @회원가입

@@ -12,6 +12,7 @@ import {
   getMypageChallenge,
   deleteMypageChallenge,
   getMypageInfo,
+  postRegister,
 } from "src/service/userService";
 
 // middleware
