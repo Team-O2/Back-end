@@ -11,3 +11,11 @@ export function stringToDate(str: String) {
 export function dateToNumber(Dt: Date) {
   return new Date(Dt).getTime();
 }
+
+// 두 날짜 차이
+export function period(start: Date, end: Date) {
+  var diff = Math.abs(end.getTime() - start.getTime());
+  diff = Math.ceil(diff / (1000 * 3600 * 24));
+
+  return diff;
+}
