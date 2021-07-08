@@ -434,7 +434,7 @@ router.delete("/scrap/:id", async (req: Request, res: Response) => {
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
-      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+      response(res, returnCode.NOT_FOUND, "요청 아이디가 올바르지 않습니다");
     }
     // 스크랩 하지 않은 글일 경우
     if (data === -2) {
