@@ -7,3 +7,7 @@ export function stringToDate(str: String) {
     parseInt(dateParts[2])
   );
 }
+
+export function dateToNumber(Dt: Date) {
+  return new Date(Dt).getTime();
+}
