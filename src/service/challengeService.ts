@@ -10,22 +10,27 @@ import { IChallengePostDTO } from "src/interfaces/IChallenge";
  *  @route Get /challenge
  */
 export const getChallengeAll = async (offset) => {
-  // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
+  // 최신순으로 정렬
+  // 댓글, 답글 populate
+  // 댓글, 답글 최신순으로 정렬
   let challenges
   if (offset) {
     challenges = await Challenge
       .find({ isDeleted: false, _id: { $gt: offset } })
       .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
@@ -42,14 +47,17 @@ export const getChallengeAll = async (offset) => {
     challenges = await Challenge
       .find({ isDeleted: false })
       .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
@@ -70,21 +78,26 @@ export const getChallengeAll = async (offset) => {
  *  @route Get /challenge/search
  */
 export const getChallengeSearch = async (tag, isMine, keyword, offset, userID) => {
-  // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
+  // offset 뒤에서 부터 가져오기
+  // 최신순으로 정렬
+  // 댓글, 답글 populate
   let challenges;
   if (offset) {
     challenges = await Challenge
       .find({ isDeleted: false, _id: { $gt: offset } })
       .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
@@ -100,14 +113,17 @@ export const getChallengeSearch = async (tag, isMine, keyword, offset, userID) =
   else {
     challenges = await Challenge.find({ isDeleted: false })
       .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
