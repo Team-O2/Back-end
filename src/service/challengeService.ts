@@ -69,29 +69,57 @@ export const getChallengeAll = async (offset) => {
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
  */
-export const getChallengeSearch = async (tag, isMine, keyword, userID) => {
+export const getChallengeSearch = async (tag, isMine, keyword, offset, userID) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
-  const challenges = await Challenge.find({ isDeleted: false })
-    .populate("user", ["nickname"])
-    .populate({
-      path: "comments",
-      select: { userID: 1, text: 1 },
-      populate: [
-        {
-          path: "childrenComment",
-          select: { userID: 1, text: 1 },
-          populate: {
+  let challenges;
+  if (offset) {
+    challenges = await Challenge
+      .find({ isDeleted: false, _id: { $gt: offset } })
+      .limit(Number(process.env.PAGE_SIZE))
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
             path: "userID",
             select: ["nickname"],
           },
-        },
-        {
-          path: "userID",
-          select: ["nickname"],
-        },
-      ],
-    });
+        ],
+      });
+  }
+  else {
+    challenges = await Challenge.find({ isDeleted: false })
+      .limit(Number(process.env.PAGE_SIZE))
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
 
   let filteredData = challenges;
 

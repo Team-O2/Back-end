@@ -84,6 +84,7 @@ router.get("/search", async (req: Request, res: Response) => {
       req.query.tag,
       req.query.isMine,
       req.query.keyword,
+      req.query.offset,
       decoded.user.id
     );
 
