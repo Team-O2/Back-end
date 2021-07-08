@@ -233,6 +233,4 @@ export async function patchPassword(body) {
   // 비밀번호 변경 로직
   user.password = password;
   await user.save();
-
-  return user;
 }

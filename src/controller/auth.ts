@@ -5,7 +5,6 @@ import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/
 import {
   response,
   dataResponse,
-  dataTokenResponse,
   tokenResponse,
 } from "src/library/response";
 
@@ -123,7 +122,7 @@ router.post(
         response(res, returnCode.BAD_REQUEST, "아이디가 존재하지 않습니다");
       }
       // 성공
-      response(res, returnCode.OK, "로그인 성공");
+      response(res, returnCode.OK, "인증번호 전송 성공");
     } catch (err) {
       console.error(err.message);
       response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
@@ -198,7 +197,7 @@ router.patch(
         response(res, returnCode.BAD_REQUEST, "아이디가 존재하지 않습니다");
       }
       // 성공
-      dataResponse(res, returnCode.OK, "비밀번호 변경 성공", data);
+      response(res, returnCode.OK, "비밀번호 변경 성공");
     } catch (err) {
       console.error(err.message);
       response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
