@@ -178,7 +178,7 @@ router.delete(
 router.get("/mypage/write", auth, async (req: Request, res: Response) => {
   try {
     const data = await getMyWritings(req.body.userID.id, req.query.offset);
-    response(res, returnCode.OK, data);
+    dataResponse(res, returnCode.OK, "내가 쓴 글 가져오기 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
@@ -194,7 +194,7 @@ router.get("/mypage/write", auth, async (req: Request, res: Response) => {
 router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
   try {
     const data = await getMyComments(req.body.userID.id);
-    response(res, returnCode.OK, data);
+    dataResponse(res, returnCode.OK, "내가 쓴 댓글 가져오기 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
