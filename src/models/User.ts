@@ -84,13 +84,14 @@ const UserSchema = new mongoose.Schema({
   generation: {
     // 참여기수 참여시 갱신
     type: Number,
-    required: false,
+    required: true,
+    default: 0,
   },
   emailCode: {
     // 이메일로 받은 인증번호
     type: String,
     required: false,
-  }
+  },
 });
 
 export default mongoose.model<IUser & mongoose.Document>("User", UserSchema);

@@ -10,13 +10,13 @@ export interface IUser {
   nickname: string;
   interest: [string];
   marpolicy: Boolean;
-  gender: Number;
-  challengeCNT: Number;
+  gender: number;
+  challengeCNT: number;
   badge: IBadge;
-  badgeCNT: Number;
+  badgeCNT: number;
   likes: ILikes;
   scraps: IScraps;
-  userType: Number;
+  userType: number;
   img: string;
   ischallenge: Boolean;
   generation: Number;
