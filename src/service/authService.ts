@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "src/config";
 
-import nodemailer from "nodemailer";
+import { smtpTransport } from 'src/library/emailSender'
 import ejs from "ejs";
 
 /**
@@ -134,8 +134,11 @@ export async function postEmail(body) {
     return -2;
   }
 
-  // authNum을 db에 저장 해놔야 할 듯.
+  // 인증번호를 user에 저장 -> 제한 시간 설정하기!
   const authNum = Math.random().toString().substr(2, 6);
+  user.emailCode = authNum;
+  await user.save();
+
   let emailTemplate;
   ejs.renderFile(
     "src/library/emailTemplete.ejs",
@@ -176,20 +179,42 @@ export async function postEmail(body) {
  *  @body email
  *  @error
  *      1. 요청 바디 부족
- *      2. 인증번호가 일치하지 않음
+ *      2. 유저가 존재하지 않음
  */
 export async function postCode(body) {
   // 저장해놓은 authNum이랑 body로 온 인증번호랑 비교
+  const { email, emailCode } = body;
+
+  // 1. 요청 바디 부족
+  if (!email || !emailCode) {
+    return -1;
+  }
+
+  // 2. 유저가 존재하지 않음
+  // isDeleted = false 인 유저를 찾아야함
+  // 회원 탈퇴했다가 다시 가입한 경우 생각하기
+  let user = await User.findOne({ email: email });
+  if (!user) {
+    return -2;
+  }
+
+  if (emailCode !== user.emailCode) {
+    // 인증번호가 일치하지 않음
+    return -3;
+  }
+  else {
+    // 인증번호 일치
+    return 0;
+  }
 }
 
 /**
  *  @비밀번호_재설정
- *  @route Post auth/email
+ *  @route Patch auth/pw
  *  @body email
  *  @error
  *      1. 요청 바디 부족
  *      2. 아이디가 존재하지 않음
- *      3. 비밀번호가 형식에 맞지 않음
  */
 export async function patchPassword(body) {
   const { email, password } = body;
@@ -205,31 +230,9 @@ export async function patchPassword(body) {
     return -2;
   }
 
-  // 3. password가 올바르지 않음
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return -3;
-  }
-
   // 비밀번호 변경 로직
-
+  user.password = password;
   await user.save();
 
-  const payload = {
-    user: {
-      id: user.id,
-    },
-  };
+  return user;
 }
-
-// admin email 주소랑 비밀번호 -> .env에 넣어놓기
-const smtpTransport = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: "hyunjin5697@gmail.com",
-    pass: "비밀번호",
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
