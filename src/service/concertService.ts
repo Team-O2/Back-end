@@ -2,6 +2,7 @@
 import Concert from "src/models/Concert";
 import User from "src/models/User";
 import Comment from "src/models/Comment";
+import Badge from "src/models/Badge";
 // DTO
 import { IConcertPostDTO } from "src/interfaces/IConcert";
 
@@ -9,29 +10,64 @@ import { IConcertPostDTO } from "src/interfaces/IConcert";
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
  */
-export const getConcertAll = async () => {
-  // 댓글, 답글 populate
+export const getConcertAll = async (offset) => {
   // isDelete = true 인 애들만 가져오기
-  const concerts = await Concert.find({ isDeleted: false })
-    .populate("user", ["nickname"])
-    .populate({
-      path: "comments",
-      select: ["userID, text"],
-      populate: [
-        {
-          path: "childrenComment",
-          select: ["userID", "text"],
-          populate: {
+  // offset 뒤에서 부터 가져오기
+  // 최신순으로 정렬
+  // 댓글, 답글 populate
+  // 댓글, 답글 최신순으로 정렬
+  let concerts;
+  if (offset) {
+    concerts = await Concert.find({ isDeleted: false, _id: { $gt: offset } })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: ["userID, text"],
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: ["userID", "text"],
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
             path: "userID",
             select: ["nickname"],
           },
-        },
-        {
-          path: "userID",
-          select: ["nickname"],
-        },
-      ],
-    });
+        ],
+      });
+  } else {
+    concerts = await Concert.find({ isDeleted: false })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: ["userID, text"],
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: ["userID", "text"],
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
 
   return concerts;
 };
@@ -71,27 +107,63 @@ export const getConcertOne = async (concertID) => {
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-export const getConcertSearch = async (tag, keyword) => {
-  // 댓글, 답글 populate
+export const getConcertSearch = async (tag, keyword, offset) => {
   // isDelete = true 인 애들만 가져오기
-  const concerts = await Concert.find({ isDeleted: false }).populate({
-    path: "comments",
-    select: { userID: 1, text: 1 },
-    populate: [
-      {
-        path: "childrenComment",
-        select: { userID: 1, text: 1 },
-        populate: {
-          path: "userID",
-          select: ["nickname"],
-        },
-      },
-      {
-        path: "userID",
-        select: ["nickname"],
-      },
-    ],
-  });
+  // offset 뒤에서 부터 가져오기
+  // 최신순으로 정렬
+  // 댓글, 답글 populate
+  let concerts;
+  if (offset) {
+    concerts = await Concert.find({ isDeleted: false, _id: { $gt: offset } })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: ["userID, text"],
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: ["userID", "text"],
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  } else {
+    concerts = await Concert.find({ isDeleted: false })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: ["userID, text"],
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: ["userID", "text"],
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
 
   let filteredData = concerts;
 
@@ -281,6 +353,20 @@ export const postConcertScrap = async (concertID, userID) => {
 
   user.scraps.concertScraps.push(concertID);
   await user.save();
+
+  // 첫 스크랩이면 뱃지 발급
+  const badge = await Badge.findOne(
+    { user: userID },
+    { concertScrapBadge: true, _id: false }
+  );
+
+  const scrapNum = user.scraps.concertScraps.length;
+  if (!badge.concertScrapBadge && scrapNum === 1) {
+    await Badge.findOneAndUpdate(
+      { user: userID },
+      { $set: { concertScrapBadge: true } }
+    );
+  }
 
   return { _id: concertID };
 };
