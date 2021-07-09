@@ -1,22 +1,16 @@
 import { Router, Request, Response } from "express";
-
-// librarys
+// libraries
 import { returnCode } from "src/library/returnCode";
 import {
   response,
   dataResponse,
-  dataTokenResponse,
 } from "src/library/response";
-import { verify } from "src/library/jwt";
-
 //middlewares
 import auth from "src/middleware/auth";
-
 // interfaces
 import { IAdmin } from "src/interfaces/IAdmin";
 import { IConcertAdminDTO } from "src/interfaces/IConcert";
-
-//service
+//services
 import {
   postAdminList,
   postAdminChallenge,

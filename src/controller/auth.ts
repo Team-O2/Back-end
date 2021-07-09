@@ -1,12 +1,15 @@
 import { Router, Request, Response } from "express";
 import { check, validationResult } from "express-validator";
+// libraries
 import { returnCode } from "src/library/returnCode";
-import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
 import {
   response,
   dataResponse,
   tokenResponse,
 } from "src/library/response";
+// services
+import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
+
 
 const router = Router();
 

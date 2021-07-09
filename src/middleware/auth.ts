@@ -14,6 +14,7 @@ export default (req, res, next) => {
   // Verify token
   try {
     const decoded = jwt.verify(token, config.jwtSecret);
+
     req.body.userID = decoded.user;
     next();
   } catch (err) {
@@ -21,7 +22,6 @@ export default (req, res, next) => {
       response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
     } else {
       response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-      return -2;
     }
   }
 };

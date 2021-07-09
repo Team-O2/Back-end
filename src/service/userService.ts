@@ -4,6 +4,7 @@ import User from "src/models/User";
 import Badge from "src/models/Badge";
 import Concert from "src/models/Concert";
 import Challenge from "src/models/Challenge";
+import Comment from "src/models/Comment";
 
 // library
 import { dateToNumber, period } from "src/library/date";
@@ -293,4 +294,107 @@ export const deleteMypageChallenge = async (userID, challengeID) => {
   await user.save();
 
   return { _id: challengeID };
+};
+
+/**
+ *  @마이페이지_내가_쓴_글
+ *  @route Get user/mypage/write
+ *  @error
+ *    1.
+ */
+export const getMyWritings = async (userID, offset) => {
+  let challenges;
+  if (offset) {
+    challenges = await Challenge.find({
+      isDeleted: false,
+      _id: { $gt: offset },
+      user: userID,
+    })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  } else {
+    challenges = await Challenge.find({ isDeleted: false, user: userID })
+      .limit(Number(process.env.PAGE_SIZE))
+      .sort({ _id: -1 })
+      .populate("user", ["nickname"])
+      .populate({
+        path: "comments",
+        select: { userID: 1, text: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+          {
+            path: "childrenComment",
+            select: { userID: 1, text: 1 },
+            options: { sort: { _id: -1 } },
+            populate: {
+              path: "userID",
+              select: ["nickname"],
+            },
+          },
+          {
+            path: "userID",
+            select: ["nickname"],
+          },
+        ],
+      });
+  }
+  return challenges;
+};
+
+/**
+ *  @마이페이지_내가_쓴_댓글
+ *  @route Get user/mypage/comment
+ */
+export const getMyComments = async (userID) => {
+  const comments = await Comment.find({
+    isDeleted: false,
+    userID,
+  }).sort({ _id: -1 });
+  return comments;
+};
+
+/**
+ *  @마이페이지_내가_쓴_댓글_삭제
+ *  @route Delete user/mypage/comment
+ *  @error
+ *    1. 요청 바디가 부족할 경우
+ */
+export const deleteMyComments = async (body) => {
+  const { userID, commentID } = body;
+
+  //1. 요청 바디가 부족할 경우
+  if (!commentID || commentID.length === 0) {
+    return -1;
+  }
+
+  commentID.map(async (cmtID) => {
+    await Comment.findOneAndUpdate(
+      {
+        _id: cmtID,
+        userID: userID.id,
+      },
+      { isDeleted: true }
+    );
+  });
 };

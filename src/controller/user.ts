@@ -1,21 +1,20 @@
 import { Router, Request, Response } from "express";
+// libraries
 import { returnCode } from "src/library/returnCode";
-import {
-  response,
-  dataResponse,
-  dataTokenResponse,
-} from "src/library/response";
-import { verify } from "src/library/jwt";
+import { response, dataResponse } from "src/library/response";
+// middlewares
+import auth from "src/middleware/auth";
+// services
 import {
   postRegister,
   getMypageConcert,
   getMypageChallenge,
   deleteMypageChallenge,
   getMypageInfo,
+  getMyWritings,
+  getMyComments,
+  deleteMyComments,
 } from "src/service/userService";
-
-// middleware
-import auth from "src/middleware/auth";
 
 const router = Router();
 
@@ -164,5 +163,59 @@ router.delete(
     }
   }
 );
+
+/**
+ *  @마이페이지_내가_쓴_글
+ *  @route Get user/mypage/write/:userID
+ *  @access Private
+ */
+
+router.get("/mypage/write", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMyWritings(req.body.userID.id, req.query.offset);
+    dataResponse(res, returnCode.OK, "내가 쓴 글 가져오기 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @마이페이지_내가_쓴_댓글
+ *  @route Get user/mypage/comment
+ *  @access Private
+ */
+
+router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMyComments(req.body.userID.id);
+    dataResponse(res, returnCode.OK, "내가 쓴 댓글 가져오기 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @마이페이지_내가_쓴_댓글_삭제
+ *  @route Delete user/mypage/comment
+ *  @access Private
+ */
+
+router.delete("/mypage/comment", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await deleteMyComments(req.body);
+
+    // 요청 바디가 부족할 경우
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+    }
+
+    dataResponse(res, returnCode.OK, "내가 쓴 댓글 삭제 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
 
 module.exports = router;
