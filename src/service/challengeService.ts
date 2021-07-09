@@ -4,6 +4,7 @@ import User from "src/models/User";
 import Comment from "src/models/Comment";
 // DTO
 import { IChallengePostDTO } from "src/interfaces/IChallenge";
+import Badge from "src/models/Badge";
 
 /**
  *  @챌린지_회고_전체_가져오기
@@ -208,6 +209,13 @@ export const postChallenge = async (userID, body) => {
 
   await challenge.save();
 
+  // 첫 챌린지 회고 작성 시 배지 추가
+  const badge = await Badge.findOne({ user: userID });
+  if (!badge.firstWriteBadge) {
+    badge.firstWriteBadge = true;
+    await badge.save();
+  }
+
   let data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
 
   return data;
@@ -311,6 +319,13 @@ export const postChallengeComment = async (challengeID, userID, body) => {
 
     await parentComment.childrenComment.push(comment._id);
     await parentComment.save();
+
+    // 첫 답글 작성 시 뱃지 추가
+    const badge = await Badge.findOne({ user: userID });
+    if (!badge.firstReplyBadge) {
+      badge.firstReplyBadge = true;
+      await badge.save();
+    }
   } else {
     // 댓글인 경우
     comment = new Comment({
@@ -323,6 +338,24 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     await comment.save();
     challenge.comments.push(comment._id);
     await challenge.save();
+
+    // 댓글 1개 작성 시 뱃지 추가
+    const badge = await Badge.findOne({ user: userID });
+    if (!badge.oneCommentBadge) {
+      badge.oneCommentBadge = true;
+      await badge.save();
+    }
+    // 댓글 5개 작성 시 뱃지 추가
+    const user = await User.findById(userID);
+    if (!badge.fiveCommentBadge && user.commentCNT === 4) {
+      badge.fiveCommentBadge = true;
+      await badge.save();
+    }
+
+    // 유저 댓글 수 1 증가
+    await user.update({
+      commentCNT: user.commentCNT + 1,
+    });
   }
 
   // 게시글 댓글 수 1 증가
@@ -359,6 +392,7 @@ export const postChallengeLike = async (challengeID, userID) => {
   }
 
   const user = await User.findById(userID);
+
   // 2. 이미 좋아요 한 글일 경우
   if (user.likes.challengeLikes.includes(challengeID)) {
     return -2;
@@ -374,6 +408,19 @@ export const postChallengeLike = async (challengeID, userID) => {
   // 유저 likes 필드에 챌린지 id 추가
   user.likes.challengeLikes.push(challengeID);
   await user.save();
+
+  // 좋아요 1개 누를 시 뱃지 추가
+  const badge = await Badge.findOne({ user: userID });
+  if (!badge.oneLikeBadge) {
+    badge.oneLikeBadge = true;
+    await badge.save();
+  }
+
+  // 좋아요 5개 누를 시 뱃지 추가
+  if (!badge.fiveLikeBadge && user.likes.challengeLikes.length === 5) {
+    badge.fiveLikeBadge = true;
+    await badge.save();
+  }
 
   return { _id: challengeID };
 };
@@ -445,6 +492,13 @@ export const postChallengeScrap = async (challengeID, userID) => {
       $inc: { scrapNum: 1 },
     }
   );
+
+  // 게시글 첫 스크랩 시 배지 추가
+  const badge = await Badge.findOne({ user: userID });
+  if (!badge.runMySelfBadge) {
+    badge.runMySelfBadge = true;
+    await badge.save();
+  }
 
   return { _id: challengeID };
 };

@@ -233,6 +233,13 @@ export const postConcertComment = async (concertID, userID, body) => {
 
     await parentComment.childrenComment.push(comment._id);
     await parentComment.save();
+
+    // 첫 답글 작성 시 뱃지 추가
+    const badge = await Badge.findOne({ user: userID });
+    if (!badge.firstReplyBadge) {
+      badge.firstReplyBadge = true;
+      await badge.save();
+    }
   } else {
     // 댓글인 경우
     comment = new Comment({
@@ -245,6 +252,24 @@ export const postConcertComment = async (concertID, userID, body) => {
     await comment.save();
     await concert.comments.push(comment._id);
     await concert.save();
+
+    // 댓글 1개 작성 시 뱃지 추가
+    const badge = await Badge.findOne({ user: userID });
+    if (!badge.oneCommentBadge) {
+      badge.oneCommentBadge = true;
+      await badge.save();
+    }
+    // 댓글 5개 작성 시 뱃지 추가
+    const user = await User.findById(userID);
+    if (!badge.fiveCommentBadge && user.commentCNT === 4) {
+      badge.fiveCommentBadge = true;
+      await badge.save();
+    }
+
+    // 유저 댓글 수 1 증가
+    await user.update({
+      commentCNT: user.commentCNT + 1,
+    });
   }
 
   // 게시글 댓글 수 1 증가
@@ -296,6 +321,19 @@ export const postConcertLike = async (concertID, userID) => {
   // 유저 likes 필드에 챌린지 id 추가
   user.likes.concertLikes.push(concertID);
   await user.save();
+
+  // 좋아요 1개 누를 시 뱃지 추가
+  const badge = await Badge.findOne({ user: userID });
+  if (!badge.oneLikeBadge) {
+    badge.oneLikeBadge = true;
+    await badge.save();
+  }
+
+  // 좋아요 5개 누를 시 뱃지 추가
+  if (!badge.fiveLikeBadge && user.likes.challengeLikes.length === 5) {
+    badge.fiveLikeBadge = true;
+    await badge.save();
+  }
 
   return { _id: concertID };
 };
