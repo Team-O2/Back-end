@@ -1,4 +1,6 @@
 import { Router, Request, Response } from "express";
+
+// librarys
 import { returnCode } from "src/library/returnCode";
 import {
   response,
@@ -6,8 +8,15 @@ import {
   dataTokenResponse,
 } from "src/library/response";
 import { verify } from "src/library/jwt";
+
+//middlewares
+import auth from "src/middleware/auth";
+
+// interfaces
 import { IAdminDTO, IAdmin } from "src/interfaces/IAdmin";
 import { IConcertAdminDTO } from "src/interfaces/IConcert";
+
+//service
 import {
   postAdminList,
   postAdminChallenge,
@@ -23,26 +32,10 @@ const router = Router();
  */
 router.get<unknown, unknown, IAdmin>(
   "/",
+  auth,
   async (req: Request, res: Response) => {
     try {
-      // 토큰 검사
-      if (req.headers.authorization == null) {
-        response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-      }
-
-      //토큰
-      const token = req.headers.authorization;
-      const decoded = verify(token);
-
-      // 토큰 확인
-      if (decoded === -3) {
-        response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-      } else if (decoded === -2) {
-        response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-      }
-
-      const userID = decoded.user.id;
-      const data = await postAdminList(userID);
+      const data = await postAdminList(req.body.userID.id);
 
       // 유저 id가 관리자가 아님
       if (data === -2) {
@@ -59,33 +52,17 @@ router.get<unknown, unknown, IAdmin>(
   }
 );
 
-/**yar
+/**
  *  @관리자_챌린지_등록
  *  @route Post admin/challenge
  *  @access Public
  */
 router.post<unknown, unknown, IAdminDTO>(
   "/challenge",
+  auth,
   async (req: Request, res: Response) => {
     try {
-      // 토큰 검사
-      if (req.headers.authorization == null) {
-        response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-      }
-
-      //토큰
-      const token = req.headers.authorization;
-      const decoded = verify(token);
-
-      // 토큰 확인
-      if (decoded === -3) {
-        response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-      } else if (decoded === -2) {
-        response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-      }
-
-      const userID = decoded.user.id;
-      const data = await postAdminChallenge(userID, req.body);
+      const data = await postAdminChallenge(req.body.userID.id, req.body);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -111,7 +88,7 @@ router.post<unknown, unknown, IAdminDTO>(
   }
 );
 
-/**yar
+/**
  *  @관리자_오픈콘서트_쉐어투게더_게시
  *  @route Post admin/concert
  *  @access Public
@@ -119,28 +96,11 @@ router.post<unknown, unknown, IAdminDTO>(
 
 router.post<unknown, unknown, IConcertAdminDTO>(
   "/concert",
+  auth,
   async (req: Request, res: Response) => {
     try {
-      // 토큰 검사
-      if (req.headers.authorization == null) {
-        response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-      }
+      const data = await postAdminConcert(req.body.userID.id, req.body);
 
-      //토큰
-      const token = req.headers.authorization;
-      const decoded = verify(token);
-      const userID = decoded.user.id;
-
-      // 토큰 확인
-      if (decoded === -3) {
-        response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-      } else if (decoded === -2) {
-        response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-      }
-
-      const data = await postAdminConcert(userID, req.body);
-
-      console.log(data);
       // 요청 바디가 부족할 경우
       if (data === -1) {
         response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");

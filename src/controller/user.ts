@@ -6,36 +6,28 @@ import {
   dataTokenResponse,
 } from "src/library/response";
 import { verify } from "src/library/jwt";
-import { postRegister } from "src/service/userService";
+import {
+  postRegister,
+  getMypageConcert,
+  getMypageChallenge,
+  deleteMypageChallenge,
+  getMypageInfo,
+} from "src/service/userService";
+
+// middleware
+import auth from "src/middleware/auth";
 
 const router = Router();
 
-/**yar
+/**
  *  @User_챌린지_신청하기
  *  @route Post user/register
  *  @access Public
  */
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-    const userID = decoded.user.id;
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    } else if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const data = await postRegister(userID, req.body);
+    const data = await postRegister(req.body.userID.id, req.body);
 
     // 요청 바디가 부족할 경우
     if (data === -1) {
@@ -69,5 +61,108 @@ router.post("/register", async (req: Request, res: Response) => {
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
   }
 });
+
+/**
+ *  @User_마이페이지_콘서트_스크랩
+ *  @route Get user/mypage/concert
+ *  @access Public
+ */
+
+router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMypageConcert(req.body.userID.id);
+
+    // 1. no content
+    if (data == -1) {
+      response(
+        res,
+        returnCode.NO_CONTENT,
+        "스크랩한 Share Together가 없습니다."
+      );
+    }
+
+    // 마이페이지 콘서트 조회 성공
+    else {
+      dataResponse(res, returnCode.OK, "Share Together 스크랩 조회 성공", data);
+    }
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @User_마이페이지_회고_스크랩
+ *  @route Get user/mypage/challenge
+ *  @access Public
+ */
+
+router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMypageChallenge(req.body.userID.id);
+
+    // 1. no content
+    if (data == -1) {
+      response(res, returnCode.NO_CONTENT, "스크랩한 Run Myself가 없습니다.");
+    }
+
+    // 마이페이지 콘서트 조회 성공
+    else {
+      dataResponse(res, returnCode.OK, "Run Myself 스크랩 조회 성공", data);
+    }
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @User_마이페이지_Info
+ *  @route Get user/mypage/info
+ *  @access private
+ */
+router.get("/mypage/info", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getMypageInfo(req.body.userID.id);
+
+    // 유저정보 조회 성공
+    dataResponse(res, returnCode.OK, "마이페이지 유저정보 검색 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @User_마이페이지_회고_스크랩_취소토글
+ *  @route Delete user/mypage/challenge/:challengeID
+ *  @access private
+ */
+
+router.delete(
+  "/mypage/challenge/:id",
+  auth,
+  async (req: Request, res: Response) => {
+    try {
+      const data = await deleteMypageChallenge(
+        req.body.userID.id,
+        req.params.id
+      );
+      // 회고 id가 잘못된 경우
+      if (data === -1) {
+        response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+      }
+      // 스크랩 하지 않은 글일 경우
+      if (data === -2) {
+        response(res, returnCode.BAD_REQUEST, "스크랩 하지 않은 글입니다");
+      }
+      // 마이페이지 회고 스크랩 취소
+      response(res, returnCode.OK, "스크랩 취소 성공");
+    } catch (err) {
+      console.error(err.message);
+      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+  }
+);
 
 module.exports = router;

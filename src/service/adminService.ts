@@ -32,7 +32,7 @@ export const postAdminList = async (userID) => {
     }
   );
 
-  const adminList = Promise.all(
+  const adminList = await Promise.all(
     admins.map(async function (admin) {
       let totalNum = await Challenge.aggregate([
         {
