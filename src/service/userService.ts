@@ -373,3 +373,37 @@ export const getMyComments = async (userID) => {
   }).sort({ _id: -1 });
   return comments;
 };
+
+/**
+ *  @마이페이지_내가_쓴_댓글_삭제
+ *  @route Delete user/mypage/comment
+ *  @error
+ *    1. 요청 바디가 부족할 경우
+ */
+export const deleteMyComments = async (body) => {
+  const { userID, commentID } = body;
+
+  //1. 요청 바디가 부족할 경우
+  if (commentID) {
+    return -1;
+  }
+
+  // for (let i in commentID) {
+  //   await Comment.findOneAndUpdate(
+  //     { _id: i, userID: userID.id },
+  //     {
+  //       isDeleted: true,
+  //     }
+  //   );
+  // }
+  commentID.map(async (cmtID) => {
+    await Comment.findOneAndUpdate(
+      {
+        _id: cmtID,
+        userID: userID.id,
+      },
+      { isDeleted: true }
+    );
+    await 
+  });
+};

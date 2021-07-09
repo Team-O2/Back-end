@@ -16,6 +16,7 @@ import {
   postRegister,
   getMyWritings,
   getMyComments,
+  deleteMyComments,
 } from "src/service/userService";
 
 // middleware
@@ -195,6 +196,28 @@ router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
   try {
     const data = await getMyComments(req.body.userID.id);
     dataResponse(res, returnCode.OK, "내가 쓴 댓글 가져오기 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @마이페이지_내가_쓴_댓글_삭제
+ *  @route Delete user/mypage/comment
+ *  @access Private
+ */
+
+router.delete("/mypage/comment", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await deleteMyComments(req.body);
+
+    // 요청 바디가 부족할 경우
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+    }
+
+    dataResponse(res, returnCode.OK, "내가 쓴 댓글 삭제 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
