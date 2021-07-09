@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "src/config";
 
-import { smtpTransport } from 'src/library/emailSender'
+import { smtpTransport } from "src/library/emailSender";
 import ejs from "ejs";
 
 /**
@@ -109,6 +109,15 @@ export async function postSignin(body) {
   // access 토큰 발급
   // 유효기간 14일
   let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
+
+  // 마케팅 동의(marpolicy == true) 시 뱃지 발급
+  if (user.marpolicy) {
+    await Badge.findOneAndUpdate(
+      { user: user.id },
+      { $set: { marketingBadge: true } }
+    );
+  }
+
   return { user, token };
 }
 
@@ -201,8 +210,7 @@ export async function postCode(body) {
   if (emailCode !== user.emailCode) {
     // 인증번호가 일치하지 않음
     return -3;
-  }
-  else {
+  } else {
     // 인증번호 일치
     return 0;
   }
