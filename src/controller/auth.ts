@@ -1,20 +1,17 @@
 import { Router, Request, Response } from "express";
 import { check, validationResult } from "express-validator";
+// libraries
 import { returnCode } from "src/library/returnCode";
-import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
 import {
   response,
   dataResponse,
   tokenResponse,
 } from "src/library/response";
-// allow cors
-import cors from 'cors';
+// services
+import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
+
 
 const router = Router();
-
-router.use(cors({
-  credentials: true
-}))
 
 /**yar
  *  @회원가입

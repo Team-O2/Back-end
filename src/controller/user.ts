@@ -1,26 +1,20 @@
 import { Router, Request, Response } from "express";
+// libraries
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
-import { verify } from "src/library/jwt";
-// allow cors
-import cors from "cors";
-// middlewate
+// middlewares
 import auth from "src/middleware/auth";
-// service
+// services
 import {
   postRegister,
   getMypageConcert,
   getMypageChallenge,
   deleteMypageChallenge,
   getMypageInfo,
-  postRegister,
   getMyWritings,
   getMyComments,
   deleteMyComments,
 } from "src/service/userService";
-
-// middleware
-import auth from "src/middleware/auth";
 
 const router = Router();
 

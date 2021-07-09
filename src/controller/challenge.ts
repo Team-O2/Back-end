@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
+// libraries
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
-// middleware
+// middlewares
 import auth from 'src/middleware/auth';
-// service
+// services
 import {
   getChallengeAll,
   getChallengeSearch,

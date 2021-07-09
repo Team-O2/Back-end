@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
-import { verify } from "src/library/jwt";
+// libraries
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
-// service
+// services
 import {
   postConcertComment,
   postConcertLike,
@@ -14,9 +14,8 @@ import {
   getConcertOne,
 } from "src/service/concertService";
 
-// middleware
+// middlewares
 import auth from "src/middleware/auth";
-
 // DTO
 import { IConcertPostDTO } from "src/interfaces/IConcert";
 
