@@ -384,18 +384,10 @@ export const deleteMyComments = async (body) => {
   const { userID, commentID } = body;
 
   //1. 요청 바디가 부족할 경우
-  if (commentID) {
+  if (!commentID || commentID.length === 0) {
     return -1;
   }
 
-  // for (let i in commentID) {
-  //   await Comment.findOneAndUpdate(
-  //     { _id: i, userID: userID.id },
-  //     {
-  //       isDeleted: true,
-  //     }
-  //   );
-  // }
   commentID.map(async (cmtID) => {
     await Comment.findOneAndUpdate(
       {
@@ -404,6 +396,5 @@ export const deleteMyComments = async (body) => {
       },
       { isDeleted: true }
     );
-    await 
   });
 };

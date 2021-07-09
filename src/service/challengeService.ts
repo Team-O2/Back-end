@@ -52,12 +52,12 @@ export const getChallengeAll = async (offset) => {
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
-        options: { isDeleted: false, sort: { _id: -1 } },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
-            options: { isDeleted: false, sort: { _id: -1 } },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
@@ -100,12 +100,12 @@ export const getChallengeSearch = async (
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
-        options: { isDeleted: false, sort: { _id: -1 } },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
-            options: { isDeleted: false, sort: { _id: -1 } },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
@@ -125,12 +125,12 @@ export const getChallengeSearch = async (
       .populate({
         path: "comments",
         select: { userID: 1, text: 1 },
-        options: { isDeleted: false, sort: { _id: -1 } },
+        options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
             select: { userID: 1, text: 1 },
-            options: { isDeleted: false, sort: { _id: -1 } },
+            options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
               select: ["nickname"],
