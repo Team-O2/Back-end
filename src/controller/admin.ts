@@ -13,14 +13,8 @@ import {
   postAdminChallenge,
   postAdminConcert,
 } from "src/service/adminService";
-// allow cors
-import cors from 'cors';
 
 const router = Router();
-
-router.use(cors({
-  credentials: true
-}))
 
 /**
  *  @관리자_페이지_조회
