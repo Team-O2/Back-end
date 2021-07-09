@@ -12,6 +12,7 @@ export interface IConcert {
   user: IUser;
   title: string;
   videoLink: string;
+  imgThumbnail: string;
   text: string;
   likes: Number;
   generation: Number;

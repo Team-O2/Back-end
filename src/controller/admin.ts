@@ -13,7 +13,7 @@ import { verify } from "src/library/jwt";
 import auth from "src/middleware/auth";
 
 // interfaces
-import { IAdminDTO, IAdmin } from "src/interfaces/IAdmin";
+import { IAdmin } from "src/interfaces/IAdmin";
 import { IConcertAdminDTO } from "src/interfaces/IConcert";
 
 //service
@@ -57,7 +57,7 @@ router.get<unknown, unknown, IAdmin>(
  *  @route Post admin/challenge
  *  @access Public
  */
-router.post<unknown, unknown, IAdminDTO>(
+router.post<unknown, unknown, IAdmin>(
   "/challenge",
   auth,
   async (req: Request, res: Response) => {
@@ -80,6 +80,45 @@ router.post<unknown, unknown, IAdminDTO>(
       // 관리자 챌린지 등록 성공
       else {
         response(res, returnCode.OK, "관리자 챌린지 등록 성공");
+      }
+    } catch (err) {
+      console.error(err.message);
+      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+  }
+);
+
+/**
+ *  @관리자_오픈콘서트_쉐어투게더_게시
+ *  @route Post admin/concert
+ *  @access Public
+ */
+
+router.post<unknown, unknown, IConcertAdminDTO>(
+  "/concert",
+  auth,
+  async (req: Request, res: Response) => {
+    try {
+      const data = await postAdminConcert(req.body.userID.id, req.body);
+
+      // 요청 바디가 부족할 경우
+      if (data === -1) {
+        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+      }
+      // 유저 id가 관리자가 아님
+      else if (data === -2) {
+        response(res, returnCode.BAD_REQUEST, "관리자 아이디가 아닙니다");
+      } else if (data === -3) {
+        response(
+          res,
+          returnCode.BAD_REQUEST,
+          "해당 날짜에 진행되는 기수가 없음"
+        );
+      }
+
+      // 관리자 챌린지 등록 성공
+      else {
+        response(res, returnCode.OK, "관리자 오투콘서트 등록 성공");
       }
     } catch (err) {
       console.error(err.message);

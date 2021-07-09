@@ -10,7 +10,7 @@ const BadgeSchema = new mongoose.Schema({
   welcomeBadge: {
     type: Boolean,
     required: true,
-    default: false,
+    default: true,
   },
   firstJoinBadge: {
     type: Boolean,
