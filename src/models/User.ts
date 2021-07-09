@@ -44,6 +44,11 @@ const UserSchema = new mongoose.Schema({
     required: false,
     default: 0,
   },
+  commentCNT: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   likes: {
     // 좋아요한 게시글
     challengeLikes: {

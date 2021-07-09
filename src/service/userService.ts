@@ -389,12 +389,42 @@ export const deleteMyComments = async (body) => {
   }
 
   commentID.map(async (cmtID) => {
+    // 삭제하려는 댓글 isDelete = true로 변경
     await Comment.findOneAndUpdate(
       {
         _id: cmtID,
         userID: userID.id,
       },
       { isDeleted: true }
+    );
+    // 게시글 댓글 수 1 감소
+    let comment = await Comment.findById(cmtID);
+    if (comment.postModel === "Challenge") {
+      // challenge
+      await Challenge.findOneAndUpdate(
+        {
+          _id: comment.post,
+        },
+        { $inc: { commentNum: -1 } }
+      );
+    } else {
+      // concert
+      await Concert.findOneAndUpdate(
+        {
+          _id: comment.post,
+        },
+        { $inc: { commentNum: -1 } }
+      );
+    }
+    // 유저 댓글 수 1 감소
+    // 과연 필요할까??
+    await User.findOneAndUpdate(
+      {
+        _id: userID.id,
+      },
+      {
+        $inc: { commentCNT: -1 },
+      }
     );
   });
 };

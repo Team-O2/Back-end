@@ -14,6 +14,7 @@ export interface IUser {
   challengeCNT: number;
   badge: IBadge;
   badgeCNT: number;
+  commentCNT: number;
   likes: ILikes;
   scraps: IScraps;
   userType: number;

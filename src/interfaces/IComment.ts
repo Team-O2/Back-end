@@ -5,7 +5,7 @@ export interface IComment {
   post: mongoose.Schema.Types.ObjectId;
   userID: mongoose.Schema.Types.ObjectId;
   parentComment: mongoose.Schema.Types.ObjectId;
-  childrenComment: [mongoose.Schema.Types.ObjectId];
+  childrenComment: (typeof mongoose.Schema.Types.ObjectId)[];
   text: string;
   isDeleted: Boolean;
   createdAt: Date;
@@ -17,7 +17,7 @@ export interface ICommentDTO {
   post: mongoose.Schema.Types.ObjectId;
   userID: mongoose.Schema.Types.ObjectId;
   parentComment: mongoose.Schema.Types.ObjectId;
-  childrenComment: [mongoose.Schema.Types.ObjectId];
+  childrenComment: (typeof mongoose.Schema.Types.ObjectId)[];
   text: string;
   isDeleted: Boolean;
   createdAt: Date;

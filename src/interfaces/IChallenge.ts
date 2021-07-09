@@ -13,10 +13,12 @@ export interface IChallenge {
   learn: string;
   bad: string;
   likes: Number;
+  commentNum: Number;
+  scrapNum: Number;
   generation: Number;
   interest: [string];
   isDeleted: Boolean;
-  comments: [mongoose.Schema.Types.ObjectId];
+  comments: (typeof mongoose.Schema.Types.ObjectId)[];
 }
 
 export interface IChallengeDTO {
@@ -30,7 +32,7 @@ export interface IChallengeDTO {
   generation: Number;
   interest: [string];
   isDeleted: Boolean;
-  comments: [mongoose.Schema.Types.ObjectId];
+  comments: (typeof mongoose.Schema.Types.ObjectId)[];
 }
 
 export interface IChallengePostDTO {
