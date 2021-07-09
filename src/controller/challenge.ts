@@ -211,7 +211,7 @@ router.post("/like/:id", auth, async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.delete("/like/:id", async (req: Request, res: Response) => {
+router.delete("/like/:id", auth, async (req: Request, res: Response) => {
   try {
     const data = await deleteChallengeLike(req.params.id, req.body.userID.id);
 
@@ -236,7 +236,7 @@ router.delete("/like/:id", async (req: Request, res: Response) => {
  *  @route Post /challenge/scrap/:challengeID
  *  @access Private
  */
-router.post("/scrap/:id", async (req: Request, res: Response) => {
+router.post("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
     const data = await postChallengeScrap(req.params.id, req.body.userID.id);
 
@@ -261,7 +261,7 @@ router.post("/scrap/:id", async (req: Request, res: Response) => {
  *  @route Delete /challenge/scrap/:challengeID
  *  @access Private
  */
-router.delete("/scrap/:id", async (req: Request, res: Response) => {
+router.delete("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
     const data = await deleteChallengeScrap(req.params.id, req.body.userID.id);
 
