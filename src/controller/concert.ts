@@ -30,7 +30,7 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getConcertAll();
+    const data = await getConcertAll(req.query.offset);
 
     // 회고 전체 불러오기 성공
     const concert = data;
@@ -49,7 +49,11 @@ router.get("/", auth, async (req: Request, res: Response) => {
 
 router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getConcertSearch(req.query.tag, req.query.keyword);
+    const data = await getConcertSearch(
+      req.query.tag,
+      req.query.keyword,
+      req.query.offset
+    );
 
     // 검색 불러오기 성공
     const concertSearch = data;
