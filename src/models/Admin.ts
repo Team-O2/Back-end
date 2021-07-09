@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IAdmin } from "src/interfaces/IAdmin";
+import { IAdmin } from "../interfaces/IAdmin";
 
 const AdminSchema = new mongoose.Schema({
   title: {
@@ -42,6 +42,11 @@ const AdminSchema = new mongoose.Schema({
     type: Number,
     required: true,
     default: 0,
+  },
+  isNotice: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 
