@@ -15,14 +15,8 @@ import {
 } from "src/service/concertService";
 // DTO
 import { IConcertPostDTO } from "src/interfaces/IConcert";
-// allow cors
-import cors from 'cors';
 
 const router = Router();
-
-router.use(cors({
-  credentials: true
-}))
 
 /**
  *  @오투콘서트_전체_가져오기
