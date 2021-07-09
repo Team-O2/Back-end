@@ -7,7 +7,7 @@
     "dev": "ts-node src",
     "build": "tsc -p tsconfig.json",
     "test": "nodemon",
-    "start": "pm2 start ts-node -- --type-check -r tsconfig-paths/register dist/index.js"
+    "start": "pm2 start ts-node -- --type-check -r tsconfig-paths/register index.ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
