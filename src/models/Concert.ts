@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IConcert } from "src/interfaces/IConcert";
+import { IConcert } from "../interfaces/IConcert";
 const validate = require("mongoose-validator");
 
 const textValidator = [
@@ -31,7 +31,11 @@ const ConcertSchema = new mongoose.Schema({
   videoLink: {
     // 게시물 안에 들어갈 동영상 링크
     type: String,
-    required: true,
+    required: false,
+  },
+  imgThumbnail: {
+    type: String,
+    required: false,
   },
   text: {
     // 게시물 안에 들어갈 작성글
@@ -40,6 +44,16 @@ const ConcertSchema = new mongoose.Schema({
   likes: {
     type: Number,
     required: true,
+    default: 0,
+  },
+  commentNum: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  scrapNum: {
+    type: Number,
+    required: false,
     default: 0,
   },
   generation: {
