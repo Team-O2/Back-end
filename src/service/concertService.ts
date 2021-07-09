@@ -247,6 +247,14 @@ export const postConcertComment = async (concertID, userID, body) => {
     await concert.save();
   }
 
+  // 게시글 댓글 수 1 증가
+  await Concert.findOneAndUpdate(
+    { _id: concertID },
+    {
+      $inc: { commentNum: 1 },
+    }
+  );
+
   const user = await User.findById(userID);
 
   return {
@@ -351,6 +359,14 @@ export const postConcertScrap = async (concertID, userID) => {
     return -2;
   }
 
+  // 게시글 스크랩 수 1 증가
+  await Concert.findOneAndUpdate(
+    { _id: concertID },
+    {
+      $inc: { scrapNum: 1 },
+    }
+  );
+
   user.scraps.concertScraps.push(concertID);
   await user.save();
 
@@ -390,6 +406,14 @@ export const deleteConcertScrap = async (concertID, userID) => {
   if (!user.scraps.concertScraps.includes(concertID)) {
     return -2;
   }
+
+  // 게시글 스크랩 수 1 감소
+  await Concert.findOneAndUpdate(
+    { _id: concertID },
+    {
+      $inc: { scrapNum: -1 },
+    }
+  );
 
   // 유저 likes 필드에 챌린지 id 삭제
   const idx = user.scraps.concertScraps.indexOf(concertID);

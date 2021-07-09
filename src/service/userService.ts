@@ -389,6 +389,7 @@ export const deleteMyComments = async (body) => {
   }
 
   commentID.map(async (cmtID) => {
+    // 삭제하려는 댓글 isDelete = true로 변경
     await Comment.findOneAndUpdate(
       {
         _id: cmtID,
@@ -396,5 +397,23 @@ export const deleteMyComments = async (body) => {
       },
       { isDeleted: true }
     );
+    // 게시글 댓글 수 1 감소
+    let comment = await Comment.findById(cmtID);
+    if (comment.postModel === "Challenge") {
+      await Challenge.findOneAndUpdate(
+        {
+          _id: comment.post,
+        },
+        { $inc: { commentNum: -1 } }
+      );
+    }
+    else{
+      await Concert.findOneAndUpdate(
+        {
+          _id: comment.post,
+        },
+        { $inc: { commentNum: -1 } }
+      );
+    }
   });
 };

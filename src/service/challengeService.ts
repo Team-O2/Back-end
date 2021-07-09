@@ -325,6 +325,14 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     await challenge.save();
   }
 
+  // 게시글 댓글 수 1 증가
+  await Challenge.findOneAndUpdate(
+    { _id: challengeID },
+    {
+      $inc: { commentNum: 1 },
+    }
+  );
+
   const user = await User.findById(userID);
 
   return {
@@ -430,6 +438,14 @@ export const postChallengeScrap = async (challengeID, userID) => {
   user.scraps.challengeScraps.push(challengeID);
   await user.save();
 
+  // 게시글 스크랩 수 1 증가
+  await Challenge.findOneAndUpdate(
+    { _id: challengeID },
+    {
+      $inc: { scrapNum: 1 },
+    }
+  );
+
   return { _id: challengeID };
 };
 
@@ -457,6 +473,14 @@ export const deleteChallengeScrap = async (challengeID, userID) => {
   const idx = user.scraps.challengeScraps.indexOf(challengeID);
   user.scraps.challengeScraps.splice(idx, 1);
   await user.save();
+
+  // 게시글 스크랩 수 1 감소
+  await Challenge.findOneAndUpdate(
+    { _id: challengeID },
+    {
+      $inc: { scrapNum: -1 },
+    }
+  );
 
   return { _id: challengeID };
 };

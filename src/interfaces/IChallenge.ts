@@ -13,6 +13,8 @@ export interface IChallenge {
   learn: string;
   bad: string;
   likes: Number;
+  commentNum: Number;
+  scrapNum: Number;
   generation: Number;
   interest: [string];
   isDeleted: Boolean;

@@ -44,6 +44,16 @@ const ChallengeSchema = new mongoose.Schema({
     required: false,
     default: 0,
   },
+  commentNum: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  scrapNum: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
   generation: {
     type: Number,
     default: 0,
