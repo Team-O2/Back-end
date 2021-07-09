@@ -13,6 +13,10 @@ import {
   deleteConcertScrap,
   getConcertOne,
 } from "src/service/concertService";
+
+// middleware
+import auth from "src/middleware/auth";
+
 // DTO
 import { IConcertPostDTO } from "src/interfaces/IConcert";
 
@@ -24,24 +28,8 @@ const router = Router();
  *  @access Private
  */
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
     const data = await getConcertAll();
 
     // 회고 전체 불러오기 성공
@@ -53,32 +41,14 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-
 /**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  *  @access Private
  */
 
- router.get("/search", async (req: Request, res: Response) => {
+router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-    
     const data = await getConcertSearch(req.query.tag, req.query.keyword);
 
     // 검색 불러오기 성공
@@ -90,29 +60,12 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-
 /**
  *  @오투콘서트_Detail
  *  @route Get /concert/:concertID
  */
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
     const data = await getConcertOne(req.params.id);
 
     const concert = data;
@@ -128,34 +81,19 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-
 /**
  *  @콘서트_댓글_등록
  *  @route Post /concert/comment/:concertID
  *  @access Private
  */
 
-router.post("/comment/:id", async (req: Request, res: Response) => {
+router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await postConcertComment(req.params.id, userID, req.body);
+    const data = await postConcertComment(
+      req.params.id,
+      req.body.userID.id,
+      req.body
+    );
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -184,27 +122,9 @@ router.post("/comment/:id", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.post("/like/:id", async (req: Request, res: Response) => {
+router.post("/like/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await postConcertLike(req.params.id, userID);
+    const data = await postConcertLike(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -229,27 +149,9 @@ router.post("/like/:id", async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.delete("/like/:id", async (req: Request, res: Response) => {
+router.delete("/like/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-
-    const userID = decoded.user.id;
-    const data = await deleteConcertLike(req.params.id, userID);
+    const data = await deleteConcertLike(req.params.id, req.body.userID.id);
 
     // 콘서트 id가 잘못된 경우
     if (data === -1) {
@@ -271,26 +173,9 @@ router.delete("/like/:id", async (req: Request, res: Response) => {
  *  @route Post /concert/scrap/:concertID
  *  @access Private
  */
-router.post("/scrap/:id", async (req: Request, res: Response) => {
+router.post("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-    const userID = decoded.user.id;
-    const data = await postConcertScrap(req.params.id, userID);
+    const data = await postConcertScrap(req.params.id, req.body.userID.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -313,25 +198,9 @@ router.post("/scrap/:id", async (req: Request, res: Response) => {
  *  @route Delete /concert/scrap/:concertID
  *  @access Private
  */
-router.delete("/scrap/:id", async (req: Request, res: Response) => {
+router.delete("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
-    // 토큰 검사
-    if (req.headers.authorization == null) {
-      response(res, returnCode.BAD_REQUEST, "토큰 값이 요청되지 않았습니다");
-    }
-
-    //토큰
-    const token = req.headers.authorization;
-    const decoded = verify(token);
-
-    // 토큰 확인
-    if (decoded === -3) {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    }
-    if (decoded === -2) {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
-    }
-    const data = await deleteConcertScrap(req.params.id, decoded.user.id);
+    const data = await deleteConcertScrap(req.params.id, req.body.userID.id);
 
     // 콘서트 id가 잘못된 경우
     if (data === -1) {
