@@ -20,6 +20,9 @@ app.use("/concert", require("src/controller/concert"));
 app.use("/user", require("src/controller/user"));
 app.use("/notice", require("src/controller/notice"));
 
+// scheduler
+import { challengeOpen } from "src/service/schedulerService";
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -29,6 +32,9 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error");
+
+  // scheduler
+  challengeOpen;
 });
 
 const port = 5000;
