@@ -16,7 +16,11 @@ export const getConcertAll = async (offset) => {
   // 댓글, 답글 최신순으로 정렬
   let concerts;
   if (offset) {
-    concerts = await Concert.find({ isDeleted: false, _id: { $gt: offset } })
+    concerts = await Concert.find({
+      isDeleted: false,
+      isNotice: false,
+      _id: { $gt: offset },
+    })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
@@ -41,7 +45,7 @@ export const getConcertAll = async (offset) => {
         ],
       });
   } else {
-    concerts = await Concert.find({ isDeleted: false })
+    concerts = await Concert.find({ isDeleted: false, isNotice: false })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
@@ -67,7 +71,12 @@ export const getConcertAll = async (offset) => {
       });
   }
 
-  return concerts;
+  let totalConcertNum = await Concert.find({
+    isDeleted: false,
+    isNotice: false,
+  }).count();
+
+  return { concerts, totalConcertNum };
 };
 
 /**
@@ -114,7 +123,11 @@ export const getConcertSearch = async (tag, keyword, offset) => {
   // 댓글, 답글 populate
   let concerts;
   if (offset) {
-    concerts = await Concert.find({ isDeleted: false, _id: { $gt: offset } })
+    concerts = await Concert.find({
+      isDeleted: false,
+      isNotice: false,
+      _id: { $gt: offset },
+    })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
       .populate("user", ["nickname"])
