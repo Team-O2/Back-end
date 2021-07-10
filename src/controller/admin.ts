@@ -28,7 +28,7 @@ router.get<unknown, unknown, IAdmin>(
   auth,
   async (req: Request, res: Response) => {
     try {
-      const data = await postAdminList(req.body.userID.id);
+      const data = await postAdminList(req.body.userID.id, req.query.offset);
 
       // 유저 id가 관리자가 아님
       if (data === -2) {

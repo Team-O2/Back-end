@@ -94,7 +94,7 @@ export const postRegister = async (userID, body) => {
  *  @access private
  */
 
-export const getMypageConcert = async (userID) => {
+export const getMypageConcert = async (userID, offset) => {
   const userScraps = await (
     await User.findOne({ _id: userID })
   ).scraps.concertScraps;
@@ -112,11 +112,13 @@ export const getMypageConcert = async (userID) => {
         .populate("user", ["nickname"])
         .populate({
           path: "comments",
-          select: { userID: 1, text: 1 },
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
           populate: [
             {
               path: "childrenComment",
-              select: { userID: 1, text: 1 },
+              select: { userID: 1, text: 1, isDeleted: 1 },
+              options: { sort: { _id: -1 } },
               populate: {
                 path: "userID",
                 select: ["nickname"],
@@ -135,7 +137,18 @@ export const getMypageConcert = async (userID) => {
     return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
   });
 
-  return mypageConcert;
+  var mypageConcertScrap = [];
+  for (
+    var i = Number(offset);
+    i < Number(offset) + Number(process.env.COMMENT_SIZE);
+    i++
+  ) {
+    mypageConcertScrap.push(mypageConcert[i]);
+  }
+  return {
+    mypageConcertScrap,
+    totalScrapNum: mypageConcert.length,
+  };
 };
 
 /**
@@ -162,11 +175,13 @@ export const getMypageChallenge = async (userID) => {
         .populate("user", ["nickname"])
         .populate({
           path: "comments",
-          select: { userID: 1, text: 1 },
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
           populate: [
             {
               path: "childrenComment",
-              select: { userID: 1, text: 1 },
+              select: { userID: 1, text: 1, isDeleted: 1 },
+              options: { sort: { _id: -1 } },
               populate: {
                 path: "userID",
                 select: ["nickname"],
@@ -306,12 +321,12 @@ export const getMyWritings = async (userID, offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1 },
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1 },
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
@@ -331,12 +346,12 @@ export const getMyWritings = async (userID, offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1 },
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1 },
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",

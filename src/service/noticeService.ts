@@ -71,7 +71,7 @@ export const getNoticeAll = async (offset) => {
       });
   }
 
-  return notices;
+  return { notices, totalNoticeNum: notices.length };
 };
 
 /**
