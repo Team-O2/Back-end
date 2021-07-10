@@ -82,17 +82,29 @@ router.post<unknown, unknown, IAdmin>(
 );
 
 /**
- *  @관리자_오픈콘서트_쉐어투게더_게시
+ *  @관리자_오픈콘서트_등록
  *  @route Post admin/concert
  *  @access private
  */
 
 router.post<unknown, unknown, IConcert>(
   "/concert",
+  upload.fields([
+    { name: "videoLink", maxCount: 1 },
+    { name: "imgThumbnail", maxCount: 1 },
+  ]),
   auth,
   async (req: Request, res: Response) => {
     try {
-      const data = await postAdminConcert(req.body.userID.id, req.body);
+      const url = {
+        videoLink: (req as any).files.videoLink
+          ? (req as any).files.videoLink[0].location
+          : "",
+        imgThumbnail: (req as any).files.imgThumbnail
+          ? (req as any).files.imgThumbnail[0].location
+          : "",
+      };
+      const data = await postAdminConcert(req.body.userID.id, req.body, url);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -136,8 +148,12 @@ router.post<unknown, unknown, IConcert>(
   async (req: Request, res: Response) => {
     try {
       const url = {
-        videoLink: (req as any).files.videoLink[0].location,
-        imgThumbnail: (req as any).files.imgThumbnail[0].location,
+        videoLink: (req as any).files.videoLink
+          ? (req as any).files.videoLink[0].location
+          : "",
+        imgThumbnail: (req as any).files.imgThumbnail
+          ? (req as any).files.imgThumbnail[0].location
+          : "",
       };
 
       const data = await postAdminNotice(

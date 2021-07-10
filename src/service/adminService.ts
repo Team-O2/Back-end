@@ -157,18 +157,13 @@ export const postAdminChallenge = async (userID, body) => {
  *      3. 해당 날짜에 진행되는 기수가 없음
  */
 
-export const postAdminConcert = async (userID, body) => {
-  const { title, videoLink, text, interest, hashtag, authorNickname } = body;
+export const postAdminConcert = async (userID, body, url) => {
+  const { title, text, authorNickname } = body;
+  let interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  let hashtag = body.hashtag.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
 
   // 1. 요청 바디 부족
-  if (
-    !title ||
-    !videoLink ||
-    !text ||
-    !interest ||
-    !hashtag ||
-    !authorNickname
-  ) {
+  if (!title || !text || !interest || !hashtag || !authorNickname) {
     return -1;
   }
 
@@ -198,11 +193,13 @@ export const postAdminConcert = async (userID, body) => {
   if (!gen) {
     return -3;
   }
+
   const concert = new Concert({
     title,
     user: userID,
     createdAt: dateNow,
-    videoLink,
+    videoLink: url.videoLink,
+    imgThumbnail: url.imgThumbnail,
     text,
     generation: gen.generation,
     interest,
