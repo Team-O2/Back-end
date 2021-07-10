@@ -2,8 +2,6 @@
 import Challenge from "src/models/Challenge";
 import User from "src/models/User";
 import Comment from "src/models/Comment";
-// DTO
-import { IChallengePostDTO } from "src/interfaces/IChallenge";
 import Badge from "src/models/Badge";
 
 /**
@@ -72,6 +70,47 @@ export const getChallengeAll = async (offset) => {
       });
   }
   return challenges;
+};
+
+/**
+ *  @챌린지_Detail
+ *  @route Get /challenge/:challengeID
+ */
+export const getChallengeOne = async (challengeID) => {
+  // 댓글, 답글 populate
+  // isDelete = true 인 애들만 가져오기
+  const challenge = await Challenge.find(
+    { _id: challengeID },
+    { isDeleted: false }
+  )
+    .populate("user", ["nickname"])
+    .populate({
+      path: "comments",
+      select: { userID: 1, text: 1, isDeleted: 1 },
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
+          populate: {
+            path: "userID",
+            select: ["nickname"],
+          },
+        },
+        {
+          path: "userID",
+          select: ["nickname"],
+        },
+      ],
+    });
+
+  // challenge ID가 잘못되었을 때
+  if (!challenge) {
+    return -1;
+  }
+
+  return challenge;
 };
 
 /**

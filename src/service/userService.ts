@@ -357,12 +357,19 @@ export const getMyWritings = async (userID, offset) => {
  *  @마이페이지_내가_쓴_댓글
  *  @route Get user/mypage/comment
  */
-export const getMyComments = async (userID) => {
+export const getMyComments = async (userID, offset) => {
   const comments = await Comment.find({
     isDeleted: false,
     userID,
-  }).sort({ _id: -1 });
-  return comments;
+    _id: { $gt: offset },
+  })
+    .limit(Number(process.env.COMMENT_SIZE))
+    .sort({ _id: -1 });
+
+  return {
+    comments,
+    commentNum: comments.length,
+  };
 };
 
 /**
