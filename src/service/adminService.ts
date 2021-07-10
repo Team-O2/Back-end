@@ -36,7 +36,7 @@ export const postAdminList = async (userID) => {
     admins.map(async function (admin) {
       let totalNum = await Challenge.aggregate([
         {
-          $match: { generation: admin.cardiNum },
+          $match: { generation: admin.generation },
         },
         {
           $group: {
@@ -56,13 +56,13 @@ export const postAdminList = async (userID) => {
         registerEndDT: admin.registerEndDT,
         challengeStartDT: admin.challengeStartDT,
         challengeEndDT: admin.challengeEndDT,
-        cardiNum: admin.cardiNum,
+        generation: admin.generation,
         createdDT: admin.createdDT,
         // 신청 인원
         applyNum: admin.applyNum,
         // 참여 인원
         participants,
-        postNum: await Challenge.find({ generation: admin.cardiNum }).count(),
+        postNum: await Challenge.find({ generation: admin.generation }).count(),
         img: admin.img,
       };
       return admintemp;
@@ -119,14 +119,14 @@ export const postAdminChallenge = async (userID, body) => {
   */
 
   //기수 증가
-  const changeCardiNum = (await Admin.find().count()) + 1;
+  const changeGen = (await Admin.find().count()) + 1;
   const admin = new Admin({
     title,
     registerStartDT: stringToDate(registerStartDT),
     registerEndDT: stringToDate(registerEndDT),
     challengeStartDT: stringToDate(challengeStartDT),
     challengeEndDT: stringToDate(challengeEndDT),
-    cardiNum: changeCardiNum,
+    generation: changeGen,
     limitNum,
     img,
     createdAt: new Date(),
@@ -204,7 +204,7 @@ export const postAdminConcert = async (userID, body) => {
     createdAt: dateNow,
     videoLink,
     text,
-    generation: gen.cardiNum,
+    generation: gen.generation,
     interest,
     hashtag,
     authorNickname,

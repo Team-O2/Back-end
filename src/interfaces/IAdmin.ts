@@ -4,7 +4,7 @@ export interface IAdmin {
   registerEndDT: Date;
   challengeStartDT: Date;
   challengeEndDT: Date;
-  cardiNum: Number;
+  generation: Number;
   limitNum: Number;
   img: String;
   createdDT: Date;

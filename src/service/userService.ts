@@ -224,7 +224,7 @@ export const getMypageInfo = async (userID) => {
     { generation: user.generation }
   ).count();
 
-  const admin = await Admin.findOne({ cardiNum: user.generation });
+  const admin = await Admin.findOne({ generation: user.generation });
   // ischallenge 가 false 이면서 admin === null 이면 현재기수 참여 x
   if (!user.isRegist && !admin) {
     return {
