@@ -2,6 +2,11 @@ import mongoose, { isValidObjectId } from "mongoose";
 import { IUser } from "src/interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
+  createDT: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
   email: {
     type: String,
     unique: true,
@@ -80,8 +85,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  ischallenge: {
-    //챌린지 참여 여부
+  isChallenge: {
+    // 챌린지 참여 여부
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  isRegist: {
+    // 챌린지 신청 여부
     type: Boolean,
     required: true,
     default: false,
