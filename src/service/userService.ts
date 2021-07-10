@@ -74,15 +74,6 @@ export const postRegister = async (userID, body) => {
     $set: { challengeCNT: challengeCNT },
   });
 
-  // 현재 참여 기수(generation)를 확인하여 삽입;
-  const gen = await Admin.findOne({
-    $and: [
-      { challengeStartDT: { $lte: dateNow } },
-      { challengeEndDT: { $gte: dateNow } },
-    ],
-  });
-  await user.update({ $set: { generation: gen.cardiNum } });
-
   // 첫 챌린지 참여 시 뱃지 부여
   const badge = await Badge.findOne(
     { user: userID },
