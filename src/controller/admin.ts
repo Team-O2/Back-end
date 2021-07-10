@@ -7,7 +7,7 @@ import auth from "src/middleware/auth";
 const upload = require("src/modules/upload");
 // interfaces
 import { IAdmin } from "src/interfaces/IAdmin";
-import { IConcertAdminDTO, IConcert } from "src/interfaces/IConcert";
+import { IConcert } from "src/interfaces/IConcert";
 //services
 import {
   postAdminList,
@@ -87,7 +87,7 @@ router.post<unknown, unknown, IAdmin>(
  *  @access private
  */
 
-router.post<unknown, unknown, IConcertAdminDTO>(
+router.post<unknown, unknown, IConcert>(
   "/concert",
   auth,
   async (req: Request, res: Response) => {

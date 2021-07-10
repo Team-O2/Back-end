@@ -167,7 +167,7 @@ export const postAdminConcert = async (userID, body) => {
     !text ||
     !interest ||
     !hashtag ||
-    authorNickname
+    !authorNickname
   ) {
     return -1;
   }
