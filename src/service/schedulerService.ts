@@ -53,7 +53,7 @@ export const challengeOpen = schedule.scheduleJob("0 0 0 * * *", async () => {
 
       // 3. 모든 유저의 기수를 새로 열리는 챌린지에 대한 기수로 변경
       await user.update({
-        generation: newChallenge.cardiNum,
+        generation: newChallenge.generation,
       });
 
       // 4. 가입한지 3달이 지난 유저에게 배지 부여

@@ -22,7 +22,7 @@ const AdminSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  cardiNum: {
+  generation: {
     type: Number,
     required: true,
   },
