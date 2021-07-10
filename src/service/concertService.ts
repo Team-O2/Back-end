@@ -22,12 +22,12 @@ export const getConcertAll = async (offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: ["userID, text"],
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: ["userID", "text"],
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
@@ -47,12 +47,12 @@ export const getConcertAll = async (offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: ["userID, text"],
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: ["userID", "text"],
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
@@ -81,11 +81,13 @@ export const getConcertOne = async (concertID) => {
     .populate("user", ["nickname"])
     .populate({
       path: "comments",
-      select: { userID: 1, text: 1 },
+      select: { userID: 1, text: 1, isDeleted: 1 },
+      options: { sort: { _id: -1 } },
       populate: [
         {
           path: "childrenComment",
-          select: { userID: 1, text: 1 },
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
           populate: {
             path: "userID",
             select: ["nickname"],
@@ -118,12 +120,12 @@ export const getConcertSearch = async (tag, keyword, offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: ["userID, text"],
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: ["userID", "text"],
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
@@ -143,12 +145,12 @@ export const getConcertSearch = async (tag, keyword, offset) => {
       .populate("user", ["nickname"])
       .populate({
         path: "comments",
-        select: ["userID, text"],
+        select: { userID: 1, text: 1, isDeleted: 1 },
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: ["userID", "text"],
+            select: { userID: 1, text: 1, isDeleted: 1 },
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
