@@ -5,6 +5,7 @@ import { IBadge } from "./IBadge";
 
 export interface IUser {
   _id: mongoose.Schema.Types.ObjectId;
+  createDT: Date;
   email: string;
   password: string;
   nickname: string;
@@ -19,7 +20,8 @@ export interface IUser {
   scraps: IScraps;
   userType: number;
   img: string;
-  ischallenge: Boolean;
+  isChallenge: Boolean;
+  isRegist: Boolean;
   generation: Number;
   emailCode: string;
 }
