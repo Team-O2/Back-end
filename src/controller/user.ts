@@ -69,7 +69,7 @@ router.post("/register", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageConcert(req.body.userID.id);
+    const data = await getMypageConcert(req.body.userID.id, req.query.offset);
 
     // 1. no content
     if (data == -1) {
