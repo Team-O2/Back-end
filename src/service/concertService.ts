@@ -3,8 +3,6 @@ import Concert from "src/models/Concert";
 import User from "src/models/User";
 import Comment from "src/models/Comment";
 import Badge from "src/models/Badge";
-// DTO
-import { IConcertPostDTO } from "src/interfaces/IConcert";
 
 /**
  *  @오투콘서트_전체_가져오기
