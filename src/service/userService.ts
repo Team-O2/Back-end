@@ -45,7 +45,7 @@ export const postRegister = async (userID, body) => {
   }
 
   // 4. 이미 신청이 완료된 사용자
-  if (user.ischallenge) {
+  if (user.isRegist) {
     return -4;
   }
 
@@ -226,7 +226,7 @@ export const getMypageInfo = async (userID) => {
 
   const admin = await Admin.findOne({ cardiNum: user.generation });
   // ischallenge 가 false 이면서 admin === null 이면 현재기수 참여 x
-  if (!user.ischallenge && !admin) {
+  if (!user.isRegist && !admin) {
     return {
       nickname: user.nickname,
       runMyselfAchieve: [],
