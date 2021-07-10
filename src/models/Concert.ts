@@ -86,6 +86,10 @@ const ConcertSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
+  authorNickname: {
+    type: String,
+    required: false,
+  },
 });
 
 export default mongoose.model<IConcert & mongoose.Document>(
