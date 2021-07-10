@@ -37,7 +37,7 @@ app.use(function (err, req, res, next) {
   challengeOpen;
 });
 
-const port = 5000;
+const port = process.env.PORT;
 app
   .listen(port, () => {
     console.log(
