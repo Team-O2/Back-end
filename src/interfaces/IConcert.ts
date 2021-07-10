@@ -19,47 +19,7 @@ export interface IConcert {
   interest: [string];
   hashtag: [string];
   isDeleted: Boolean;
-  comments: (typeof mongoose.Schema.Types.ObjectId)[];
+  comments: typeof mongoose.Schema.Types.ObjectId[];
   isNotice: Boolean;
-}
-
-export interface IConcertDTO {
-  createdAt: Date;
-  updatedAt: Date;
-  user: IUser;
-  title: string;
-  videoLink: string;
-  text: string;
-  likes: Number;
-  generation: Number;
-  interest: [string];
-  hashtag: [string];
-  isDeleted: Boolean;
-  comments: (typeof mongoose.Schema.Types.ObjectId)[];
-  isNotice: Boolean;
-}
-
-export interface IConcertPostDTO {
-  _id: mongoose.Schema.Types.ObjectId;
-  createdAt: Date;
-  upDatedAt: Date;
-  user: IUser;
-  title: string;
-  videoLink: string;
-  text: string;
-  likes: Number;
-  generation: Number;
-  interest: [string];
-  hashtag: [string];
-}
-
-export interface IConcertAdminDTO {
-  createdAt: Date;
-  updatedAt?: Date;
-  title: string;
-  videoLink: string;
-  text: string;
-  generation: Number;
-  interest: [string];
-  hashtag?: [string];
+  authorNickname: string;
 }

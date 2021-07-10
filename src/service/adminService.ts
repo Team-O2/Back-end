@@ -71,6 +71,7 @@ export const postAdminList = async (userID) => {
 
   return adminList;
 };
+
 /**
  *  @관리자_챌린지_등록
  *  @route Post admin/challenge
@@ -80,7 +81,6 @@ export const postAdminList = async (userID) => {
  *      2. 유저 id가 관리자가 아님
  *      3. 챌린지 기간이 잘못됨
  */
-
 export const postAdminChallenge = async (userID, body) => {
   const {
     title,
@@ -150,7 +150,7 @@ export const postAdminChallenge = async (userID, body) => {
 /**
  *  @관리자_오투콘서트_등록
  *  @route Post admin/concert
- *  @body createdAt, title, videoLink, text, interest, hashtag
+ *  @body createdAt, title, videoLink, text, interest, hashtag, authorNickname
  *  @error
  *      1. 요청 바디 부족
  *      2. 유저 id가 관리자가 아님
@@ -158,10 +158,17 @@ export const postAdminChallenge = async (userID, body) => {
  */
 
 export const postAdminConcert = async (userID, body) => {
-  const { title, videoLink, text, interest, hashtag } = body;
+  const { title, videoLink, text, interest, hashtag, authorNickname } = body;
 
   // 1. 요청 바디 부족
-  if (!title || !videoLink || !text || !interest || !hashtag) {
+  if (
+    !title ||
+    !videoLink ||
+    !text ||
+    !interest ||
+    !hashtag ||
+    authorNickname
+  ) {
     return -1;
   }
 
@@ -200,6 +207,7 @@ export const postAdminConcert = async (userID, body) => {
     generation: gen.cardiNum,
     interest,
     hashtag,
+    authorNickname,
   });
 
   await concert.save();

@@ -16,8 +16,6 @@ import {
 
 // middlewares
 import auth from "src/middleware/auth";
-// DTO
-import { IConcertPostDTO } from "src/interfaces/IConcert";
 
 const router = Router();
 
