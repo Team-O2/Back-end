@@ -20,6 +20,7 @@ export interface IConcert {
   hashtag: [string];
   isDeleted: Boolean;
   comments: (typeof mongoose.Schema.Types.ObjectId)[];
+  isNotice: Boolean;
 }
 
 export interface IConcertDTO {
@@ -35,6 +36,7 @@ export interface IConcertDTO {
   hashtag: [string];
   isDeleted: Boolean;
   comments: (typeof mongoose.Schema.Types.ObjectId)[];
+  isNotice: Boolean;
 }
 
 export interface IConcertPostDTO {

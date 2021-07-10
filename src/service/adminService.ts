@@ -158,10 +158,10 @@ export const postAdminChallenge = async (userID, body) => {
  */
 
 export const postAdminConcert = async (userID, body) => {
-  const { createdAt, title, videoLink, text, interest, hashtag } = body;
+  const { title, videoLink, text, interest, hashtag } = body;
 
   // 1. 요청 바디 부족
-  if (!createdAt || !title || !videoLink || !text || !interest || !hashtag) {
+  if (!title || !videoLink || !text || !interest || !hashtag) {
     return -1;
   }
 
@@ -194,7 +194,7 @@ export const postAdminConcert = async (userID, body) => {
   const concert = new Concert({
     title,
     user: userID,
-    createdAt: stringToDate(createdAt),
+    createdAt: dateNow,
     videoLink,
     text,
     generation: gen.cardiNum,
@@ -203,4 +203,43 @@ export const postAdminConcert = async (userID, body) => {
   });
 
   await concert.save();
+};
+
+/**
+ *  @관리자_공지사항_등록
+ *  @route Post admin/notice
+ *  @body
+ *  @error
+ *      1. 요청 바디 부족
+ *      2. 유저 id가 관리자가 아님
+ */
+
+export const postAdminNotice = async (userID, body, url) => {
+  const { title, text } = body;
+  let interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  let hashtag = body.hashtag.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+
+  // 1. 요청 바디 부족
+  if (!title || !text || !interest || !hashtag) {
+    return -1;
+  }
+
+  // 2. 유저 id가 관리자가 아님
+  let user = await User.findById(userID);
+  if (!(user.userType === 1)) {
+    return -2;
+  }
+
+  const notice = new Concert({
+    title,
+    interest,
+    user: userID,
+    isNotice: true,
+    videoLink: url.videoLink,
+    imgThumbnail: url.imgThumbnail,
+    text,
+    hashtag,
+  });
+
+  await notice.save();
 };

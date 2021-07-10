@@ -48,17 +48,18 @@ const ConcertSchema = new mongoose.Schema({
   },
   commentNum: {
     type: Number,
-    required: false,
+    required: true,
     default: 0,
   },
   scrapNum: {
     type: Number,
-    required: false,
+    required: true,
     default: 0,
   },
   generation: {
     type: Number,
-    required: true,
+    required: false,
+    default: 0,
   },
   interest: {
     // 관심분야
@@ -79,6 +80,11 @@ const ConcertSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Comment",
     default: [],
+  },
+  isNotice: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 
