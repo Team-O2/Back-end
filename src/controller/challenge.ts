@@ -17,8 +17,6 @@ import {
   postChallengeScrap,
   deleteChallengeScrap,
 } from "src/service/challengeService";
-// DTO
-import { IChallengePostDTO } from "src/interfaces/IChallenge";
 
 const router = Router();
 
@@ -35,6 +33,28 @@ router.get("/", auth, async (req: Request, res: Response) => {
     // 회고 전체 불러오기 성공
     const challengeAll = data;
     dataResponse(res, returnCode.OK, "회고 전체 불러오기 성공", challengeAll);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @챌린지_회고_가져오기
+ *  @route Get /challenge/:challengeID
+ *  @access Private
+ */
+
+ router.get("/:id", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getChallengeAll(req.params.id);
+
+    // challengeID가 이상할 때
+    if(data===-1){
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다")
+    }
+
+    dataResponse(res, returnCode.OK, "회고 불러오기 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
@@ -72,7 +92,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.post<unknown, unknown, IChallengePostDTO>(
+router.post(
   "/",
   auth,
   async (req: Request, res: Response) => {
