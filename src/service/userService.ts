@@ -363,7 +363,7 @@ export const getMyComments = async (userID, offset) => {
     userID,
     _id: { $gt: offset },
   })
-    .limit(Number(process.env.PAGE_SIZE))
+    .limit(Number(process.env.COMMENT_SIZE))
     .sort({ _id: -1 });
 
   return {
