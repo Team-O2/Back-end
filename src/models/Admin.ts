@@ -43,11 +43,6 @@ const AdminSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  isNotice: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
 });
 
 export default mongoose.model<IAdmin & mongoose.Document>("Admin", AdminSchema);

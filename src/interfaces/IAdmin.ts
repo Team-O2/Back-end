@@ -9,5 +9,4 @@ export interface IAdmin {
   img: String;
   createdDT: Date;
   applyNum: Number;
-  isNotice: Boolean;
 }
