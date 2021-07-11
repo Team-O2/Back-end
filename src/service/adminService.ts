@@ -189,35 +189,13 @@ export const postAdminConcert = async (userID, body, url) => {
     return -2;
   }
 
-  /*
-    var = new Date('2020-10-23');
-    var date2 = new Date('2020-10-22');
-
-    console.log(date1 > date2); // true
-  */
-
-  // 현재 기수(generation)를 확인하여 오투콘서트에 삽입
-  let dateNow = new Date();
-  const gen = await Admin.findOne({
-    $and: [
-      { challengeStartDT: { $lte: dateNow } },
-      { challengeEndDT: { $gte: dateNow } },
-    ],
-  });
-
-  // 3. 해당 날짜에 진행되는 기수가 없음
-  if (!gen) {
-    return -3;
-  }
-
   const concert = new Concert({
     title,
     user: userID,
-    createdAt: dateNow,
+    createdAt: new Date(),
     videoLink: url.videoLink,
     imgThumbnail: url.imgThumbnail,
     text,
-    generation: gen.generation,
     interest,
     hashtag,
     authorNickname,

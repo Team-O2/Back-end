@@ -118,12 +118,6 @@ router.post<unknown, unknown, IConcert>(
       // 유저 id가 관리자가 아님
       else if (data === -2) {
         response(res, returnCode.BAD_REQUEST, "관리자 아이디가 아닙니다");
-      } else if (data === -3) {
-        response(
-          res,
-          returnCode.BAD_REQUEST,
-          "해당 날짜에 진행되는 기수가 없음"
-        );
       }
 
       // 관리자 챌린지 등록 성공
