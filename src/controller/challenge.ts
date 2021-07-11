@@ -3,7 +3,7 @@ import { Router, Request, Response } from "express";
 import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
 // middlewares
-import auth from 'src/middleware/auth';
+import auth from "src/middleware/auth";
 // services
 import {
   getChallengeAll,
@@ -16,6 +16,7 @@ import {
   deleteChallengeLike,
   postChallengeScrap,
   deleteChallengeScrap,
+  getChallengeOne,
 } from "src/service/challengeService";
 
 const router = Router();
@@ -45,13 +46,13 @@ router.get("/", auth, async (req: Request, res: Response) => {
  *  @access Private
  */
 
- router.get("/:id", auth, async (req: Request, res: Response) => {
+router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getChallengeAll(req.params.id);
+    const data = await getChallengeOne(req.params.id);
 
     // challengeID가 이상할 때
-    if(data===-1){
-      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다")
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
     }
 
     dataResponse(res, returnCode.OK, "회고 불러오기 성공", data);
@@ -74,7 +75,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
       req.query.isMine,
       req.query.keyword,
       req.query.offset,
-      req.body.userId,
+      req.body.userId
     );
 
     // 회고 전체 불러오기 성공
@@ -92,30 +93,26 @@ router.get("/search", auth, async (req: Request, res: Response) => {
  *  @access Private
  */
 
-router.post(
-  "/",
-  auth,
-  async (req: Request, res: Response) => {
-    try {
-      const data = await postChallenge(req.body.userID.id, req.body);
+router.post("/", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await postChallenge(req.body.userID.id, req.body);
 
-      // 요청 바디가 부족할 경우
-      if (data === -1) {
-        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
-      }
-      // 유저 id 잘못된 경우
-      if (data === -2) {
-        response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
-      }
-      // 회고 등록 성공
-      const challenge = data;
-      dataResponse(res, returnCode.OK, "회고 등록 성공", challenge);
-    } catch (err) {
-      console.error(err.message);
-      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    // 요청 바디가 부족할 경우
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
     }
+    // 유저 id 잘못된 경우
+    if (data === -2) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
+    // 회고 등록 성공
+    const challenge = data;
+    dataResponse(res, returnCode.OK, "회고 등록 성공", challenge);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
   }
-);
+});
 
 /**
  *  @챌린지_회고_수정
@@ -175,7 +172,11 @@ router.delete("/:id", auth, async (req: Request, res: Response) => {
 
 router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await postChallengeComment(req.params.id, req.body.userID.id, req.body);
+    const data = await postChallengeComment(
+      req.params.id,
+      req.body.userID.id,
+      req.body
+    );
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
