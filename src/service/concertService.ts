@@ -343,7 +343,10 @@ export const postConcertLike = async (concertID, userID) => {
   }
 
   // 좋아요 5개 누를 시 뱃지 추가
-  if (!badge.fiveLikeBadge && user.likes.challengeLikes.length === 5) {
+  if (
+    !badge.fiveLikeBadge &&
+    user.likes.challengeLikes.length + user.likes.concertLikes.length === 5
+  ) {
     badge.fiveLikeBadge = true;
     await badge.save();
   }
