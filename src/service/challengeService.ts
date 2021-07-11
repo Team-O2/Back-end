@@ -18,7 +18,7 @@ export const getChallengeAll = async (offset) => {
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
@@ -132,7 +132,7 @@ export const getChallengeSearch = async (
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })

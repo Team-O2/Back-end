@@ -321,7 +321,7 @@ export const getMyWritings = async (userID, offset) => {
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
       user: userID,
     })
       .limit(Number(process.env.PAGE_SIZE))
@@ -384,7 +384,7 @@ export const getMyComments = async (userID, offset) => {
   const comments = await Comment.find({
     isDeleted: false,
     userID,
-    _id: { $gt: offset },
+    _id: { $lt: offset },
   })
     .limit(Number(process.env.COMMENT_SIZE))
     .sort({ _id: -1 });

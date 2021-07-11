@@ -19,7 +19,7 @@ export const getNoticeAll = async (offset) => {
     notices = await Concert.find({
       isDeleted: false,
       isNotice: true,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
@@ -123,7 +123,7 @@ export const getNoticeSearch = async (keyword, offset) => {
     notices = await Concert.find({
       isDeleted: false,
       isNotice: true,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })

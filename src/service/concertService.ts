@@ -19,7 +19,7 @@ export const getConcertAll = async (offset) => {
     concerts = await Concert.find({
       isDeleted: false,
       isNotice: false,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
@@ -126,7 +126,7 @@ export const getConcertSearch = async (tag, keyword, offset) => {
     concerts = await Concert.find({
       isDeleted: false,
       isNotice: false,
-      _id: { $gt: offset },
+      _id: { $lt: offset },
     })
       .limit(Number(process.env.PAGE_SIZE))
       .sort({ _id: -1 })
