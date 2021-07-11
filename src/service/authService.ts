@@ -53,6 +53,14 @@ export async function postSignup(body) {
   // console.log(user);
   await user.updateOne({ badge: badge._id });
 
+  // 마케팅 동의(marpolicy == true) 시 뱃지 발급
+  if (user.marpolicy) {
+    await Badge.findOneAndUpdate(
+      { user: user.id },
+      { $set: { marketingBadge: true } }
+    );
+  }
+
   // Return jsonwebtoken
   const payload = {
     user: {
@@ -109,14 +117,6 @@ export async function postSignin(body) {
   // access 토큰 발급
   // 유효기간 14일
   let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
-
-  // 마케팅 동의(marpolicy == true) 시 뱃지 발급
-  if (user.marpolicy) {
-    await Badge.findOneAndUpdate(
-      { user: user.id },
-      { $set: { marketingBadge: true } }
-    );
-  }
 
   return { user, token };
 }
