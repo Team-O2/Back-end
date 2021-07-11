@@ -146,7 +146,7 @@ export const getMypageConcert = async (userID, offset) => {
   var mypageConcertScrap = [];
   for (
     var i = Number(offset);
-    i < Number(offset) + Number(process.env.COMMENT_SIZE);
+    i < Number(offset) + Number(process.env.PAGE_SIZE);
     i++
   ) {
     mypageConcertScrap.push(mypageConcert[i]);
@@ -163,7 +163,10 @@ export const getMypageConcert = async (userID, offset) => {
  *  @access private
  */
 
-export const getMypageChallenge = async (userID) => {
+export const getMypageChallenge = async (userID, offset) => {
+  if (!offset) {
+    offset = 0;
+  }
   const userScraps = await (
     await User.findOne({ _id: userID })
   ).scraps.challengeScraps;
@@ -206,7 +209,18 @@ export const getMypageChallenge = async (userID) => {
     return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
   });
 
-  return mypageChallenge;
+  var mypageChallengeScrap = [];
+  for (
+    var i = Number(offset);
+    i < Number(offset) + Number(process.env.PAGE_SIZE);
+    i++
+  ) {
+    mypageChallengeScrap.push(mypageChallenge[i]);
+  }
+  return {
+    mypageChallengeScrap,
+    totalScrapNum: mypageChallenge.length,
+  };
 };
 
 /**
@@ -505,6 +519,14 @@ export const patchInfo = async (userID, body, url) => {
   await user.update({ $set: { interest: interest } });
   await user.update({ $set: { gender: gender } });
   await user.update({ $set: { marpolicy: marpolicy } });
+
+  // 마케팅 동의(marpolicy == true) 시 뱃지 발급
+  if (marpolicy) {
+    await Badge.findOneAndUpdate(
+      { user: user.id },
+      { $set: { marketingBadge: true } }
+    );
+  }
 };
 
 /**
