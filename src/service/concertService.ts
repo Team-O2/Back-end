@@ -183,7 +183,7 @@ export const getConcertSearch = async (tag, keyword, offset) => {
   // 관심분야 필터링
   if (tag !== "") {
     filteredData = filteredData.filter((fd) => {
-      if (fd.interest.includes(tag).toLowerCase()) return fd;
+      if (fd.interest.includes(tag.toLowerCase())) return fd;
     });
   }
 
@@ -191,9 +191,9 @@ export const getConcertSearch = async (tag, keyword, offset) => {
   if (keyword !== "") {
     filteredData = filteredData.filter((fd) => {
       if (
-        fd.text.includes(keyword.toLowerCase()) ||
-        fd.title.includes(keyword.toLowerCase()) ||
-        fd.hashtag.includes(keyword.toLowerCase())
+        fd.text.includes(keyword.toLowerCase().trim()) ||
+        fd.title.includes(keyword.toLowerCase().trim()) ||
+        fd.hashtag.includes(keyword.toLowerCase().trim())
       )
         return fd;
     });

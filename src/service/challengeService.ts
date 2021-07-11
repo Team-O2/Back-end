@@ -204,9 +204,9 @@ export const getChallengeSearch = async (
   if (keyword !== "") {
     filteredData = filteredData.filter((fd) => {
       if (
-        fd.good.includes(keyword.toLowerCase()) ||
-        fd.bad.includes(keyword.toLowerCase()) ||
-        fd.learn.includes(keyword.toLowerCase())
+        fd.good.includes(keyword.toLowerCase().trim()) ||
+        fd.bad.includes(keyword.toLowerCase().trim()) ||
+        fd.learn.includes(keyword.toLowerCase().trim())
       )
         return fd;
     });
