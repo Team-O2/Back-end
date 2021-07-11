@@ -52,10 +52,15 @@ router.get<unknown, unknown, IAdmin>(
  */
 router.post<unknown, unknown, IAdmin>(
   "/challenge",
+  upload.fields([{ name: "img", maxCount: 1 }]),
   auth,
+
   async (req: Request, res: Response) => {
     try {
-      const data = await postAdminChallenge(req.body.userID.id, req.body);
+      const url = {
+        img: (req as any).files.img ? (req as any).files.img[0].location : "",
+      };
+      const data = await postAdminChallenge(req.body.userID.id, req.body, url);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {

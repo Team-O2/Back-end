@@ -97,7 +97,8 @@ export const postAdminList = async (userID, offset) => {
  *      2. 유저 id가 관리자가 아님
  *      3. 챌린지 기간이 잘못됨
  */
-export const postAdminChallenge = async (userID, body) => {
+export const postAdminChallenge = async (userID, body, url) => {
+  const img = url.img;
   const {
     title,
     registerStartDT,
@@ -105,7 +106,6 @@ export const postAdminChallenge = async (userID, body) => {
     challengeStartDT,
     challengeEndDT,
     limitNum,
-    img,
   } = body;
 
   // 1. 요청 바디 부족
