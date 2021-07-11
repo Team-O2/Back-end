@@ -379,17 +379,33 @@ export const getMyWritings = async (userID, offset) => {
  *  @route Get user/mypage/comment
  */
 export const getMyComments = async (userID, offset) => {
-  const comments = await Comment.find({
-    isDeleted: false,
+  let comments;
+  if (offset) {
+    comments = await Comment.find({
+      isDeleted: false,
+      userID,
+      _id: { $lt: offset },
+    })
+      .limit(Number(process.env.COMMENT_SIZE))
+      .sort({ _id: -1 });
+  } else {
+    comments = await Comment.find({
+      isDeleted: false,
+      userID,
+    })
+      .limit(Number(process.env.COMMENT_SIZE))
+      .sort({ _id: -1 });
+  }
+  const user = await User.findById(userID);
+
+  const totalCommentNum = await Comment.find({
     userID,
-    _id: { $lt: offset },
-  })
-    .limit(Number(process.env.COMMENT_SIZE))
-    .sort({ _id: -1 });
+    isDeleted: false,
+  }).count();
 
   return {
     comments,
-    commentNum: comments.length,
+    commentNum: totalCommentNum,
   };
 };
 
