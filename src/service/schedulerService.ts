@@ -4,12 +4,12 @@ import Admin from "src/models/Admin";
 import User from "src/models/User";
 import Badge from "src/models/Badge";
 // libraries
-import { stringToDate, period } from "src/library/date";
+import { stringToDate, period, dateToString } from "src/library/date";
 
 export const challengeOpen = schedule.scheduleJob("0 0 0 * * *", async () => {
   console.log("hi");
-  const newDate = new Date();
-  const today = stringToDate(String(newDate).substr(0, 10));
+  const newDate = dateToString(new Date());
+  const today = stringToDate(newDate.substr(0, 10));
   const newChallenge = await Admin.findOne({
     challengeStartDT: today,
   });
@@ -56,11 +56,11 @@ export const challengeOpen = schedule.scheduleJob("0 0 0 * * *", async () => {
         generation: newChallenge.generation,
       });
 
-      // 4. 가입한지 3달이 지난 유저에게 배지 부여
-      let term = period(user.createDT, newDate);
-      if (term >= 90 && !userBadge.loginBadge) {
-        await userBadge.update({ loginBadge: true });
-      }
+      // // 4. 가입한지 3달이 지난 유저에게 배지 부여
+      // let term = period(user.createDT, newDate);
+      // if (term >= 90 && !userBadge.loginBadge) {
+      //   await userBadge.update({ loginBadge: true });
+      // }
     });
   }
 });
