@@ -159,7 +159,11 @@ router.delete("/like/:id", auth, async (req: Request, res: Response) => {
       response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
     } // 좋아요 한 개수가 0인 경우
     if (data === -2) {
-      response(res, returnCode.BAD_REQUEST, "좋아요 개수가 0");
+      response(
+        res,
+        returnCode.BAD_REQUEST,
+        "해당 게시글을 좋아요 하지 않았습니다"
+      );
     }
     // 좋아요 삭제 성공
     const concert = data;
