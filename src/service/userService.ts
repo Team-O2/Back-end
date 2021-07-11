@@ -100,6 +100,9 @@ export const postRegister = async (userID, body) => {
  */
 
 export const getMypageConcert = async (userID, offset) => {
+  if (!offset) {
+    offset = 0;
+  }
   const userScraps = await (
     await User.findOne({ _id: userID })
   ).scraps.concertScraps;

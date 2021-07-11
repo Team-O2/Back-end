@@ -16,6 +16,10 @@ import Challenge from "src/models/Challenge";
  */
 
 export const postAdminList = async (userID, offset) => {
+  if (!offset) {
+    offset = 0;
+  }
+
   // 1. 유저 id가 관리자가 아님
   let user = await User.findById(userID);
   if (!(user.userType === 1)) {
