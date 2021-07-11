@@ -32,10 +32,14 @@ const ConcertSchema = new mongoose.Schema({
     // 게시물 안에 들어갈 동영상 링크
     type: String,
     required: false,
+    default:
+      "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
   },
   imgThumbnail: {
     type: String,
     required: false,
+    default:
+      "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
   },
   text: {
     // 게시물 안에 들어갈 작성글

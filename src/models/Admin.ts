@@ -31,7 +31,10 @@ const AdminSchema = new mongoose.Schema({
     required: true,
   },
   img: {
-    data: String,
+    type: String,
+    required: false,
+    default:
+      "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
   },
   createdDT: {
     type: Date,
