@@ -73,11 +73,9 @@ export const postRegister = async (userID, body) => {
     }
   );
 
-  // ischallenge true
-  await user.update({ $set: { ischallenge: true } });
-  await User.findByIdAndUpdate(userID, {
-    $set: { challengeCNT: challengeCNT },
-  });
+  // isRegist true
+  await user.update({ $set: { isRegist: true } });
+  await user.update({ $set: { challengeCNT: challengeCNT } });
 
   // 첫 챌린지 참여 시 뱃지 부여
   const badge = await Badge.findOne(
