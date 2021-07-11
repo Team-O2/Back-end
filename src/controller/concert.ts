@@ -162,7 +162,7 @@ router.delete("/like/:id", auth, async (req: Request, res: Response) => {
       response(
         res,
         returnCode.BAD_REQUEST,
-        "해당 게시글을 좋아요 하지 않았습니다"
+        "해당 게시글을 좋아요하지 않았습니다"
       );
     }
     // 좋아요 삭제 성공
