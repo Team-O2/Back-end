@@ -217,7 +217,7 @@ export const postConcertComment = async (concertID, userID, body) => {
   // 1. 회고록 id 잘못됨
   const concert = await Concert.findById(concertID);
 
-  if (!concert) {
+  if (!concert || concert.isDeleted) {
     return -1;
   }
   // 2. 요청 바디 부족
@@ -314,7 +314,7 @@ export const postConcertLike = async (concertID, userID) => {
   // 1. 콘서트 id 잘못됨
   const concert = await Concert.findById(concertID);
 
-  if (!concert) {
+  if (!concert || concert.isDeleted) {
     return -1;
   }
 
@@ -355,14 +355,14 @@ export const postConcertLike = async (concertID, userID) => {
  *  @오투콘서트_좋아요_삭제
  *  @route Delete /concert/like/:concertID
  *  @error
- *      1. 회고록 id 잘못됨
+ *      1. 콘서트 id 잘못됨
  *      2. 좋아요 개수가 0
  */
 export const deleteConcertLike = async (concertID, userID) => {
   const concert = await Concert.findById(concertID);
 
-  // 1. 회고록 id 잘못됨
-  if (!concert) {
+  // 1. 콘서트 id 잘못됨
+  if (!concert || concert.isDeleted) {
     return -1;
   }
 
@@ -371,7 +371,7 @@ export const deleteConcertLike = async (concertID, userID) => {
     return -2;
   }
 
-  // 챌린지 글의 like 1 감소
+  // 콘서트 글의 like 1 감소
   await Concert.findOneAndUpdate(
     { _id: concertID },
     {
@@ -390,7 +390,7 @@ export const deleteConcertLike = async (concertID, userID) => {
 };
 
 /**
- *  @오투콘서트_회고_스크랩하기
+ *  @오투콘서트_스크랩하기
  *  @route Post /user/concert/:concertID
  *  @error
  *      1. 콘서트 id 잘못됨
@@ -399,7 +399,7 @@ export const deleteConcertLike = async (concertID, userID) => {
 export const postConcertScrap = async (concertID, userID) => {
   // 1. 회고 id 잘못됨
   let concert = await Concert.findById(concertID);
-  if (!concert) {
+  if (!concert || concert.isDeleted) {
     return -1;
   }
 
@@ -439,16 +439,16 @@ export const postConcertScrap = async (concertID, userID) => {
 };
 
 /**
- *  @유저_챌린지_회고_스크랩_취소하기
+ *  @유저_콘서트_스크랩_취소하기
  *  @route Delete /user/concert/:concertID
  *  @error
  *      1. 콘서트 id 잘못됨
  *      2. 스크랩 하지 않은 글일 경우
  */
 export const deleteConcertScrap = async (concertID, userID) => {
-  // 1. 회고 id 잘못됨
+  // 1. 콘서트 id 잘못됨
   let concert = await Concert.findById(concertID);
-  if (!concert) {
+  if (!concert || concert.isDeleted) {
     return -1;
   }
 
