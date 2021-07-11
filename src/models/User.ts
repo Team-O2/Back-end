@@ -84,6 +84,8 @@ const UserSchema = new mongoose.Schema({
   img: {
     type: String,
     required: false,
+    default:
+      "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
   },
   isChallenge: {
     // 챌린지 참여 여부
