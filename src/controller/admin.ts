@@ -58,7 +58,9 @@ router.post<unknown, unknown, IAdmin>(
   async (req: Request, res: Response) => {
     try {
       const url = {
-        img: (req as any).files.img ? (req as any).files.img[0].location : "",
+        img: (req as any).files.img
+          ? (req as any).files.img[0].location
+          : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
       const data = await postAdminChallenge(req.body.userID.id, req.body, url);
 
@@ -104,7 +106,7 @@ router.post<unknown, unknown, IConcert>(
       const url = {
         videoLink: (req as any).files.videoLink
           ? (req as any).files.videoLink[0].location
-          : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
+          : "",
         imgThumbnail: (req as any).files.imgThumbnail
           ? (req as any).files.imgThumbnail[0].location
           : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
@@ -152,7 +154,7 @@ router.post<unknown, unknown, IConcert>(
           : "",
         imgThumbnail: (req as any).files.imgThumbnail
           ? (req as any).files.imgThumbnail[0].location
-          : "",
+          : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
 
       const data = await postAdminNotice(
