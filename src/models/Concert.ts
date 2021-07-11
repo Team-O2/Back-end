@@ -56,11 +56,6 @@ const ConcertSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  generation: {
-    type: Number,
-    required: false,
-    default: 0,
-  },
   interest: {
     // 관심분야
     type: [String],

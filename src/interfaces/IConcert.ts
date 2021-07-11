@@ -15,7 +15,6 @@ export interface IConcert {
   imgThumbnail: string;
   text: string;
   likes: Number;
-  generation: Number;
   interest: [string];
   hashtag: [string];
   isDeleted: Boolean;
