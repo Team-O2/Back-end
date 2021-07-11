@@ -196,7 +196,7 @@ export const getChallengeSearch = async (
   // 내가 쓴 글 필터링
   if (isMine === "1") {
     filteredData = filteredData.filter((fd) => {
-      if (fd.user._id === userID) return fd;
+      if (String(fd.user._id) === String(userID.id)) return fd;
     });
   }
 
@@ -534,8 +534,8 @@ export const postChallengeScrap = async (challengeID, userID) => {
 
   // 게시글 첫 스크랩 시 배지 추가
   const badge = await Badge.findOne({ user: userID });
-  if (!badge.runMySelfBadge) {
-    badge.runMySelfBadge = true;
+  if (!badge.runMySelfScrapBadge) {
+    badge.runMySelfScrapBadge = true;
     await badge.save();
   }
 

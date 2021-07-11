@@ -41,6 +41,31 @@ router.get("/", auth, async (req: Request, res: Response) => {
 });
 
 /**
+ *  @챌린지_회고_검색_또는_필터
+ *  @route Get /challenge/search
+ *  @access Private
+ */
+
+router.get("/search", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getChallengeSearch(
+      req.query.tag,
+      req.query.isMine,
+      req.query.keyword,
+      req.query.offset,
+      req.body.userID
+    );
+
+    // 회고 전체 불러오기 성공
+    const challengeSearch = data;
+    dataResponse(res, returnCode.OK, "검색 성공", challengeSearch);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
  *  @챌린지_회고_가져오기
  *  @route Get /challenge/:challengeID
  *  @access Private
@@ -56,31 +81,6 @@ router.get("/:id", auth, async (req: Request, res: Response) => {
     }
 
     dataResponse(res, returnCode.OK, "회고 불러오기 성공", data);
-  } catch (err) {
-    console.error(err.message);
-    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
-  }
-});
-
-/**
- *  @챌린지_회고_검색_또는_필터
- *  @route Get /challenge/search
- *  @access Private
- */
-
-router.get("/search", auth, async (req: Request, res: Response) => {
-  try {
-    const data = await getChallengeSearch(
-      req.query.tag,
-      req.query.isMine,
-      req.query.keyword,
-      req.query.offset,
-      req.body.userId
-    );
-
-    // 회고 전체 불러오기 성공
-    const challengeSearch = data;
-    dataResponse(res, returnCode.OK, "검색 성공", challengeSearch);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
