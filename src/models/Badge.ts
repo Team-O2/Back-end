@@ -52,7 +52,7 @@ const BadgeSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
-  runMySelfBadge: {
+  runMySelfScrapBadge: {
     type: Boolean,
     required: true,
     default: false,

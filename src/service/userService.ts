@@ -230,7 +230,7 @@ export const getMypageInfo = async (userID) => {
     fiveLikeBadge: userBadge.fiveLikeBadge,
     loginBadge: userBadge.loginBadge,
     marketingBadge: userBadge.marketingBadge,
-    runMySelfBadge: userBadge.runMySelfBadge,
+    runMySelfScrapBadge: userBadge.runMySelfScrapBadge,
     firstReplyBadge: userBadge.firstReplyBadge,
     concertScrapBadge: userBadge.concertScrapBadge,
     challengeBadge: userBadge.challengeBadge,
