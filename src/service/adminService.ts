@@ -143,10 +143,7 @@ export const postAdminChallenge = async (userID, body, url) => {
     challengeEndDT: stringToDate(challengeEndDT),
     generation: changeGen,
     limitNum,
-    img:
-      img.length !== 0
-        ? img
-        : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
+    img,
     createdAt: new Date(),
   });
   // 3. 챌린지 기간이 잘못됨
@@ -177,8 +174,16 @@ export const postAdminChallenge = async (userID, body, url) => {
 
 export const postAdminConcert = async (userID, body, url) => {
   const { title, text, authorNickname } = body;
-  let interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
-  let hashtag = body.hashtag.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  let interest = body.interest
+    .toLowerCase()
+    .slice(1, -1)
+    .replace(/"/gi, "")
+    .split(/,\s?/);
+  let hashtag = body.hashtag
+    .toLowerCase()
+    .slice(1, -1)
+    .replace(/"/gi, "")
+    .split(/,\s?/);
 
   // 1. 요청 바디 부족
   if (!title || !text || !interest || !hashtag || !authorNickname) {
@@ -192,12 +197,12 @@ export const postAdminConcert = async (userID, body, url) => {
   }
 
   const concert = new Concert({
-    title,
+    title: title.toLowerCase(),
     user: userID,
     createdAt: new Date(),
     videoLink: url.videoLink,
     imgThumbnail: url.imgThumbnail,
-    text,
+    text: text.toLowerCase(),
     interest,
     hashtag,
     authorNickname,
@@ -217,8 +222,16 @@ export const postAdminConcert = async (userID, body, url) => {
 
 export const postAdminNotice = async (userID, body, url) => {
   const { title, text } = body;
-  let interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
-  let hashtag = body.hashtag.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  let interest = body.interest
+    .toLowerCase()
+    .slice(1, -1)
+    .replace(/"/gi, "")
+    .split(/,\s?/);
+  let hashtag = body.hashtag
+    .toLowerCase()
+    .slice(1, -1)
+    .replace(/"/gi, "")
+    .split(/,\s?/);
 
   // 1. 요청 바디 부족
   if (!title || !text || !interest || !hashtag) {
@@ -232,13 +245,13 @@ export const postAdminNotice = async (userID, body, url) => {
   }
 
   const notice = new Concert({
-    title,
+    title: title.toLowerCase(),
     interest,
     user: userID,
     isNotice: true,
     videoLink: url.videoLink,
     imgThumbnail: url.imgThumbnail,
-    text,
+    text: text.toLowerCase(),
     hashtag,
   });
 

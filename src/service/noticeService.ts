@@ -181,10 +181,10 @@ export const getNoticeSearch = async (keyword, offset) => {
   if (keyword !== "") {
     filteredData = filteredData.filter((fd) => {
       if (
-        fd.text.includes(keyword) ||
-        fd.title.includes(keyword) ||
-        fd.hashtag.includes(keyword) ||
-        fd.interest.includes(keyword)
+        fd.text.includes(keyword.toLowerCase()) ||
+        fd.title.includes(keyword.toLowerCase()) ||
+        fd.hashtag.includes(keyword.toLowerCase()) ||
+        fd.interest.includes(keyword.toLowerCase())
       )
         return fd;
     });
