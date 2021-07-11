@@ -95,7 +95,9 @@ router.patch(
   async (req: Request, res: Response) => {
     try {
       const url = {
-        img: (req as any).files.img ? (req as any).files.img[0].location : "",
+        img: (req as any).files.img
+          ? (req as any).files.img[0].location
+          : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
       const data = await patchInfo(req.body.userID.id, req.body, url);
 

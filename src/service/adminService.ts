@@ -115,8 +115,7 @@ export const postAdminChallenge = async (userID, body, url) => {
     !registerEndDT ||
     !challengeStartDT ||
     !challengeEndDT ||
-    !limitNum ||
-    !img
+    !limitNum
   ) {
     return -1;
   }
@@ -144,7 +143,10 @@ export const postAdminChallenge = async (userID, body, url) => {
     challengeEndDT: stringToDate(challengeEndDT),
     generation: changeGen,
     limitNum,
-    img,
+    img:
+      img.length !== 0
+        ? img
+        : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
     createdAt: new Date(),
   });
   // 3. 챌린지 기간이 잘못됨
