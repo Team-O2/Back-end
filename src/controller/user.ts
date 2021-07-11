@@ -4,6 +4,8 @@ import { returnCode } from "src/library/returnCode";
 import { response, dataResponse } from "src/library/response";
 // middlewares
 import auth from "src/middleware/auth";
+// modules
+const upload = require("src/modules/upload");
 // services
 import {
   postRegister,
@@ -14,6 +16,9 @@ import {
   getMyWritings,
   getMyComments,
   deleteMyComments,
+  getUserInfo,
+  patchInfo,
+  patchPW,
 } from "src/service/userService";
 
 const router = Router();
@@ -55,6 +60,82 @@ router.post("/register", auth, async (req: Request, res: Response) => {
     else {
       response(res, returnCode.OK, "챌린지 신청 성공");
     }
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+
+/**
+ *  @마이페이지_회원정보_조회
+ *  @route Get user/userInfo
+ *  @access private
+ */
+router.get("/userInfo", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await getUserInfo(req.body.userID.id);
+
+    // 유저정보 조회 성공
+    dataResponse(res, returnCode.OK, "유저정보 조회 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
+/**
+ *  @마이페이지_회원정보_수정
+ *  @route Patch user
+ *  @access private
+ */
+
+router.patch(
+  "/userInfo",
+  upload.fields([{ name: "img", maxCount: 1 }]),
+  auth,
+  async (req: Request, res: Response) => {
+    try {
+      const url = {
+        img: (req as any).files.img ? (req as any).files.img[0].location : "",
+      };
+      const data = await patchInfo(req.body.userID.id, req.body, url);
+
+      // 요청 바디가 부족할 경우
+      if (data === -1) {
+        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+      }
+
+      dataResponse(res, returnCode.OK, "회원정보 수정 성공", data);
+    } catch (err) {
+      console.error(err.message);
+      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+  }
+);
+
+/**
+ *  @마이페이지_비밀번호_수정
+ *  @route Patch user/pw
+ *  @access private
+ */
+
+router.patch("/password", auth, async (req: Request, res: Response) => {
+  try {
+    const data = await patchPW(req.body.userID.id, req.body);
+
+    // 요청 바디가 부족할 경우
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+    }
+    // 현재 password와 맞지 않을 경우
+    if (data === -2) {
+      response(
+        res,
+        returnCode.BAD_REQUEST,
+        "현재 비밀번호가 일치하지 않습니다"
+      );
+    }
+
+    dataResponse(res, returnCode.OK, "비밀번호 수정 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");

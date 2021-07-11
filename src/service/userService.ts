@@ -9,6 +9,11 @@ import Comment from "src/models/Comment";
 // library
 import { dateToNumber, period } from "src/library/date";
 
+// jwt
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import config from "src/config";
+
 /**
  *  @User_챌린지_신청하기
  *  @route Post user/register
@@ -440,4 +445,77 @@ export const deleteMyComments = async (body) => {
       }
     );
   });
+};
+
+/**
+ *  @마이페이지_회원정보_조회
+ *  @route Get user/userInfo
+ *  @access private
+ */
+
+export const getUserInfo = async (userID) => {
+  const user = await User.find(
+    { _id: userID },
+    {
+      img: true,
+      email: true,
+      nickname: true,
+      interest: true,
+      gender: true,
+      marpolicy: true,
+    }
+  );
+  return user;
+};
+
+/**
+ *  @마이페이지_회원정보_수정
+ *  @route Patch user/userInfo
+ *  @access private
+ */
+export const patchInfo = async (userID, body, url) => {
+  const imgUrl = url.img;
+  const { nickname, gender, marpolicy } = body;
+
+  const interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  // 1. 요청 바디 부족
+  if (!nickname || !interest || !gender || !marpolicy) {
+    return -1;
+  }
+  const user = await User.findById(userID);
+  await user.update({ $set: { img: imgUrl } });
+  await user.update({ $set: { nickname: nickname } });
+  await user.update({ $set: { interest: interest } });
+  await user.update({ $set: { gender: gender } });
+  await user.update({ $set: { marpolicy: marpolicy } });
+};
+
+/**
+ *  @마이페이지_비밀번호_수정
+ *  @route Patch user/pw
+ *  @access private
+ */
+export const patchPW = async (userID, body) => {
+  const { password, newPassword } = body;
+  // 1. 요청 바디 부족
+  if (!newPassword) {
+    return -1;
+  }
+
+  const user = await User.findById(userID);
+
+  // Encrpyt password
+  const salt = await bcrypt.genSalt(10);
+  const currentEncrpytPW = await bcrypt.hash(password, salt);
+
+  // 2. 현재 비밀번호가 일치하지 않음
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return -2;
+  }
+
+  // Encrpyt password
+  const encrpytPW = await bcrypt.hash(newPassword, salt);
+
+  await user.update({ $set: { password: encrpytPW } });
 };
