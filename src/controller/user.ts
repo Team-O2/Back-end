@@ -152,7 +152,11 @@ router.patch("/password", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageConcert(req.body.userID.id, req.query.offset);
+    const data = await getMypageConcert(
+      req.body.userID.id,
+      req.query.offset,
+      req.query.limit
+    );
 
     // 1. no content
     if (data == -1) {
@@ -161,6 +165,11 @@ router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
         returnCode.NO_CONTENT,
         "스크랩한 Share Together가 없습니다."
       );
+    }
+
+    // 2. limit 없을 때
+    if (data === -2) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
     }
 
     // 마이페이지 콘서트 조회 성공
@@ -181,11 +190,20 @@ router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageChallenge(req.body.userID.id, req.query.offset);
+    const data = await getMypageChallenge(
+      req.body.userID.id,
+      req.query.offset,
+      req.query.limit
+    );
 
     // 1. no content
     if (data == -1) {
       response(res, returnCode.NO_CONTENT, "스크랩한 Run Myself가 없습니다.");
+    }
+
+    // 2. limit 없을 때
+    if (data === -2) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
     }
 
     // 마이페이지 콘서트 조회 성공
@@ -255,7 +273,17 @@ router.delete(
 
 router.get("/mypage/write", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMyWritings(req.body.userID.id, req.query.offset);
+    const data = await getMyWritings(
+      req.body.userID.id,
+      req.query.offset,
+      req.query.limit
+    );
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+    }
+
     dataResponse(res, returnCode.OK, "내가 쓴 글 가져오기 성공", data);
   } catch (err) {
     console.error(err.message);
@@ -271,7 +299,17 @@ router.get("/mypage/write", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMyComments(req.body.userID.id, req.query.offset);
+    const data = await getMyComments(
+      req.body.userID.id,
+      req.query.offset,
+      req.query.limit
+    );
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+    }
+
     dataResponse(res, returnCode.OK, "내가 쓴 댓글 가져오기 성공", data);
   } catch (err) {
     console.error(err.message);
