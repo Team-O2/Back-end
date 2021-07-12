@@ -28,7 +28,16 @@ router.get<unknown, unknown, IAdmin>(
   auth,
   async (req: Request, res: Response) => {
     try {
-      const data = await postAdminList(req.body.userID.id, req.query.offset);
+      const data = await postAdminList(
+        req.body.userID.id,
+        req.query.offset,
+        req.query.limit
+      );
+
+      // limit 없을 때
+      if (data === -1) {
+        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+      }
 
       // 유저 id가 관리자가 아님
       if (data === -2) {
