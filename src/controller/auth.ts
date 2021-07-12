@@ -6,10 +6,16 @@ import {
   response,
   dataResponse,
   tokenResponse,
+  dataTokenResponse,
 } from "src/library/response";
 // services
-import { patchPassword, postCode, postEmail, postSignin, postSignup } from "src/service/authService";
-
+import {
+  patchPassword,
+  postCode,
+  postEmail,
+  postSignin,
+  postSignup,
+} from "src/service/authService";
 
 const router = Router();
 
@@ -88,8 +94,8 @@ router.post(
       }
       // 로그인 성공
       else {
-        const { user, token } = data;
-        tokenResponse(res, returnCode.OK, "로그인 성공", token);
+        const { userData, token } = data;
+        dataTokenResponse(res, returnCode.OK, "로그인 성공", userData, token);
       }
     } catch (err) {
       console.error(err.message);
@@ -139,32 +145,29 @@ router.post(
  *  @access Public
  */
 
-router.post(
-  "/code",
-  async (req: Request, res: Response) => {
-    try {
-      const data = await postCode(req.body);
+router.post("/code", async (req: Request, res: Response) => {
+  try {
+    const data = await postCode(req.body);
 
-      // 요청 바디가 부족할 경우
-      if (data === -1) {
-        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
-      }
-      // email이 DB에 없을 경우
-      if (data === -2) {
-        response(res, returnCode.BAD_REQUEST, "아이디가 존재하지 않습니다");
-      }
-      // 인증번호가 올바르지 않은 경우
-      if (data === -3) {
-        dataResponse(res, returnCode.OK, "인증번호 인증 실패", { isOkay: false })
-      }
-      // 인증번호 인증 성공
-      dataResponse(res, returnCode.OK, "인증번호 인증 성공", { isOkay: true });
-    } catch (err) {
-      console.error(err.message);
-      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    // 요청 바디가 부족할 경우
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
     }
+    // email이 DB에 없을 경우
+    if (data === -2) {
+      response(res, returnCode.BAD_REQUEST, "아이디가 존재하지 않습니다");
+    }
+    // 인증번호가 올바르지 않은 경우
+    if (data === -3) {
+      dataResponse(res, returnCode.OK, "인증번호 인증 실패", { isOkay: false });
+    }
+    // 인증번호 인증 성공
+    dataResponse(res, returnCode.OK, "인증번호 인증 성공", { isOkay: true });
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
   }
-);
+});
 
 /**
  *  @비밀번호_변경
