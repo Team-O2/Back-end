@@ -1,5 +1,6 @@
 import User from "src/models/User";
 import Badge from "src/models/Badge";
+import Admin from "src/models/Admin";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -83,6 +84,12 @@ export async function postSignup(body) {
  *      1. 요청 바디 부족
  *      2. 아이디가 존재하지 않음
  *      3. 패스워드가 올바르지 않음
+ *  @response
+ *      0 - default(비로그인)
+ *      1 - 챌린지 안하는 유저
+ *      2 - 챌린지 안하는 유저 (기간은 챌린지 없음)
+ *      3 - 챌린지 하는 유저 (기간은 챌린지 중)
+ *      4 - 관리자
  */
 
 export async function postSignin(body) {
@@ -118,7 +125,50 @@ export async function postSignin(body) {
   // 유효기간 14일
   let token = jwt.sign(payload, config.jwtSecret, { expiresIn: "14d" });
 
-  return { user, token };
+  var userState = 0;
+  /*
+    var = new Date('2020-10-23');
+    var date2 = new Date('2020-10-22');
+
+    console.log(date1 > date2); // true
+  */
+
+  // 현재 기수(generation)를 확인하여 오투콘서트에 삽입
+  let dateNow = new Date();
+  const gen = await Admin.findOne({
+    $and: [
+      { challengeStartDT: { $lte: dateNow } },
+      { challengeEndDT: { $gte: dateNow } },
+    ],
+  });
+
+  // 4-관리자
+  if (user.userType === 1) {
+    userState = 4;
+  }
+  // 챌린지 안하는 유저
+  else if (!user.isChallenge) {
+    // 1- 해당 날짜에 진행되는 기수가 있음
+    if (gen) {
+      userState = 1;
+    }
+    // 2- 해당 날짜에 진행되는 기수가 없음
+    else {
+      userState = 2;
+    }
+  }
+  // 3- 챌린지 중인 유저
+  else {
+    userState = 3;
+  }
+
+  const totalGeneration = await Admin.find().countDocuments();
+  const userData = {
+    userState,
+    totalGeneration,
+  };
+
+  return { userData, token };
 }
 
 /**
