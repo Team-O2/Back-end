@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 // services
-const noticeService_1 = require("src/service/noticeService");
+const noticeService_1 = require("../service/noticeService");
 // middlewares
-const auth_1 = __importDefault(require("src/middleware/auth"));
+const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.Router();
 /**
  *  @공지사항_전체_가져오기
@@ -28,9 +28,13 @@ const router = express_1.Router();
  */
 router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield noticeService_1.getNoticeAll(req.query.offset);
+        const data = yield noticeService_1.getNoticeAll(req.query.offset, req.query.limit);
         // 공지사항 불러오기 성공
         const notice = data;
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "공지사항 불러오기 성공", notice);
     }
     catch (err) {
@@ -45,9 +49,13 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
  */
 router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield noticeService_1.getNoticeSearch(req.query.keyword, req.query.offset);
+        const data = yield noticeService_1.getNoticeSearch(req.query.keyword, req.query.offset, req.query.limit);
         // 검색 불러오기 성공
         const noticeSearch = data;
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "검색 성공", noticeSearch);
     }
     catch (err) {

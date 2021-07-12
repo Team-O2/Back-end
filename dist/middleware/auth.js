@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = __importDefault(require("src/config"));
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const config_1 = __importDefault(require("../config"));
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 exports.default = (req, res, next) => {
     // 토큰 검사
     if (req.headers.authorization == null) {

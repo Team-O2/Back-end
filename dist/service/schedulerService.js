@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.challengeOpen = void 0;
 const node_schedule_1 = __importDefault(require("node-schedule"));
 // models
-const Admin_1 = __importDefault(require("src/models/Admin"));
-const User_1 = __importDefault(require("src/models/User"));
-const Badge_1 = __importDefault(require("src/models/Badge"));
+const Admin_1 = __importDefault(require("../models/Admin"));
+const User_1 = __importDefault(require("../models/User"));
+const Badge_1 = __importDefault(require("../models/Badge"));
 // libraries
-const date_1 = require("src/library/date");
+const date_1 = require("../library/date");
 exports.challengeOpen = node_schedule_1.default.scheduleJob("0 0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("hi");
     const newDate = date_1.dateToString(new Date());
@@ -32,41 +32,56 @@ exports.challengeOpen = node_schedule_1.default.scheduleJob("0 0 0 * * *", () =>
         const allUsers = yield User_1.default.find();
         allUsers.map((user) => __awaiter(void 0, void 0, void 0, function* () {
             let userBadge = yield Badge_1.default.findOne({ user: user._id });
-            // 1. 이전 챌린지 참가자들에 대해 챌린지 배지 부여
-            if (user.isChallenge === true && user.challengeCNT > 2) {
-                // 유저 챌린지 배지 개수 파악
-                if (userBadge.challengeBadge < 3) {
-                    // 유저의 챌린지 퍼센트 계산
-                    let term = date_1.period(newChallenge.challengeStartDT, newChallenge.challengeEndDT);
-                    let totalNum = user.challengeCNT * Math.floor(term / 7);
-                    let percent = Math.ceil((user.challengeCNT / totalNum) * 100);
-                    // 80% 이상이면 배지 부여
-                    if (percent >= 80) {
-                        yield userBadge.update({
-                            $inc: {
-                                challengeBadge: 1,
-                            },
-                        });
-                        yield userBadge.save();
+            // 1. 이전 챌린지 참가자들에 대해
+            if (user.isChallenge === true) {
+                // 일주일에 2개 이상 작성 기준인 경우
+                if (user.conditionCNT > 2) {
+                    // 유저 챌린지 배지 개수 파악
+                    if (userBadge.challengeBadge < 3) {
+                        // 유저의 챌린지 퍼센트 계산
+                        let term = date_1.period(newChallenge.challengeStartDT, newChallenge.challengeEndDT);
+                        let totalNum = user.conditionCNT * Math.floor(term / 7);
+                        let percent = Math.ceil((user.writingCNT / totalNum) * 100);
+                        // 80% 이상이면 배지 부여 ->ok
+                        if (percent >= 80) {
+                            yield userBadge.update({
+                                $inc: {
+                                    challengeBadge: 1,
+                                },
+                            });
+                            yield userBadge.save();
+                        }
                     }
                 }
+                // 작성 회고 글 개수 0으로 초기화 ->ok
+                // 챌린지 동안 일주일 작성 글 개수 기준 0으로 초기화 ->ok
+                // 챌린지 여부 초기화 ->ok
+                yield user.update({
+                    isChallenge: false,
+                    writingCNT: 0,
+                    conditionCNT: 0,
+                });
             }
-            // 2. isRegister=true 인 유저들의 isChallenge=true, isRegister=false로 변경
+            // 2. 챌린지를 신청한 유저들에 대해
             if (user.isRegist === true) {
+                // isChallenge=true, isRegister=false로 변경 ->ok
+                // 신청할 때 저장한 챌린지 작성 글 개수 기준으로 변경 ->ok
+                // 신청할 때 챌린지 작성 글 개수 기준 0으로 초기화 ->ok
+                // 유저의 기수를 새로 열리는 챌린지에 대한 기수로 변경 ->ok
+                const newConditionCNT = user.challengeCNT;
                 yield user.update({
                     isChallenge: true,
                     isRegist: false,
+                    challengeCNT: 0,
+                    conditionCNT: newConditionCNT,
+                    generation: newChallenge.generation,
                 });
             }
-            // 3. 모든 유저의 기수를 새로 열리는 챌린지에 대한 기수로 변경
-            yield user.update({
-                generation: newChallenge.generation,
-            });
-            // // 4. 가입한지 3달이 지난 유저에게 배지 부여
-            // let term = period(user.createDT, newDate);
-            // if (term >= 90 && !userBadge.loginBadge) {
-            //   await userBadge.update({ loginBadge: true });
-            // }
+            // 3. 가입한지 3달이 지난 유저에게 배지 부여 ->ok
+            let term = date_1.period(user.createDT, new Date());
+            if (term >= 90 && !userBadge.loginBadge) {
+                yield userBadge.update({ loginBadge: true });
+            }
         }));
     }
 }));

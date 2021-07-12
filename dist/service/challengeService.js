@@ -14,72 +14,75 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteChallengeScrap = exports.postChallengeScrap = exports.deleteChallengeLike = exports.postChallengeLike = exports.postChallengeComment = exports.deleteChallenge = exports.patchChallenge = exports.postChallenge = exports.getChallengeSearch = exports.getChallengeOne = exports.getChallengeAll = void 0;
 // models
-const Challenge_1 = __importDefault(require("src/models/Challenge"));
-const User_1 = __importDefault(require("src/models/User"));
-const Comment_1 = __importDefault(require("src/models/Comment"));
-const Badge_1 = __importDefault(require("src/models/Badge"));
+const Challenge_1 = __importDefault(require("../models/Challenge"));
+const User_1 = __importDefault(require("../models/User"));
+const Comment_1 = __importDefault(require("../models/Comment"));
+const Badge_1 = __importDefault(require("../models/Badge"));
 /**
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-const getChallengeAll = (offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
     // 댓글, 답글 populate
     // 댓글, 답글 최신순으로 정렬
+    if (!limit) {
+        return -1;
+    }
     let challenges;
     if (offset) {
         challenges = yield Challenge_1.default.find({
             isDeleted: false,
             _id: { $lt: offset },
         })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: [
                 {
                     path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
+                    select: ["userID", "text", "isDeleted"],
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
     }
     else {
         challenges = yield Challenge_1.default.find({ isDeleted: false })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: [
                 {
                     path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
+                    select: ["userID", "text", "isDeleted"],
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
@@ -95,24 +98,24 @@ const getChallengeOne = (challengeID) => __awaiter(void 0, void 0, void 0, funct
     // 댓글, 답글 populate
     // isDelete = true 인 애들만 가져오기
     const challenge = yield Challenge_1.default.find({ _id: challengeID }, { isDeleted: false })
-        .populate("user", ["nickname"])
+        .populate("user", ["nickname", "img"])
         .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
             {
                 path: "childrenComment",
-                select: { userID: 1, text: 1, isDeleted: 1 },
+                select: ["userID", "text", "isDeleted"],
                 options: { sort: { _id: -1 } },
                 populate: {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             },
             {
                 path: "userID",
-                select: ["nickname"],
+                select: ["nickname", "img"],
             },
         ],
     });
@@ -127,63 +130,66 @@ exports.getChallengeOne = getChallengeOne;
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
  */
-const getChallengeSearch = (tag, isMine, keyword, offset, userID) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
     // 댓글, 답글 populate
+    if (!limit) {
+        return -1;
+    }
     let challenges;
     if (offset) {
         challenges = yield Challenge_1.default.find({
             isDeleted: false,
             _id: { $lt: offset },
         })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: [
                 {
                     path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
+                    select: ["userID", "text", "isDeleted"],
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
     }
     else {
         challenges = yield Challenge_1.default.find({ isDeleted: false })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: [
                 {
                     path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
+                    select: ["userID", "text", "isDeleted"],
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
@@ -230,7 +236,7 @@ const postChallenge = (userID, body) => __awaiter(void 0, void 0, void 0, functi
         return -1;
     }
     // 2. 유저 id 잘못됨
-    let user = yield User_1.default.findById(userID);
+    const user = yield User_1.default.findById(userID);
     if (!user) {
         return -2;
     }
@@ -243,13 +249,20 @@ const postChallenge = (userID, body) => __awaiter(void 0, void 0, void 0, functi
         generation,
     });
     yield challenge.save();
+    // 유저의 writingCNT 증가
+    yield user.update({
+        $inc: { writingCNT: 1 },
+    });
     // 첫 챌린지 회고 작성 시 배지 추가
     const badge = yield Badge_1.default.findOne({ user: userID });
     if (!badge.firstWriteBadge) {
         badge.firstWriteBadge = true;
         yield badge.save();
     }
-    let data = Challenge_1.default.findById(challenge._id).populate("user", ["nickname"]);
+    const data = Challenge_1.default.findById(challenge._id).populate("user", [
+        "nickname",
+        "img",
+    ]);
     return data;
 });
 exports.postChallenge = postChallenge;
@@ -287,13 +300,17 @@ exports.patchChallenge = patchChallenge;
  *  @error
  *      1. 회고록 id 잘못됨
  */
-const deleteChallenge = (challengeID) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteChallenge = (userID, challengeID) => __awaiter(void 0, void 0, void 0, function* () {
     // 1. 회고록 id 잘못됨
     const challenge = yield Challenge_1.default.findById(challengeID);
     if (!challenge || challenge.isDeleted) {
         return -1;
     }
     yield Challenge_1.default.findByIdAndUpdate({ _id: challengeID }, { $set: { isDeleted: true } });
+    // 유저의 writingCNT 감소
+    yield User_1.default.findOneAndUpdate({ _id: userID }, {
+        $inc: { writingCNT: 1 },
+    });
     return { _id: challenge._id };
 });
 exports.deleteChallenge = deleteChallenge;
@@ -378,6 +395,7 @@ const postChallengeComment = (challengeID, userID, body) => __awaiter(void 0, vo
         _id: comment._id,
         nickname: user.nickname,
         text: text,
+        img: user.img,
         createdAt: comment.createdAt,
     };
 });

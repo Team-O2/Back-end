@@ -14,13 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 //middlewares
-const auth_1 = __importDefault(require("src/middleware/auth"));
-const upload = require("src/modules/upload");
+const auth_1 = __importDefault(require("../middleware/auth"));
+const upload = require("../modules/upload");
 //services
-const adminService_1 = require("src/service/adminService");
+const adminService_1 = require("../service/adminService");
 const router = express_1.Router();
 /**
  *  @관리자_페이지_조회
@@ -29,7 +29,11 @@ const router = express_1.Router();
  */
 router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield adminService_1.postAdminList(req.body.userID.id, req.query.offset);
+        const data = yield adminService_1.postAdminList(req.body.userID.id, req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
+        }
         // 유저 id가 관리자가 아님
         if (data === -2) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "관리자 아이디가 아닙니다");

@@ -14,20 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteConcertScrap = exports.postConcertScrap = exports.deleteConcertLike = exports.postConcertLike = exports.postConcertComment = exports.getConcertSearch = exports.getConcertOne = exports.getConcertAll = void 0;
 // models
-const Concert_1 = __importDefault(require("src/models/Concert"));
-const User_1 = __importDefault(require("src/models/User"));
-const Comment_1 = __importDefault(require("src/models/Comment"));
-const Badge_1 = __importDefault(require("src/models/Badge"));
+const Concert_1 = __importDefault(require("../models/Concert"));
+const User_1 = __importDefault(require("../models/User"));
+const Comment_1 = __importDefault(require("../models/Comment"));
+const Badge_1 = __importDefault(require("../models/Badge"));
 /**
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
  */
-const getConcertAll = (offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getConcertAll = (offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
     // 댓글, 답글 populate
     // 댓글, 답글 최신순으로 정렬
+    if (!limit) {
+        return -1;
+    }
     let concerts;
     if (offset) {
         concerts = yield Concert_1.default.find({
@@ -35,9 +38,9 @@ const getConcertAll = (offset) => __awaiter(void 0, void 0, void 0, function* ()
             isNotice: false,
             _id: { $lt: offset },
         })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -49,21 +52,21 @@ const getConcertAll = (offset) => __awaiter(void 0, void 0, void 0, function* ()
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
     }
     else {
         concerts = yield Concert_1.default.find({ isDeleted: false, isNotice: false })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -75,12 +78,12 @@ const getConcertAll = (offset) => __awaiter(void 0, void 0, void 0, function* ()
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
@@ -100,7 +103,7 @@ const getConcertOne = (concertID) => __awaiter(void 0, void 0, void 0, function*
     // 댓글, 답글 populate
     // isDelete = true 인 애들만 가져오기
     const concert = yield Concert_1.default.find({ _id: concertID }, { isDeleted: false })
-        .populate("user", ["nickname"])
+        .populate("user", ["nickname", "img"])
         .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -112,27 +115,30 @@ const getConcertOne = (concertID) => __awaiter(void 0, void 0, void 0, function*
                 options: { sort: { _id: -1 } },
                 populate: {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             },
             {
                 path: "userID",
-                select: ["nickname"],
+                select: ["nickname", "img"],
             },
         ],
     });
-    return concert;
+    return concert[0];
 });
 exports.getConcertOne = getConcertOne;
 /**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-const getConcertSearch = (tag, keyword, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getConcertSearch = (tag, keyword, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
     // 댓글, 답글 populate
+    if (!limit) {
+        return -1;
+    }
     let concerts;
     if (offset) {
         concerts = yield Concert_1.default.find({
@@ -140,9 +146,9 @@ const getConcertSearch = (tag, keyword, offset) => __awaiter(void 0, void 0, voi
             isNotice: false,
             _id: { $lt: offset },
         })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -154,21 +160,21 @@ const getConcertSearch = (tag, keyword, offset) => __awaiter(void 0, void 0, voi
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
     }
     else {
         concerts = yield Concert_1.default.find({ isDeleted: false })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -180,12 +186,12 @@ const getConcertSearch = (tag, keyword, offset) => __awaiter(void 0, void 0, voi
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });

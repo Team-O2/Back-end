@@ -6,40 +6,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const UserSchema = new mongoose_1.default.Schema({
     createDT: {
+        // 유저 회원가입 일자
         type: Date,
         required: true,
         default: Date.now,
     },
     email: {
+        // 유저 이메일
         type: String,
         unique: true,
         required: true,
     },
     password: {
+        // 유저 비밀번호
         type: String,
         required: true,
     },
     nickname: {
+        // 유저 닉네임
         type: String,
         required: true,
     },
     interest: {
+        // 유저 관심분야
         type: [String],
         required: true,
     },
     marpolicy: {
+        // 유저 이메일, 마케팅 수신 여부
         type: Boolean,
         required: false,
         default: false,
     },
     gender: {
+        // 유저 성별
         type: Number,
         required: true,
     },
     challengeCNT: {
-        // 일주일 작성 개수
+        // 신청할 때 받은 일주일 작성 개수 조건
         type: Number,
         required: false,
+        default: 0,
+    },
+    conditionCNT: {
+        // 챌린지 동안 일주일 작성 개수 조건
+        type: Number,
+        required: false,
+        default: 0,
+    },
+    writingCNT: {
+        // 챌린지 기간동안 유저가 작성한 회고 개수
+        type: Number,
+        require: true,
         default: 0,
     },
     badge: {
@@ -53,6 +72,7 @@ const UserSchema = new mongoose_1.default.Schema({
         default: 0,
     },
     commentCNT: {
+        // 내가 쓴 댓글 개수
         type: Number,
         required: true,
         default: 0,
@@ -85,6 +105,7 @@ const UserSchema = new mongoose_1.default.Schema({
         default: 0,
     },
     img: {
+        // 유저 프로필 이미지
         type: String,
         required: false,
         default: "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",

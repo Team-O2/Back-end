@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkLogin = exports.isLogin = exports.verify = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
-const config_1 = __importDefault(require("src/config"));
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
+const config_1 = __importDefault(require("../config"));
 function verify(authorization) {
     // verify를 통해 토큰 값을 decode 한다.
     let decoded;

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = express_1.default();
-const db_1 = __importDefault(require("src/Loader/db"));
+const db_1 = __importDefault(require("./Loader/db"));
 // Connect Database
 db_1.default();
 app.use(express_1.default.urlencoded());
@@ -14,14 +14,14 @@ app.use(express_1.default.json());
 const cors_1 = __importDefault(require("cors"));
 app.use(cors_1.default({ credentials: true, origin: "http://localhost:3000" }));
 // route
-app.use("/auth", require("src/controller/auth"));
-app.use("/challenge", require("src/controller/challenge"));
-app.use("/admin", require("src/controller/admin"));
-app.use("/concert", require("src/controller/concert"));
-app.use("/user", require("src/controller/user"));
-app.use("/notice", require("src/controller/notice"));
+app.use("/auth", require("./controller/auth"));
+app.use("/challenge", require("./controller/challenge"));
+app.use("/admin", require("./controller/admin"));
+app.use("/concert", require("./controller/concert"));
+app.use("/user", require("./controller/user"));
+app.use("/notice", require("./controller/notice"));
 // scheduler
-const schedulerService_1 = require("src/service/schedulerService");
+const schedulerService_1 = require("./service/schedulerService");
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development

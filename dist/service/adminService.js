@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postAdminNotice = exports.postAdminConcert = exports.postAdminChallenge = exports.postAdminList = void 0;
 // models
-const Admin_1 = __importDefault(require("src/models/Admin"));
-const User_1 = __importDefault(require("src/models/User"));
-const Concert_1 = __importDefault(require("src/models/Concert"));
+const Admin_1 = __importDefault(require("../models/Admin"));
+const User_1 = __importDefault(require("../models/User"));
+const Concert_1 = __importDefault(require("../models/Concert"));
 // library
-const date_1 = require("src/library/date");
-const Challenge_1 = __importDefault(require("src/models/Challenge"));
+const date_1 = require("../library/date");
+const Challenge_1 = __importDefault(require("../models/Challenge"));
 /**
  *  @관리자_페이지_조회
  *  @route Get admin
@@ -27,9 +27,12 @@ const Challenge_1 = __importDefault(require("src/models/Challenge"));
  *  @error
  *      1. 유저 id가 관리자가 아님
  */
-const postAdminList = (userID, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const postAdminList = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     if (!offset) {
         offset = 0;
+    }
+    if (!limit) {
+        return -1;
     }
     // 1. 유저 id가 관리자가 아님
     let user = yield User_1.default.findById(userID);
@@ -79,7 +82,7 @@ const postAdminList = (userID, offset) => __awaiter(void 0, void 0, void 0, func
         });
     }));
     var offsetAdmin = [];
-    for (var i = Number(offset); i < Number(offset) + Number(process.env.ADMIN_SIZE); i++) {
+    for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         offsetAdmin.push(adminList[i]);
     }
     return {

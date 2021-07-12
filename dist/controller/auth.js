@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 // services
-const authService_1 = require("src/service/authService");
+const authService_1 = require("../service/authService");
 const router = express_1.Router();
 /**yar
  *  @회원가입
@@ -77,8 +77,8 @@ router.post("/signin", [express_validator_1.check("email", "Please include a val
         }
         // 로그인 성공
         else {
-            const { user, token } = data;
-            response_1.tokenResponse(res, returnCode_1.returnCode.OK, "로그인 성공", token);
+            const { userData, token } = data;
+            response_1.dataTokenResponse(res, returnCode_1.returnCode.OK, "로그인 성공", userData, token);
         }
     }
     catch (err) {

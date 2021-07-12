@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 // middlewares
-const auth_1 = __importDefault(require("src/middleware/auth"));
+const auth_1 = __importDefault(require("../middleware/auth"));
 // services
-const challengeService_1 = require("src/service/challengeService");
+const challengeService_1 = require("../service/challengeService");
 const router = express_1.Router();
 /**
  *  @챌린지_회고_전체_가져오기
@@ -28,7 +28,11 @@ const router = express_1.Router();
  */
 router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeAll(req.query.offset);
+        const data = yield challengeService_1.getChallengeAll(req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         // 회고 전체 불러오기 성공
         const challengeAll = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "회고 전체 불러오기 성공", challengeAll);
@@ -45,7 +49,11 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
  */
 router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeSearch(req.query.tag, req.query.isMine, req.query.keyword, req.query.offset, req.body.userID);
+        const data = yield challengeService_1.getChallengeSearch(req.query.tag, req.query.isMine, req.query.keyword, req.query.offset, req.query.limit, req.body.userID);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         // 회고 전체 불러오기 성공
         const challengeSearch = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "검색 성공", challengeSearch);
@@ -131,7 +139,7 @@ router.patch("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, voi
  */
 router.delete("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.deleteChallenge(req.params.id);
+        const data = yield challengeService_1.deleteChallenge(req.body.userID.id, req.params.id);
         // 회고 id가 잘못된 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

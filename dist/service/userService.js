@@ -14,14 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patchPW = exports.patchInfo = exports.getUserInfo = exports.deleteMyComments = exports.getMyComments = exports.getMyWritings = exports.deleteMypageChallenge = exports.getMypageInfo = exports.getMypageChallenge = exports.getMypageConcert = exports.postRegister = void 0;
 // models
-const Admin_1 = __importDefault(require("src/models/Admin"));
-const User_1 = __importDefault(require("src/models/User"));
-const Badge_1 = __importDefault(require("src/models/Badge"));
-const Concert_1 = __importDefault(require("src/models/Concert"));
-const Challenge_1 = __importDefault(require("src/models/Challenge"));
-const Comment_1 = __importDefault(require("src/models/Comment"));
+const Admin_1 = __importDefault(require("../models/Admin"));
+const User_1 = __importDefault(require("../models/User"));
+const Badge_1 = __importDefault(require("../models/Badge"));
+const Concert_1 = __importDefault(require("../models/Concert"));
+const Challenge_1 = __importDefault(require("../models/Challenge"));
+const Comment_1 = __importDefault(require("../models/Comment"));
 // library
-const date_1 = require("src/library/date");
+const date_1 = require("../library/date");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 /**
  *  @User_챌린지_신청하기
@@ -85,7 +85,7 @@ exports.postRegister = postRegister;
  *  @route Post user/mypage/concert
  *  @access private
  */
-const getMypageConcert = (userID, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     if (!offset) {
         offset = 0;
     }
@@ -93,10 +93,13 @@ const getMypageConcert = (userID, offset) => __awaiter(void 0, void 0, void 0, f
     if (!userScraps[0]) {
         return -1;
     }
+    if (!limit) {
+        return -2;
+    }
     const concertList = yield Promise.all(userScraps.map(function (scrap) {
         return __awaiter(this, void 0, void 0, function* () {
             let concertScrap = yield Concert_1.default.find({ _id: scrap }, { isDeleted: false })
-                .populate("user", ["nickname"])
+                .populate("user", ["nickname", "img"])
                 .populate({
                 path: "comments",
                 select: { userID: 1, text: 1, isDeleted: 1 },
@@ -108,12 +111,12 @@ const getMypageConcert = (userID, offset) => __awaiter(void 0, void 0, void 0, f
                         options: { sort: { _id: -1 } },
                         populate: {
                             path: "userID",
-                            select: ["nickname"],
+                            select: ["nickname", "img"],
                         },
                     },
                     {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 ],
             });
@@ -124,8 +127,12 @@ const getMypageConcert = (userID, offset) => __awaiter(void 0, void 0, void 0, f
         return date_1.dateToNumber(b[0].createdAt) - date_1.dateToNumber(a[0].createdAt);
     });
     var mypageConcertScrap = [];
-    for (var i = Number(offset); i < Number(offset) + Number(process.env.PAGE_SIZE); i++) {
-        mypageConcertScrap.push(mypageConcert[i]);
+    for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+        const tmp = mypageConcert[i];
+        if (!tmp) {
+            break;
+        }
+        mypageConcertScrap.push(tmp[0]);
     }
     return {
         mypageConcertScrap,
@@ -138,7 +145,7 @@ exports.getMypageConcert = getMypageConcert;
  *  @route Post user/mypage/challenge
  *  @access private
  */
-const getMypageChallenge = (userID, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getMypageChallenge = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     if (!offset) {
         offset = 0;
     }
@@ -146,10 +153,13 @@ const getMypageChallenge = (userID, offset) => __awaiter(void 0, void 0, void 0,
     if (!userScraps[0]) {
         return -1;
     }
+    if (!limit) {
+        return -2;
+    }
     const challengeList = yield Promise.all(userScraps.map(function (scrap) {
         return __awaiter(this, void 0, void 0, function* () {
             let challengeScrap = yield Challenge_1.default.find({ _id: scrap }, { isDeleted: false })
-                .populate("user", ["nickname"])
+                .populate("user", ["nickname", "img"])
                 .populate({
                 path: "comments",
                 select: { userID: 1, text: 1, isDeleted: 1 },
@@ -161,12 +171,12 @@ const getMypageChallenge = (userID, offset) => __awaiter(void 0, void 0, void 0,
                         options: { sort: { _id: -1 } },
                         populate: {
                             path: "userID",
-                            select: ["nickname"],
+                            select: ["nickname", "img"],
                         },
                     },
                     {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 ],
             });
@@ -177,8 +187,12 @@ const getMypageChallenge = (userID, offset) => __awaiter(void 0, void 0, void 0,
         return date_1.dateToNumber(b[0].createdAt) - date_1.dateToNumber(a[0].createdAt);
     });
     var mypageChallengeScrap = [];
-    for (var i = Number(offset); i < Number(offset) + Number(process.env.PAGE_SIZE); i++) {
-        mypageChallengeScrap.push(mypageChallenge[i]);
+    for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+        const tmp = mypageChallenge[i];
+        if (!tmp) {
+            break;
+        }
+        mypageChallengeScrap.push(tmp[0]);
     }
     return {
         mypageChallengeScrap,
@@ -274,7 +288,10 @@ exports.deleteMypageChallenge = deleteMypageChallenge;
  *  @error
  *    1.
  */
-const getMyWritings = (userID, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyWritings = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!limit) {
+        return -1;
+    }
     let challenges;
     if (offset) {
         challenges = yield Challenge_1.default.find({
@@ -282,9 +299,9 @@ const getMyWritings = (userID, offset) => __awaiter(void 0, void 0, void 0, func
             _id: { $lt: offset },
             user: userID,
         })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -296,21 +313,21 @@ const getMyWritings = (userID, offset) => __awaiter(void 0, void 0, void 0, func
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
     }
     else {
         challenges = yield Challenge_1.default.find({ isDeleted: false, user: userID })
-            .limit(Number(process.env.PAGE_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 })
-            .populate("user", ["nickname"])
+            .populate("user", ["nickname", "img"])
             .populate({
             path: "comments",
             select: { userID: 1, text: 1, isDeleted: 1 },
@@ -322,12 +339,12 @@ const getMyWritings = (userID, offset) => __awaiter(void 0, void 0, void 0, func
                     options: { sort: { _id: -1 } },
                     populate: {
                         path: "userID",
-                        select: ["nickname"],
+                        select: ["nickname", "img"],
                     },
                 },
                 {
                     path: "userID",
-                    select: ["nickname"],
+                    select: ["nickname", "img"],
                 },
             ],
         });
@@ -339,7 +356,10 @@ exports.getMyWritings = getMyWritings;
  *  @마이페이지_내가_쓴_댓글
  *  @route Get user/mypage/comment
  */
-const getMyComments = (userID, offset) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyComments = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!limit) {
+        return -1;
+    }
     let comments;
     if (offset) {
         comments = yield Comment_1.default.find({
@@ -347,7 +367,7 @@ const getMyComments = (userID, offset) => __awaiter(void 0, void 0, void 0, func
             userID,
             _id: { $lt: offset },
         })
-            .limit(Number(process.env.COMMENT_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 });
     }
     else {
@@ -355,7 +375,7 @@ const getMyComments = (userID, offset) => __awaiter(void 0, void 0, void 0, func
             isDeleted: false,
             userID,
         })
-            .limit(Number(process.env.COMMENT_SIZE))
+            .limit(Number(limit))
             .sort({ _id: -1 });
     }
     const user = yield User_1.default.findById(userID);
@@ -425,7 +445,7 @@ const getUserInfo = (userID) => __awaiter(void 0, void 0, void 0, function* () {
         gender: true,
         marpolicy: true,
     });
-    return user;
+    return user[0];
 });
 exports.getUserInfo = getUserInfo;
 /**

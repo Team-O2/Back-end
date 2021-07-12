@@ -13,12 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patchPassword = exports.postCode = exports.postEmail = exports.postSignin = exports.postSignup = void 0;
-const User_1 = __importDefault(require("src/models/User"));
-const Badge_1 = __importDefault(require("src/models/Badge"));
+const User_1 = __importDefault(require("../models/User"));
+const Badge_1 = __importDefault(require("../models/Badge"));
+const Admin_1 = __importDefault(require("../models/Admin"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const config_1 = __importDefault(require("src/config"));
-const emailSender_1 = require("src/library/emailSender");
+const config_1 = __importDefault(require("../config"));
+const emailSender_1 = require("../library/emailSender");
 const ejs_1 = __importDefault(require("ejs"));
 /**
  *  @회원가입
@@ -83,6 +84,12 @@ exports.postSignup = postSignup;
  *      1. 요청 바디 부족
  *      2. 아이디가 존재하지 않음
  *      3. 패스워드가 올바르지 않음
+ *  @response
+ *      0 - default(비로그인)
+ *      1 - 챌린지 안하는 유저
+ *      2 - 챌린지 안하는 유저 (기간은 챌린지 없음)
+ *      3 - 챌린지 하는 유저 (기간은 챌린지 중)
+ *      4 - 관리자
  */
 function postSignin(body) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -110,7 +117,46 @@ function postSignin(body) {
         // access 토큰 발급
         // 유효기간 14일
         let token = jsonwebtoken_1.default.sign(payload, config_1.default.jwtSecret, { expiresIn: "14d" });
-        return { user, token };
+        var userState = 0;
+        /*
+          var = new Date('2020-10-23');
+          var date2 = new Date('2020-10-22');
+      
+          console.log(date1 > date2); // true
+        */
+        // 현재 기수(generation)를 확인하여 오투콘서트에 삽입
+        let dateNow = new Date();
+        const gen = yield Admin_1.default.findOne({
+            $and: [
+                { challengeStartDT: { $lte: dateNow } },
+                { challengeEndDT: { $gte: dateNow } },
+            ],
+        });
+        // 4-관리자
+        if (user.userType === 1) {
+            userState = 4;
+        }
+        // 챌린지 안하는 유저
+        else if (!user.isChallenge) {
+            // 1- 해당 날짜에 진행되는 기수가 있음
+            if (gen) {
+                userState = 1;
+            }
+            // 2- 해당 날짜에 진행되는 기수가 없음
+            else {
+                userState = 2;
+            }
+        }
+        // 3- 챌린지 중인 유저
+        else {
+            userState = 3;
+        }
+        const totalGeneration = yield Admin_1.default.find().countDocuments();
+        const userData = {
+            userState,
+            totalGeneration,
+        };
+        return { userData, token };
     });
 }
 exports.postSignin = postSignin;
@@ -139,7 +185,7 @@ function postEmail(body) {
         user.emailCode = authNum;
         yield user.save();
         let emailTemplate;
-        ejs_1.default.renderFile("src/library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
+        ejs_1.default.renderFile("../library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
             if (err) {
                 console.log(err);
             }

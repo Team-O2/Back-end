@@ -7,7 +7,7 @@ exports.upload = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
-const config_1 = __importDefault(require("src/config"));
+const config_1 = __importDefault(require("../config"));
 const s3 = new aws_sdk_1.default.S3({
     accessKeyId: config_1.default.awsS3AccessKey,
     secretAccessKey: config_1.default.awsS3SecretAccessKey,

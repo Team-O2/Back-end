@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 // services
-const concertService_1 = require("src/service/concertService");
+const concertService_1 = require("../service/concertService");
 // middlewares
-const auth_1 = __importDefault(require("src/middleware/auth"));
+const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.Router();
 /**
  *  @오투콘서트_전체_가져오기
@@ -28,7 +28,11 @@ const router = express_1.Router();
  */
 router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield concertService_1.getConcertAll(req.query.offset);
+        const data = yield concertService_1.getConcertAll(req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         // 회고 전체 불러오기 성공
         const concert = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "콘서트 전체 불러오기 성공", concert);
@@ -45,7 +49,11 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
  */
 router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield concertService_1.getConcertSearch(req.query.tag, req.query.keyword, req.query.offset);
+        const data = yield concertService_1.getConcertSearch(req.query.tag, req.query.keyword, req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+        }
         // 검색 불러오기 성공
         const concertSearch = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "검색 성공", concertSearch);

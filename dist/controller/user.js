@@ -14,14 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 // libraries
-const returnCode_1 = require("src/library/returnCode");
-const response_1 = require("src/library/response");
+const returnCode_1 = require("../library/returnCode");
+const response_1 = require("../library/response");
 // middlewares
-const auth_1 = __importDefault(require("src/middleware/auth"));
+const auth_1 = __importDefault(require("../middleware/auth"));
 // modules
-const upload = require("src/modules/upload");
+const upload = require("../modules/upload");
 // services
-const userService_1 = require("src/service/userService");
+const userService_1 = require("../service/userService");
 const router = express_1.Router();
 /**
  *  @User_챌린지_신청하기
@@ -130,10 +130,14 @@ router.patch("/password", auth_1.default, (req, res) => __awaiter(void 0, void 0
  */
 router.get("/mypage/concert", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.getMypageConcert(req.body.userID.id, req.query.offset);
+        const data = yield userService_1.getMypageConcert(req.body.userID.id, req.query.offset, req.query.limit);
         // 1. no content
         if (data == -1) {
             response_1.response(res, returnCode_1.returnCode.NO_CONTENT, "스크랩한 Share Together가 없습니다.");
+        }
+        // 2. limit 없을 때
+        if (data === -2) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
         }
         // 마이페이지 콘서트 조회 성공
         else {
@@ -152,10 +156,14 @@ router.get("/mypage/concert", auth_1.default, (req, res) => __awaiter(void 0, vo
  */
 router.get("/mypage/challenge", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.getMypageChallenge(req.body.userID.id, req.query.offset);
+        const data = yield userService_1.getMypageChallenge(req.body.userID.id, req.query.offset, req.query.limit);
         // 1. no content
         if (data == -1) {
             response_1.response(res, returnCode_1.returnCode.NO_CONTENT, "스크랩한 Run Myself가 없습니다.");
+        }
+        // 2. limit 없을 때
+        if (data === -2) {
+            response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
         }
         // 마이페이지 콘서트 조회 성공
         else {
@@ -214,7 +222,11 @@ router.delete("/mypage/challenge/:id", auth_1.default, (req, res) => __awaiter(v
  */
 router.get("/mypage/write", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.getMyWritings(req.body.userID.id, req.query.offset);
+        const data = yield userService_1.getMyWritings(req.body.userID.id, req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+        }
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "내가 쓴 글 가져오기 성공", data);
     }
     catch (err) {
@@ -229,7 +241,11 @@ router.get("/mypage/write", auth_1.default, (req, res) => __awaiter(void 0, void
  */
 router.get("/mypage/comment", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.getMyComments(req.body.userID.id, req.query.offset);
+        const data = yield userService_1.getMyComments(req.body.userID.id, req.query.offset, req.query.limit);
+        // limit 없을 때
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+        }
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "내가 쓴 댓글 가져오기 성공", data);
     }
     catch (err) {
