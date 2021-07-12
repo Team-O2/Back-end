@@ -122,7 +122,7 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
-  if(!limit){
+  if (!limit) {
     return -1;
   }
 
@@ -198,7 +198,7 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
     });
   }
 
-  return filteredData;
+  return { filteredData, totalNoticeSearchNum: filteredData.length };
 };
 
 /**

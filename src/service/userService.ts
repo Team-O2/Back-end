@@ -149,7 +149,11 @@ export const getMypageConcert = async (userID, offset, limit) => {
 
   var mypageConcertScrap = [];
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
-    mypageConcertScrap.push(mypageConcert[i]);
+    const tmp = mypageConcert[i];
+    if (!tmp) {
+      break;
+    }
+    mypageConcertScrap.push(tmp[0]);
   }
   return {
     mypageConcertScrap,
@@ -214,8 +218,13 @@ export const getMypageChallenge = async (userID, offset, limit) => {
   });
 
   var mypageChallengeScrap = [];
+
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
-    mypageChallengeScrap.push(mypageChallenge[i]);
+    const tmp = mypageChallenge[i];
+    if (!tmp) {
+      break;
+    }
+    mypageChallengeScrap.push(tmp[0]);
   }
   return {
     mypageChallengeScrap,
@@ -504,7 +513,7 @@ export const getUserInfo = async (userID) => {
       marpolicy: true,
     }
   );
-  return user;
+  return user[0];
 };
 
 /**

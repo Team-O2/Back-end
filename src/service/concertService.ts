@@ -113,7 +113,7 @@ export const getConcertOne = async (concertID) => {
       ],
     });
 
-  return concert;
+  return concert[0];
 };
 
 /**
