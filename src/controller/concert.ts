@@ -27,8 +27,12 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getConcertAll(req.query.offset);
+    const data = await getConcertAll(req.query.offset, req.query.limit);
 
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
     // 회고 전체 불러오기 성공
     const concert = data;
     dataResponse(res, returnCode.OK, "콘서트 전체 불러오기 성공", concert);
@@ -49,8 +53,14 @@ router.get("/search", auth, async (req: Request, res: Response) => {
     const data = await getConcertSearch(
       req.query.tag,
       req.query.keyword,
-      req.query.offset
+      req.query.offset,
+      req.query.limit
     );
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
 
     // 검색 불러오기 성공
     const concertSearch = data;
