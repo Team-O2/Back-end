@@ -23,10 +23,16 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getNoticeAll(req.query.offset);
+    const data = await getNoticeAll(req.query.offset, req.query.limit);
 
     // 공지사항 불러오기 성공
     const notice = data;
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
+
     dataResponse(res, returnCode.OK, "공지사항 불러오기 성공", notice);
   } catch (err) {
     console.error(err.message);
@@ -42,10 +48,20 @@ router.get("/", auth, async (req: Request, res: Response) => {
 
 router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getNoticeSearch(req.query.keyword, req.query.offset);
+    const data = await getNoticeSearch(
+      req.query.keyword,
+      req.query.offset,
+      req.query.limit
+    );
 
     // 검색 불러오기 성공
     const noticeSearch = data;
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
+
     dataResponse(res, returnCode.OK, "검색 성공", noticeSearch);
   } catch (err) {
     console.error(err.message);
