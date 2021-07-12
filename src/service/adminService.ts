@@ -1,11 +1,11 @@
 // models
-import Admin from "src/models/Admin";
-import User from "src/models/User";
-import Concert from "src/models/Concert";
+import Admin from "../models/Admin";
+import User from "../models/User";
+import Concert from "../models/Concert";
 
 // library
-import { stringToDate } from "src/library/date";
-import Challenge from "src/models/Challenge";
+import { stringToDate } from "../library/date";
+import Challenge from "../models/Challenge";
 
 /**
  *  @관리자_페이지_조회
@@ -78,11 +78,7 @@ export const postAdminList = async (userID, offset, limit) => {
   );
 
   var offsetAdmin = [];
-  for (
-    var i = Number(offset);
-    i < Number(offset) + Number(limit);
-    i++
-  ) {
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     offsetAdmin.push(adminList[i]);
   }
 

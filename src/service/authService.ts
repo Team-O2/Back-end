@@ -1,12 +1,12 @@
-import User from "src/models/User";
-import Badge from "src/models/Badge";
-import Admin from "src/models/Admin";
+import User from "../models/User";
+import Badge from "../models/Badge";
+import Admin from "../models/Admin";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import config from "src/config";
+import config from "../config";
 
-import { smtpTransport } from "src/library/emailSender";
+import { smtpTransport } from "../library/emailSender";
 import ejs from "ejs";
 
 /**
@@ -200,7 +200,7 @@ export async function postEmail(body) {
 
   let emailTemplate;
   ejs.renderFile(
-    "src/library/emailTemplete.ejs",
+    "../library/emailTemplete.ejs",
     { authCode: authNum },
     (err, data) => {
       if (err) {

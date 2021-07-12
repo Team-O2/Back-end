@@ -1,17 +1,17 @@
 import { Router, Request, Response } from "express";
 // libraries
-import { returnCode } from "src/library/returnCode";
-import { response, dataResponse } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response, dataResponse } from "../library/response";
 // services
 import {
   getNoticeAll,
   getNoticeOne,
   getNoticeSearch,
   postNoticeComment,
-} from "src/service/noticeService";
+} from "../service/noticeService";
 
 // middlewares
-import auth from "src/middleware/auth";
+import auth from "../middleware/auth";
 
 const router = Router();
 

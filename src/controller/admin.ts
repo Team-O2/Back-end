@@ -1,20 +1,20 @@
 import { Router, Request, Response } from "express";
 // libraries
-import { returnCode } from "src/library/returnCode";
-import { response, dataResponse } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response, dataResponse } from "../library/response";
 //middlewares
-import auth from "src/middleware/auth";
-const upload = require("src/modules/upload");
+import auth from "../middleware/auth";
+const upload = require("../modules/upload");
 // interfaces
-import { IAdmin } from "src/interfaces/IAdmin";
-import { IConcert } from "src/interfaces/IConcert";
+import { IAdmin } from "../interfaces/IAdmin";
+import { IConcert } from "../interfaces/IConcert";
 //services
 import {
   postAdminList,
   postAdminChallenge,
   postAdminConcert,
   postAdminNotice,
-} from "src/service/adminService";
+} from "../service/adminService";
 
 const router = Router();
 

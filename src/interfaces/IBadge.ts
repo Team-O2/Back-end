@@ -1,4 +1,4 @@
-import { IUser } from "src/interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 
 export interface IBadge {
   user: IUser;

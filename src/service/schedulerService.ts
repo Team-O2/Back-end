@@ -1,10 +1,10 @@
 import schedule from "node-schedule";
 // models
-import Admin from "src/models/Admin";
-import User from "src/models/User";
-import Badge from "src/models/Badge";
+import Admin from "../models/Admin";
+import User from "../models/User";
+import Badge from "../models/Badge";
 // libraries
-import { stringToDate, period, dateToString } from "src/library/date";
+import { stringToDate, period, dateToString } from "../library/date";
 
 export const challengeOpen = schedule.scheduleJob("0 0 0 * * *", async () => {
   console.log("hi");

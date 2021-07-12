@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUser } from "src/interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 
 interface IUserNickName {
   _id: mongoose.Schema.Types.ObjectId;

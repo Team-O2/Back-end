@@ -1,8 +1,8 @@
 // models
-import Concert from "src/models/Concert";
-import User from "src/models/User";
-import Badge from "src/models/Badge";
-import Comment from "src/models/Comment";
+import Concert from "../models/Concert";
+import User from "../models/User";
+import Badge from "../models/Badge";
+import Comment from "../models/Comment";
 
 /**
  *  @공지사항_전체_가져오기

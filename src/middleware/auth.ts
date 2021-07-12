@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import config from "src/config";
+import config from "../config";
 
-import { returnCode } from "src/library/returnCode";
-import { response } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response } from "../library/response";
 
 export default (req, res, next) => {
   // 토큰 검사

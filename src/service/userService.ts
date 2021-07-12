@@ -1,18 +1,18 @@
 // models
-import Admin from "src/models/Admin";
-import User from "src/models/User";
-import Badge from "src/models/Badge";
-import Concert from "src/models/Concert";
-import Challenge from "src/models/Challenge";
-import Comment from "src/models/Comment";
+import Admin from "../models/Admin";
+import User from "../models/User";
+import Badge from "../models/Badge";
+import Concert from "../models/Concert";
+import Challenge from "../models/Challenge";
+import Comment from "../models/Comment";
 
 // library
-import { dateToNumber, period } from "src/library/date";
+import { dateToNumber, period } from "../library/date";
 
 // jwt
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import config from "src/config";
+import config from "../config";
 
 /**
  *  @User_챌린지_신청하기

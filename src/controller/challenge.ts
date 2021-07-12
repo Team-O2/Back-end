@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 // libraries
-import { returnCode } from "src/library/returnCode";
-import { response, dataResponse } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response, dataResponse } from "../library/response";
 // middlewares
-import auth from "src/middleware/auth";
+import auth from "../middleware/auth";
 // services
 import {
   getChallengeAll,
@@ -17,7 +17,7 @@ import {
   postChallengeScrap,
   deleteChallengeScrap,
   getChallengeOne,
-} from "src/service/challengeService";
+} from "../service/challengeService";
 
 const router = Router();
 

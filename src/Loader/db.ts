@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import config from "src/config";
-import Challenge from "src/models/Challenge";
-import Concert from "src/models/Concert";
-import User from "src/models/User";
-import Admin from "src/models/Admin";
-import Badge from "src/models/Badge";
-import Comment from "src/models/Comment";
+import config from "../config";
+import Challenge from "../models/Challenge";
+import Concert from "../models/Concert";
+import User from "../models/User";
+import Admin from "../models/Admin";
+import Badge from "../models/Badge";
+import Comment from "../models/Comment";
 
 const connectDB = async () => {
   try {

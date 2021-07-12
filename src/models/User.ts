@@ -1,5 +1,5 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import { IUser } from "src/interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
   createDT: {

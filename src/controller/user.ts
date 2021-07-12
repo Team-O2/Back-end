@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 // libraries
-import { returnCode } from "src/library/returnCode";
-import { response, dataResponse } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response, dataResponse } from "../library/response";
 // middlewares
-import auth from "src/middleware/auth";
+import auth from "../middleware/auth";
 // modules
-const upload = require("src/modules/upload");
+const upload = require("../modules/upload");
 // services
 import {
   postRegister,
@@ -19,7 +19,7 @@ import {
   getUserInfo,
   patchInfo,
   patchPW,
-} from "src/service/userService";
+} from "../service/userService";
 
 const router = Router();
 

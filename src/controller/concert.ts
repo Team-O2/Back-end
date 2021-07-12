@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 // libraries
-import { returnCode } from "src/library/returnCode";
-import { response, dataResponse } from "src/library/response";
+import { returnCode } from "../library/returnCode";
+import { response, dataResponse } from "../library/response";
 // services
 import {
   postConcertComment,
@@ -12,10 +12,10 @@ import {
   postConcertScrap,
   deleteConcertScrap,
   getConcertOne,
-} from "src/service/concertService";
+} from "../service/concertService";
 
 // middlewares
-import auth from "src/middleware/auth";
+import auth from "../middleware/auth";
 
 const router = Router();
 

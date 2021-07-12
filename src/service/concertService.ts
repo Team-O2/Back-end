@@ -1,8 +1,8 @@
 // models
-import Concert from "src/models/Concert";
-import User from "src/models/User";
-import Comment from "src/models/Comment";
-import Badge from "src/models/Badge";
+import Concert from "../models/Concert";
+import User from "../models/User";
+import Comment from "../models/Comment";
+import Badge from "../models/Badge";
 
 /**
  *  @오투콘서트_전체_가져오기
