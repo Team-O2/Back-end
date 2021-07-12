@@ -8,63 +8,67 @@ import Badge from "src/models/Badge";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-export const getChallengeAll = async (offset) => {
+export const getChallengeAll = async (offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
   // 댓글, 답글 최신순으로 정렬
+  if (!limit) {
+    return -1;
+  }
+
   let challenges;
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -83,24 +87,24 @@ export const getChallengeOne = async (challengeID) => {
     { _id: challengeID },
     { isDeleted: false }
   )
-    .populate("user", ["nickname"])
+    .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
-      select: { userID: 1, text: 1, isDeleted: 1 },
+      select: ["userID", "text", "isDeleted"],
       options: { sort: { _id: -1 } },
       populate: [
         {
           path: "childrenComment",
-          select: { userID: 1, text: 1, isDeleted: 1 },
+          select: ["userID", "text", "isDeleted"],
           options: { sort: { _id: -1 } },
           populate: {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         },
         {
           path: "userID",
-          select: ["nickname"],
+          select: ["nickname", "img"],
         },
       ],
     });
@@ -122,63 +126,69 @@ export const getChallengeSearch = async (
   isMine,
   keyword,
   offset,
+  limit,
   userID
 ) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
+
+  if (!limit) {
+    return -1;
+  }
+
   let challenges;
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -260,7 +270,10 @@ export const postChallenge = async (userID, body) => {
     await badge.save();
   }
 
-  const data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
+  const data = Challenge.findById(challenge._id).populate("user", [
+    "nickname",
+    "img",
+  ]);
 
   return data;
 };
@@ -424,6 +437,7 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     _id: comment._id,
     nickname: user.nickname,
     text: text,
+    img: user.img,
     createdAt: comment.createdAt,
   };
 };
