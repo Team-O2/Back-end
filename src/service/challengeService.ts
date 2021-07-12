@@ -232,7 +232,7 @@ export const postChallenge = async (userID, body) => {
   }
 
   // 2. 유저 id 잘못됨
-  let user = await User.findById(userID);
+  const user = await User.findById(userID);
   if (!user) {
     return -2;
   }
@@ -248,6 +248,11 @@ export const postChallenge = async (userID, body) => {
 
   await challenge.save();
 
+  // 유저의 writingCNT 증가
+  await user.update({
+    $inc: { writingCNT: 1 },
+  });
+
   // 첫 챌린지 회고 작성 시 배지 추가
   const badge = await Badge.findOne({ user: userID });
   if (!badge.firstWriteBadge) {
@@ -255,7 +260,7 @@ export const postChallenge = async (userID, body) => {
     await badge.save();
   }
 
-  let data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
+  const data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
 
   return data;
 };
@@ -300,7 +305,7 @@ export const patchChallenge = async (challengeID, body) => {
  *  @error
  *      1. 회고록 id 잘못됨
  */
-export const deleteChallenge = async (challengeID) => {
+export const deleteChallenge = async (userID, challengeID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
   if (!challenge || challenge.isDeleted) {
@@ -310,6 +315,14 @@ export const deleteChallenge = async (challengeID) => {
   await Challenge.findByIdAndUpdate(
     { _id: challengeID },
     { $set: { isDeleted: true } }
+  );
+
+  // 유저의 writingCNT 감소
+  await User.findOneAndUpdate(
+    { _id: userID },
+    {
+      $inc: { writingCNT: 1 },
+    }
   );
 
   return { _id: challenge._id };

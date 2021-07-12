@@ -149,7 +149,7 @@ router.patch("/:id", auth, async (req: Request, res: Response) => {
 
 router.delete("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await deleteChallenge(req.params.id);
+    const data = await deleteChallenge(req.body.userID.id, req.params.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {

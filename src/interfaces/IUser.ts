@@ -13,6 +13,8 @@ export interface IUser {
   marpolicy: Boolean;
   gender: number;
   challengeCNT: number;
+  conditionCNT: number;
+  writingCNT: number;
   badge: IBadge;
   badgeCNT: number;
   commentCNT: number;
