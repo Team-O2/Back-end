@@ -8,63 +8,67 @@ import Badge from "src/models/Badge";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-export const getChallengeAll = async (offset) => {
+export const getChallengeAll = async (offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
   // 댓글, 답글 최신순으로 정렬
+  if (!limit) {
+    return -1;
+  }
+
   let challenges;
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -83,24 +87,24 @@ export const getChallengeOne = async (challengeID) => {
     { _id: challengeID },
     { isDeleted: false }
   )
-    .populate("user", ["nickname"])
+    .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
-      select: { userID: 1, text: 1, isDeleted: 1 },
+      select: ["userID", "text", "isDeleted"],
       options: { sort: { _id: -1 } },
       populate: [
         {
           path: "childrenComment",
-          select: { userID: 1, text: 1, isDeleted: 1 },
+          select: ["userID", "text", "isDeleted"],
           options: { sort: { _id: -1 } },
           populate: {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         },
         {
           path: "userID",
-          select: ["nickname"],
+          select: ["nickname", "img"],
         },
       ],
     });
@@ -122,63 +126,69 @@ export const getChallengeSearch = async (
   isMine,
   keyword,
   offset,
+  limit,
   userID
 ) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
+
+  if (!limit) {
+    return -1;
+  }
+
   let challenges;
   if (offset) {
     challenges = await Challenge.find({
       isDeleted: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
+        select: ["userID", "text", "isDeleted"],
         options: { sort: { _id: -1 } },
         populate: [
           {
             path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
+            select: ["userID", "text", "isDeleted"],
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -232,7 +242,7 @@ export const postChallenge = async (userID, body) => {
   }
 
   // 2. 유저 id 잘못됨
-  let user = await User.findById(userID);
+  const user = await User.findById(userID);
   if (!user) {
     return -2;
   }
@@ -248,6 +258,11 @@ export const postChallenge = async (userID, body) => {
 
   await challenge.save();
 
+  // 유저의 writingCNT 증가
+  await user.update({
+    $inc: { writingCNT: 1 },
+  });
+
   // 첫 챌린지 회고 작성 시 배지 추가
   const badge = await Badge.findOne({ user: userID });
   if (!badge.firstWriteBadge) {
@@ -255,7 +270,10 @@ export const postChallenge = async (userID, body) => {
     await badge.save();
   }
 
-  let data = Challenge.findById(challenge._id).populate("user", ["nickname"]);
+  const data = Challenge.findById(challenge._id).populate("user", [
+    "nickname",
+    "img",
+  ]);
 
   return data;
 };
@@ -300,7 +318,7 @@ export const patchChallenge = async (challengeID, body) => {
  *  @error
  *      1. 회고록 id 잘못됨
  */
-export const deleteChallenge = async (challengeID) => {
+export const deleteChallenge = async (userID, challengeID) => {
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
   if (!challenge || challenge.isDeleted) {
@@ -310,6 +328,14 @@ export const deleteChallenge = async (challengeID) => {
   await Challenge.findByIdAndUpdate(
     { _id: challengeID },
     { $set: { isDeleted: true } }
+  );
+
+  // 유저의 writingCNT 감소
+  await User.findOneAndUpdate(
+    { _id: userID },
+    {
+      $inc: { writingCNT: 1 },
+    }
   );
 
   return { _id: challenge._id };
@@ -411,6 +437,7 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     _id: comment._id,
     nickname: user.nickname,
     text: text,
+    img: user.img,
     createdAt: comment.createdAt,
   };
 };

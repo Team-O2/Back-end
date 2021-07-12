@@ -15,9 +15,13 @@ import Challenge from "src/models/Challenge";
  *      1. 유저 id가 관리자가 아님
  */
 
-export const postAdminList = async (userID, offset) => {
+export const postAdminList = async (userID, offset, limit) => {
   if (!offset) {
     offset = 0;
+  }
+
+  if (!limit) {
+    return -1;
   }
 
   // 1. 유저 id가 관리자가 아님
@@ -76,7 +80,7 @@ export const postAdminList = async (userID, offset) => {
   var offsetAdmin = [];
   for (
     var i = Number(offset);
-    i < Number(offset) + Number(process.env.ADMIN_SIZE);
+    i < Number(offset) + Number(limit);
     i++
   ) {
     offsetAdmin.push(adminList[i]);

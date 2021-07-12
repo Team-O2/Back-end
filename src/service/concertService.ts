@@ -8,12 +8,16 @@ import Badge from "src/models/Badge";
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
  */
-export const getConcertAll = async (offset) => {
+export const getConcertAll = async (offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
   // 댓글, 답글 최신순으로 정렬
+  if (!limit) {
+    return -1;
+  }
+
   let concerts;
   if (offset) {
     concerts = await Concert.find({
@@ -21,9 +25,9 @@ export const getConcertAll = async (offset) => {
       isNotice: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -35,20 +39,20 @@ export const getConcertAll = async (offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     concerts = await Concert.find({ isDeleted: false, isNotice: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -60,12 +64,12 @@ export const getConcertAll = async (offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -87,7 +91,7 @@ export const getConcertOne = async (concertID) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
   const concert = await Concert.find({ _id: concertID }, { isDeleted: false })
-    .populate("user", ["nickname"])
+    .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
       select: { userID: 1, text: 1, isDeleted: 1 },
@@ -99,12 +103,12 @@ export const getConcertOne = async (concertID) => {
           options: { sort: { _id: -1 } },
           populate: {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         },
         {
           path: "userID",
-          select: ["nickname"],
+          select: ["nickname", "img"],
         },
       ],
     });
@@ -116,11 +120,16 @@ export const getConcertOne = async (concertID) => {
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-export const getConcertSearch = async (tag, keyword, offset) => {
+export const getConcertSearch = async (tag, keyword, offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
   // 댓글, 답글 populate
+
+  if (!limit) {
+    return -1;
+  }
+
   let concerts;
   if (offset) {
     concerts = await Concert.find({
@@ -128,9 +137,9 @@ export const getConcertSearch = async (tag, keyword, offset) => {
       isNotice: false,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -142,20 +151,20 @@ export const getConcertSearch = async (tag, keyword, offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     concerts = await Concert.find({ isDeleted: false })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -167,12 +176,12 @@ export const getConcertSearch = async (tag, keyword, offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });

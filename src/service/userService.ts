@@ -97,7 +97,7 @@ export const postRegister = async (userID, body) => {
  *  @access private
  */
 
-export const getMypageConcert = async (userID, offset) => {
+export const getMypageConcert = async (userID, offset, limit) => {
   if (!offset) {
     offset = 0;
   }
@@ -109,13 +109,17 @@ export const getMypageConcert = async (userID, offset) => {
     return -1;
   }
 
+  if (!limit) {
+    return -2;
+  }
+
   const concertList = await Promise.all(
     userScraps.map(async function (scrap) {
       let concertScrap = await Concert.find(
         { _id: scrap },
         { isDeleted: false }
       )
-        .populate("user", ["nickname"])
+        .populate("user", ["nickname", "img"])
         .populate({
           path: "comments",
           select: { userID: 1, text: 1, isDeleted: 1 },
@@ -127,12 +131,12 @@ export const getMypageConcert = async (userID, offset) => {
               options: { sort: { _id: -1 } },
               populate: {
                 path: "userID",
-                select: ["nickname"],
+                select: ["nickname", "img"],
               },
             },
             {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           ],
         });
@@ -144,11 +148,7 @@ export const getMypageConcert = async (userID, offset) => {
   });
 
   var mypageConcertScrap = [];
-  for (
-    var i = Number(offset);
-    i < Number(offset) + Number(process.env.PAGE_SIZE);
-    i++
-  ) {
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     mypageConcertScrap.push(mypageConcert[i]);
   }
   return {
@@ -163,7 +163,7 @@ export const getMypageConcert = async (userID, offset) => {
  *  @access private
  */
 
-export const getMypageChallenge = async (userID, offset) => {
+export const getMypageChallenge = async (userID, offset, limit) => {
   if (!offset) {
     offset = 0;
   }
@@ -175,13 +175,17 @@ export const getMypageChallenge = async (userID, offset) => {
     return -1;
   }
 
+  if (!limit) {
+    return -2;
+  }
+
   const challengeList = await Promise.all(
     userScraps.map(async function (scrap) {
       let challengeScrap = await Challenge.find(
         { _id: scrap },
         { isDeleted: false }
       )
-        .populate("user", ["nickname"])
+        .populate("user", ["nickname", "img"])
         .populate({
           path: "comments",
           select: { userID: 1, text: 1, isDeleted: 1 },
@@ -193,12 +197,12 @@ export const getMypageChallenge = async (userID, offset) => {
               options: { sort: { _id: -1 } },
               populate: {
                 path: "userID",
-                select: ["nickname"],
+                select: ["nickname", "img"],
               },
             },
             {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           ],
         });
@@ -210,11 +214,7 @@ export const getMypageChallenge = async (userID, offset) => {
   });
 
   var mypageChallengeScrap = [];
-  for (
-    var i = Number(offset);
-    i < Number(offset) + Number(process.env.PAGE_SIZE);
-    i++
-  ) {
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     mypageChallengeScrap.push(mypageChallenge[i]);
   }
   return {
@@ -328,7 +328,11 @@ export const deleteMypageChallenge = async (userID, challengeID) => {
  *  @error
  *    1.
  */
-export const getMyWritings = async (userID, offset) => {
+export const getMyWritings = async (userID, offset, limit) => {
+  if (!limit) {
+    return -1;
+  }
+
   let challenges;
   if (offset) {
     challenges = await Challenge.find({
@@ -336,9 +340,9 @@ export const getMyWritings = async (userID, offset) => {
       _id: { $lt: offset },
       user: userID,
     })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -350,20 +354,20 @@ export const getMyWritings = async (userID, offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
   } else {
     challenges = await Challenge.find({ isDeleted: false, user: userID })
-      .limit(Number(process.env.PAGE_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 })
-      .populate("user", ["nickname"])
+      .populate("user", ["nickname", "img"])
       .populate({
         path: "comments",
         select: { userID: 1, text: 1, isDeleted: 1 },
@@ -375,12 +379,12 @@ export const getMyWritings = async (userID, offset) => {
             options: { sort: { _id: -1 } },
             populate: {
               path: "userID",
-              select: ["nickname"],
+              select: ["nickname", "img"],
             },
           },
           {
             path: "userID",
-            select: ["nickname"],
+            select: ["nickname", "img"],
           },
         ],
       });
@@ -392,7 +396,11 @@ export const getMyWritings = async (userID, offset) => {
  *  @마이페이지_내가_쓴_댓글
  *  @route Get user/mypage/comment
  */
-export const getMyComments = async (userID, offset) => {
+export const getMyComments = async (userID, offset, limit) => {
+  if (!limit) {
+    return -1;
+  }
+
   let comments;
   if (offset) {
     comments = await Comment.find({
@@ -400,14 +408,14 @@ export const getMyComments = async (userID, offset) => {
       userID,
       _id: { $lt: offset },
     })
-      .limit(Number(process.env.COMMENT_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 });
   } else {
     comments = await Comment.find({
       isDeleted: false,
       userID,
     })
-      .limit(Number(process.env.COMMENT_SIZE))
+      .limit(Number(limit))
       .sort({ _id: -1 });
   }
   const user = await User.findById(userID);

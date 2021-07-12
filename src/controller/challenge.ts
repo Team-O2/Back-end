@@ -29,8 +29,12 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getChallengeAll(req.query.offset);
+    const data = await getChallengeAll(req.query.offset, req.query.limit);
 
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
     // 회고 전체 불러오기 성공
     const challengeAll = data;
     dataResponse(res, returnCode.OK, "회고 전체 불러오기 성공", challengeAll);
@@ -53,8 +57,14 @@ router.get("/search", auth, async (req: Request, res: Response) => {
       req.query.isMine,
       req.query.keyword,
       req.query.offset,
+      req.query.limit,
       req.body.userID
     );
+
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
+    }
 
     // 회고 전체 불러오기 성공
     const challengeSearch = data;
@@ -149,7 +159,7 @@ router.patch("/:id", auth, async (req: Request, res: Response) => {
 
 router.delete("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await deleteChallenge(req.params.id);
+    const data = await deleteChallenge(req.body.userID.id, req.params.id);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
