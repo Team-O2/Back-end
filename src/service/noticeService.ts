@@ -249,4 +249,6 @@ export const postNoticeComment = async (noticeID, userID, body) => {
     text: text,
     createdAt: comment.createdAt,
   };
+
+  return;
 };

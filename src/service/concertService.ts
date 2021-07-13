@@ -262,6 +262,8 @@ export const postConcertComment = async (concertID, userID, body) => {
     text: text,
     createdAt: comment.createdAt,
   };
+
+  return;
 };
 
 /**
