@@ -86,6 +86,8 @@ export const postAdminList = async (userID, offset, limit) => {
     offsetAdmin,
     totalAdminNum: adminList.length,
   };
+
+  return;
 };
 
 /**
@@ -160,6 +162,7 @@ export const postAdminChallenge = async (userID, body, url) => {
     return -3;
   }
   await admin.save();
+  return;
 };
 
 /**
@@ -209,6 +212,8 @@ export const postAdminConcert = async (userID, body, url) => {
   });
 
   await concert.save();
+
+  return;
 };
 
 /**
@@ -256,4 +261,6 @@ export const postAdminNotice = async (userID, body, url) => {
   });
 
   await notice.save();
+
+  return;
 };

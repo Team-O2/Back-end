@@ -393,6 +393,8 @@ export const postChallengeComment = async (challengeID, userID, body) => {
     img: user.img,
     createdAt: comment.createdAt,
   };
+
+  return;
 };
 
 /**

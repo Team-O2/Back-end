@@ -87,6 +87,7 @@ export const postRegister = async (userID, body) => {
       { $set: { firstJoinBadge: true } }
     );
   }
+  return;
 };
 
 /**
@@ -157,6 +158,8 @@ export const getMypageConcert = async (userID, offset, limit) => {
     mypageConcertScrap,
     totalScrapNum: mypageConcert.length,
   };
+
+  return;
 };
 
 /**
@@ -228,6 +231,8 @@ export const getMypageChallenge = async (userID, offset, limit) => {
     mypageChallengeScrap,
     totalScrapNum: mypageChallenge.length,
   };
+
+  return;
 };
 
 /**
@@ -314,6 +319,7 @@ export const getMypageInfo = async (userID) => {
       couponBook,
     };
   }
+  return;
 };
 
 /**
@@ -423,6 +429,7 @@ export const getMyComments = async (userID, postModel, offset, limit) => {
     comments,
     commentNum: totalCommentNum,
   };
+  return;
 };
 
 /**
@@ -478,6 +485,8 @@ export const deleteMyComments = async (body) => {
       }
     );
   });
+
+  return;
 };
 
 /**
@@ -529,6 +538,7 @@ export const patchInfo = async (userID, body, url) => {
       { $set: { marketingBadge: true } }
     );
   }
+  return;
 };
 
 /**
@@ -559,4 +569,6 @@ export const patchPW = async (userID, body) => {
   const encrpytPW = await bcrypt.hash(newPassword, salt);
 
   await user.update({ $set: { password: encrpytPW } });
+
+  return;
 };

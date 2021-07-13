@@ -264,6 +264,8 @@ export async function postCode(body) {
     // 인증번호 일치
     return 0;
   }
+
+  return;
 }
 
 /**
@@ -293,4 +295,5 @@ export async function patchPassword(body) {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
   await user.save();
+  return;
 }
