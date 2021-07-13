@@ -28,7 +28,7 @@ export const getConcertAll = async (offset, limit) => {
   })
     .skip(Number(offset))
     .limit(Number(limit))
-    .sort({ _id: -1 })
+    .sort({ likes: -1 })
     .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
@@ -116,7 +116,7 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
   })
     .skip(Number(offset))
     .limit(Number(limit))
-    .sort({ _id: -1 })
+    .sort({ likes: -1 })
     .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",

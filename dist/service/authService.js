@@ -185,7 +185,7 @@ function postEmail(body) {
         user.emailCode = authNum;
         yield user.save();
         let emailTemplate;
-        ejs_1.default.renderFile("src/library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
+        ejs_1.default.renderFile("../library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
             if (err) {
                 console.log(err);
             }
