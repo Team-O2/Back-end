@@ -301,6 +301,7 @@ router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
   try {
     const data = await getMyComments(
       req.body.userID.id,
+      req.query.postModel,
       req.query.offset,
       req.query.limit
     );

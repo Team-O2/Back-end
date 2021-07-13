@@ -5,7 +5,7 @@ const CommentSchema = new mongoose.Schema({
   postModel: {
     type: String,
     required: true,
-    enum: ["Challenge", "Concert"],
+    enum: ["Challenge", "Concert", "Notice"],
   },
   post: {
     type: mongoose.Schema.Types.ObjectId,
