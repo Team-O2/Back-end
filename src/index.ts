@@ -10,7 +10,7 @@ app.use(express.json());
 
 // // allow cors
 import cors from "cors";
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true }));
 
 // route
 app.use("/auth", require("./controller/auth"));
