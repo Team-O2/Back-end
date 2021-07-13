@@ -185,7 +185,7 @@ function postEmail(body) {
         user.emailCode = authNum;
         yield user.save();
         let emailTemplate;
-        ejs_1.default.renderFile("dist/library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
+        ejs_1.default.renderFile("src/library/emailTemplete.ejs", { authCode: authNum }, (err, data) => {
             if (err) {
                 console.log(err);
             }
@@ -194,8 +194,8 @@ function postEmail(body) {
         const mailOptions = {
             front: "hyunjin5697@gmail.com",
             to: email,
-            subject: "O2 인증번호",
-            text: "인증번호",
+            subject: "메일 제목",
+            text: "메일 내용",
             html: emailTemplate,
         };
         yield emailSender_1.smtpTransport.sendMail(mailOptions, (error, info) => {
