@@ -31,63 +31,38 @@ const getConcertAll = (offset, limit) => __awaiter(void 0, void 0, void 0, funct
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let concerts;
-    if (offset) {
-        concerts = yield Concert_1.default.find({
-            isDeleted: false,
-            isNotice: false,
-            _id: { $lt: offset },
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
+    concerts = yield Concert_1.default.find({
+        isDeleted: false,
+        isNotice: false,
+    })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .sort({ _id: -1 })
+        .populate("user", ["nickname", "img"])
+        .populate({
+        path: "comments",
+        select: { userID: 1, text: 1, isDeleted: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+            {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
                     path: "userID",
                     select: ["nickname", "img"],
                 },
-            ],
-        });
-    }
-    else {
-        concerts = yield Concert_1.default.find({ isDeleted: false, isNotice: false })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
-                    path: "userID",
-                    select: ["nickname", "img"],
-                },
-            ],
-        });
-    }
+            },
+            {
+                path: "userID",
+                select: ["nickname", "img"],
+            },
+        ],
+    });
     let totalConcertNum = yield Concert_1.default.find({
         isDeleted: false,
         isNotice: false,
@@ -139,63 +114,38 @@ const getConcertSearch = (tag, keyword, offset, limit) => __awaiter(void 0, void
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let concerts;
-    if (offset) {
-        concerts = yield Concert_1.default.find({
-            isDeleted: false,
-            isNotice: false,
-            _id: { $lt: offset },
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
+    concerts = yield Concert_1.default.find({
+        isDeleted: false,
+        isNotice: false,
+    })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .sort({ _id: -1 })
+        .populate("user", ["nickname", "img"])
+        .populate({
+        path: "comments",
+        select: { userID: 1, text: 1, isDeleted: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+            {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
                     path: "userID",
                     select: ["nickname", "img"],
                 },
-            ],
-        });
-    }
-    else {
-        concerts = yield Concert_1.default.find({ isDeleted: false })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
-                    path: "userID",
-                    select: ["nickname", "img"],
-                },
-            ],
-        });
-    }
+            },
+            {
+                path: "userID",
+                select: ["nickname", "img"],
+            },
+        ],
+    });
     let filteredData = concerts;
     // 관심분야 필터링
     if (tag !== "") {

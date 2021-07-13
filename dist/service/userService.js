@@ -307,63 +307,38 @@ const getMyWritings = (userID, offset, limit) => __awaiter(void 0, void 0, void 
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let challenges;
-    if (offset) {
-        challenges = yield Challenge_1.default.find({
-            isDeleted: false,
-            _id: { $lt: offset },
-            user: userID,
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
+    challenges = yield Challenge_1.default.find({
+        isDeleted: false,
+        user: userID,
+    })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .sort({ _id: -1 })
+        .populate("user", ["nickname", "img"])
+        .populate({
+        path: "comments",
+        select: { userID: 1, text: 1, isDeleted: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+            {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
                     path: "userID",
                     select: ["nickname", "img"],
                 },
-            ],
-        });
-    }
-    else {
-        challenges = yield Challenge_1.default.find({ isDeleted: false, user: userID })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
-                    path: "userID",
-                    select: ["nickname", "img"],
-                },
-            ],
-        });
-    }
+            },
+            {
+                path: "userID",
+                select: ["nickname", "img"],
+            },
+        ],
+    });
     return challenges;
 });
 exports.getMyWritings = getMyWritings;
@@ -375,24 +350,17 @@ const getMyComments = (userID, offset, limit) => __awaiter(void 0, void 0, void 
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let comments;
-    if (offset) {
-        comments = yield Comment_1.default.find({
-            isDeleted: false,
-            userID,
-            _id: { $lt: offset },
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 });
-    }
-    else {
-        comments = yield Comment_1.default.find({
-            isDeleted: false,
-            userID,
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 });
-    }
+    comments = yield Comment_1.default.find({
+        isDeleted: false,
+        userID,
+    })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .sort({ _id: -1 });
     const user = yield User_1.default.findById(userID);
     const totalCommentNum = yield Comment_1.default.find({
         userID,

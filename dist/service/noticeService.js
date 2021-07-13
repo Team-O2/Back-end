@@ -31,63 +31,38 @@ const getNoticeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, functi
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let notices;
-    if (offset) {
-        notices = yield Concert_1.default.find({
-            isDeleted: false,
-            isNotice: true,
-            _id: { $lt: offset },
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
+    notices = yield Concert_1.default.find({
+        isDeleted: false,
+        isNotice: true,
+    })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .sort({ _id: -1 })
+        .populate("user", ["nickname", "img"])
+        .populate({
+        path: "comments",
+        select: { userID: 1, text: 1, isDeleted: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+            {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
                     path: "userID",
                     select: ["nickname", "img"],
                 },
-            ],
-        });
-    }
-    else {
-        notices = yield Concert_1.default.find({ isDeleted: false, isNotice: true })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
-                    path: "userID",
-                    select: ["nickname", "img"],
-                },
-            ],
-        });
-    }
+            },
+            {
+                path: "userID",
+                select: ["nickname", "img"],
+            },
+        ],
+    });
     return { notices, totalNoticeNum: notices.length };
 });
 exports.getNoticeAll = getNoticeAll;
@@ -137,63 +112,37 @@ const getNoticeSearch = (keyword, offset, limit) => __awaiter(void 0, void 0, vo
     if (!limit) {
         return -1;
     }
+    if (!offset) {
+        offset = 0;
+    }
     let notices;
-    if (offset) {
-        notices = yield Concert_1.default.find({
-            isDeleted: false,
-            isNotice: true,
-            _id: { $lt: offset },
-        })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
+    notices = yield Concert_1.default.find({
+        isDeleted: false,
+        isNotice: true,
+    })
+        .limit(Number(limit))
+        .sort({ _id: -1 })
+        .populate("user", ["nickname", "img"])
+        .populate({
+        path: "comments",
+        select: { userID: 1, text: 1, isDeleted: 1 },
+        options: { sort: { _id: -1 } },
+        populate: [
+            {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
                     path: "userID",
                     select: ["nickname", "img"],
                 },
-            ],
-        });
-    }
-    else {
-        notices = yield Concert_1.default.find({ isDeleted: false, isNotice: true })
-            .limit(Number(limit))
-            .sort({ _id: -1 })
-            .populate("user", ["nickname", "img"])
-            .populate({
-            path: "comments",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: [
-                {
-                    path: "childrenComment",
-                    select: { userID: 1, text: 1, isDeleted: 1 },
-                    options: { sort: { _id: -1 } },
-                    populate: {
-                        path: "userID",
-                        select: ["nickname", "img"],
-                    },
-                },
-                {
-                    path: "userID",
-                    select: ["nickname", "img"],
-                },
-            ],
-        });
-    }
+            },
+            {
+                path: "userID",
+                select: ["nickname", "img"],
+            },
+        ],
+    });
     let filteredData = notices;
     // 검색 단어 필터링
     if (keyword !== "") {
