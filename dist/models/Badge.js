@@ -55,7 +55,7 @@ const BadgeSchema = new mongoose_1.default.Schema({
         required: true,
         default: false,
     },
-    runMySelfScrapBadge: {
+    learnMySelfScrapBadge: {
         type: Boolean,
         required: true,
         default: false,

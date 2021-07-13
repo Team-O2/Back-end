@@ -495,8 +495,8 @@ const postChallengeScrap = (challengeID, userID) => __awaiter(void 0, void 0, vo
     });
     // 게시글 첫 스크랩 시 배지 추가
     const badge = yield Badge_1.default.findOne({ user: userID });
-    if (!badge.runMySelfScrapBadge) {
-        badge.runMySelfScrapBadge = true;
+    if (!badge.learnMySelfScrapBadge) {
+        badge.learnMySelfScrapBadge = true;
         yield badge.save();
     }
     return { _id: challengeID };

@@ -159,7 +159,7 @@ router.get("/mypage/challenge", auth_1.default, (req, res) => __awaiter(void 0, 
         const data = yield userService_1.getMypageChallenge(req.body.userID.id, req.query.offset, req.query.limit);
         // 1. no content
         if (data == -1) {
-            response_1.response(res, returnCode_1.returnCode.NO_CONTENT, "스크랩한 Run Myself가 없습니다.");
+            response_1.response(res, returnCode_1.returnCode.NO_CONTENT, "스크랩한 learn Myself가 없습니다.");
         }
         // 2. limit 없을 때
         if (data === -2) {
@@ -167,7 +167,7 @@ router.get("/mypage/challenge", auth_1.default, (req, res) => __awaiter(void 0, 
         }
         // 마이페이지 콘서트 조회 성공
         else {
-            response_1.dataResponse(res, returnCode_1.returnCode.OK, "Run Myself 스크랩 조회 성공", data);
+            response_1.dataResponse(res, returnCode_1.returnCode.OK, "learn Myself 스크랩 조회 성공", data);
         }
     }
     catch (err) {

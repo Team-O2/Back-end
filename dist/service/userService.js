@@ -218,7 +218,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
         fiveLikeBadge: userBadge.fiveLikeBadge,
         loginBadge: userBadge.loginBadge,
         marketingBadge: userBadge.marketingBadge,
-        runMySelfScrapBadge: userBadge.runMySelfScrapBadge,
+        learnMySelfScrapBadge: userBadge.learnMySelfScrapBadge,
         firstReplyBadge: userBadge.firstReplyBadge,
         concertScrapBadge: userBadge.concertScrapBadge,
         challengeBadge: userBadge.challengeBadge,
@@ -237,7 +237,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
     if (!user.isChallenge || !admin) {
         return {
             nickname: user.nickname,
-            runMyselfAchieve: null,
+            learnMyselfAchieve: null,
             shareTogether,
             couponBook,
         };
@@ -258,7 +258,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
         if (percent > 100) {
             percent = 100;
         }
-        const runMyselfAchieve = {
+        const learnMyselfAchieve = {
             percent,
             totalNum,
             completeNum: user.writingCNT,
@@ -267,7 +267,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
         };
         return {
             nickname: user.nickname,
-            runMyselfAchieve,
+            learnMyselfAchieve,
             shareTogether,
             couponBook,
         };

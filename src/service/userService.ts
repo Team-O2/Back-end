@@ -251,7 +251,7 @@ export const getMypageInfo = async (userID) => {
     fiveLikeBadge: userBadge.fiveLikeBadge,
     loginBadge: userBadge.loginBadge,
     marketingBadge: userBadge.marketingBadge,
-    runMySelfScrapBadge: userBadge.runMySelfScrapBadge,
+    learnMySelfScrapBadge: userBadge.learnMySelfScrapBadge,
     firstReplyBadge: userBadge.firstReplyBadge,
     concertScrapBadge: userBadge.concertScrapBadge,
     challengeBadge: userBadge.challengeBadge,
@@ -278,7 +278,7 @@ export const getMypageInfo = async (userID) => {
   if (!user.isChallenge || !admin) {
     return {
       nickname: user.nickname,
-      runMyselfAchieve: null,
+      learnMyselfAchieve: null,
       shareTogether,
       couponBook,
     };
@@ -301,7 +301,7 @@ export const getMypageInfo = async (userID) => {
       percent = 100;
     }
 
-    const runMyselfAchieve = {
+    const learnMyselfAchieve = {
       percent,
       totalNum,
       completeNum: user.writingCNT,
@@ -311,7 +311,7 @@ export const getMypageInfo = async (userID) => {
 
     return {
       nickname: user.nickname,
-      runMyselfAchieve,
+      learnMyselfAchieve,
       shareTogether,
       couponBook,
     };

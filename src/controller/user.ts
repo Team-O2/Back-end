@@ -198,7 +198,7 @@ router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
 
     // 1. no content
     if (data == -1) {
-      response(res, returnCode.NO_CONTENT, "스크랩한 Run Myself가 없습니다.");
+      response(res, returnCode.NO_CONTENT, "스크랩한 learn Myself가 없습니다.");
     }
 
     // 2. limit 없을 때
@@ -208,7 +208,7 @@ router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
 
     // 마이페이지 콘서트 조회 성공
     else {
-      dataResponse(res, returnCode.OK, "Run Myself 스크랩 조회 성공", data);
+      dataResponse(res, returnCode.OK, "learn Myself 스크랩 조회 성공", data);
     }
   } catch (err) {
     console.error(err.message);

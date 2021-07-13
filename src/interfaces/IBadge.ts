@@ -11,7 +11,7 @@ export interface IBadge {
   fiveLikeBadge: Boolean;
   loginBadge: Boolean;
   marketingBadge: Boolean;
-  runMySelfScrapBadge: Boolean;
+  learnMySelfScrapBadge: Boolean;
   firstReplyBadge: Boolean;
   concertScrapBadge: Boolean;
   challengeBadge: Number;

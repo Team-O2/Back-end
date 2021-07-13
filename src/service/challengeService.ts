@@ -564,8 +564,8 @@ export const postChallengeScrap = async (challengeID, userID) => {
 
   // 게시글 첫 스크랩 시 배지 추가
   const badge = await Badge.findOne({ user: userID });
-  if (!badge.runMySelfScrapBadge) {
-    badge.runMySelfScrapBadge = true;
+  if (!badge.learnMySelfScrapBadge) {
+    badge.learnMySelfScrapBadge = true;
     await badge.save();
   }
 
