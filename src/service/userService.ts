@@ -10,9 +10,7 @@ import Comment from "../models/Comment";
 import { dateToNumber, period } from "../library/date";
 
 // jwt
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import config from "../config";
 
 /**
  *  @User_챌린지_신청하기
@@ -398,7 +396,7 @@ export const getMyWritings = async (userID, offset, limit) => {
  *  @마이페이지_내가_쓴_댓글
  *  @route Get user/mypage/comment
  */
-export const getMyComments = async (userID, offset, limit) => {
+export const getMyComments = async (userID, postModel, offset, limit) => {
   if (!limit) {
     return -1;
   }
@@ -408,17 +406,18 @@ export const getMyComments = async (userID, offset, limit) => {
   let comments;
   comments = await Comment.find({
     isDeleted: false,
+    postModel: postModel,
     userID,
   })
     .skip(Number(offset))
     .limit(Number(limit))
     .sort({ _id: -1 });
-  const user = await User.findById(userID);
 
   const totalCommentNum = await Comment.find({
     userID,
+    postModel: postModel,
     isDeleted: false,
-  }).count();
+  }).countDocuments();
 
   return {
     comments,

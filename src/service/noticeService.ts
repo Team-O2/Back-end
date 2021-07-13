@@ -184,7 +184,7 @@ export const postNoticeComment = async (noticeID, userID, body) => {
     }
 
     comment = new Comment({
-      postModel: "Concert",
+      postModel: "Notice",
       post: noticeID,
       userID: userID,
       parentComment: parentID,
@@ -204,7 +204,7 @@ export const postNoticeComment = async (noticeID, userID, body) => {
   } else {
     // 댓글인 경우
     comment = new Comment({
-      postModel: "Concert",
+      postModel: "Notice",
       post: noticeID,
       userID: userID,
       text,
