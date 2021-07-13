@@ -9,9 +9,11 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 // // allow cors
-import cors from "cors";
-app.use(cors({ credentials: true }));
-
+app.all("/*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 // route
 app.use("/auth", require("./controller/auth"));
 app.use("/challenge", require("./controller/challenge"));
