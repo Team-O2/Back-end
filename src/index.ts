@@ -8,12 +8,10 @@ connectDB();
 app.use(express.urlencoded());
 app.use(express.json());
 
-// // allow cors
-app.all("/*", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
+// allow cors
+import cors from "cors";
+app.use(cors());
+
 // route
 app.use("/auth", require("./controller/auth"));
 app.use("/challenge", require("./controller/challenge"));
@@ -57,5 +55,4 @@ const server = app
     process.exit(1);
   });
 
-server.timeout = 100000;
-server.keepAliveTimeout = 100000;
+server.timeout = 1000000;
