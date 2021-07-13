@@ -10,12 +10,9 @@ const db_1 = __importDefault(require("./Loader/db"));
 db_1.default();
 app.use(express_1.default.urlencoded());
 app.use(express_1.default.json());
-// // allow cors
-app.all("/*", function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
-});
+// allow cors
+const cors_1 = __importDefault(require("cors"));
+app.use(cors_1.default());
 // route
 app.use("/auth", require("./controller/auth"));
 app.use("/challenge", require("./controller/challenge"));
@@ -51,6 +48,5 @@ const server = app
     console.error(err);
     process.exit(1);
 });
-server.timeout = 100000;
-server.keepAliveTimeout = 100000;
+server.timeout = 1000000;
 //# sourceMappingURL=index.js.map
