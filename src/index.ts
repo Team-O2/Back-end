@@ -8,9 +8,18 @@ connectDB();
 app.use(express.urlencoded());
 app.use(express.json());
 
-// // allow cors
+// allow cors
 import cors from "cors";
-app.use(cors({ credentials: true }));
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:3000",
+      "https://dev.opentogether-o2.com",
+      "https://www.opentogether-o2.com",
+    ],
+  })
+);
 
 // route
 app.use("/auth", require("./controller/auth"));

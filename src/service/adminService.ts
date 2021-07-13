@@ -38,7 +38,7 @@ export const postAdminList = async (userID, offset, limit) => {
       limitNum: false,
       __v: false,
     }
-  );
+  ).sort({ generation: -1 });
 
   const adminList = await Promise.all(
     admins.map(async function (admin) {
