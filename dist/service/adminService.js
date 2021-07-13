@@ -44,7 +44,7 @@ const postAdminList = (userID, offset, limit) => __awaiter(void 0, void 0, void 
         title: false,
         limitNum: false,
         __v: false,
-    });
+    }).sort({ generation: -1 });
     const adminList = yield Promise.all(admins.map(function (admin) {
         return __awaiter(this, void 0, void 0, function* () {
             let totalNum = yield Challenge_1.default.aggregate([

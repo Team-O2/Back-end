@@ -41,7 +41,7 @@ const getConcertAll = (offset, limit) => __awaiter(void 0, void 0, void 0, funct
     })
         .skip(Number(offset))
         .limit(Number(limit))
-        .sort({ _id: -1 })
+        .sort({ likes: -1 })
         .populate("user", ["nickname", "img"])
         .populate({
         path: "comments",
@@ -124,7 +124,7 @@ const getConcertSearch = (tag, keyword, offset, limit) => __awaiter(void 0, void
     })
         .skip(Number(offset))
         .limit(Number(limit))
-        .sort({ _id: -1 })
+        .sort({ likes: -1 })
         .populate("user", ["nickname", "img"])
         .populate({
         path: "comments",
