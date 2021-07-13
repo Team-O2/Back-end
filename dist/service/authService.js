@@ -244,6 +244,7 @@ function postCode(body) {
             // 인증번호 일치
             return 0;
         }
+        return;
     });
 }
 exports.postCode = postCode;
@@ -272,6 +273,7 @@ function patchPassword(body) {
         const salt = yield bcryptjs_1.default.genSalt(10);
         user.password = yield bcryptjs_1.default.hash(password, salt);
         yield user.save();
+        return;
     });
 }
 exports.patchPassword = patchPassword;

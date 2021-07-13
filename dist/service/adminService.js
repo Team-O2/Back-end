@@ -89,6 +89,7 @@ const postAdminList = (userID, offset, limit) => __awaiter(void 0, void 0, void 
         offsetAdmin,
         totalAdminNum: adminList.length,
     };
+    return;
 });
 exports.postAdminList = postAdminList;
 /**
@@ -150,6 +151,7 @@ const postAdminChallenge = (userID, body, url) => __awaiter(void 0, void 0, void
         return -3;
     }
     yield admin.save();
+    return;
 });
 exports.postAdminChallenge = postAdminChallenge;
 /**
@@ -194,6 +196,7 @@ const postAdminConcert = (userID, body, url) => __awaiter(void 0, void 0, void 0
         authorNickname,
     });
     yield concert.save();
+    return;
 });
 exports.postAdminConcert = postAdminConcert;
 /**
@@ -236,6 +239,7 @@ const postAdminNotice = (userID, body, url) => __awaiter(void 0, void 0, void 0,
         hashtag,
     });
     yield notice.save();
+    return;
 });
 exports.postAdminNotice = postAdminNotice;
 //# sourceMappingURL=adminService.js.map

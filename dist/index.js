@@ -12,7 +12,7 @@ app.use(express_1.default.urlencoded());
 app.use(express_1.default.json());
 // // allow cors
 const cors_1 = __importDefault(require("cors"));
-app.use(cors_1.default({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors_1.default({ credentials: true }));
 // route
 app.use("/auth", require("./controller/auth"));
 app.use("/challenge", require("./controller/challenge"));
@@ -48,5 +48,5 @@ const server = app
     console.error(err);
     process.exit(1);
 });
-server.timeout = 100000;
+server.timeout = 1000000;
 //# sourceMappingURL=index.js.map

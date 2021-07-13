@@ -348,6 +348,7 @@ const postChallengeComment = (challengeID, userID, body) => __awaiter(void 0, vo
         img: user.img,
         createdAt: comment.createdAt,
     };
+    return;
 });
 exports.postChallengeComment = postChallengeComment;
 /**

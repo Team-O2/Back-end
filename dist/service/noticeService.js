@@ -240,6 +240,7 @@ const postNoticeComment = (noticeID, userID, body) => __awaiter(void 0, void 0, 
         text: text,
         createdAt: comment.createdAt,
     };
+    return;
 });
 exports.postNoticeComment = postNoticeComment;
 //# sourceMappingURL=noticeService.js.map

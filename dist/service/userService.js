@@ -79,6 +79,7 @@ const postRegister = (userID, body) => __awaiter(void 0, void 0, void 0, functio
     if (!badge.firstJoinBadge) {
         yield Badge_1.default.findOneAndUpdate({ user: userID }, { $set: { firstJoinBadge: true } });
     }
+    return;
 });
 exports.postRegister = postRegister;
 /**
@@ -139,6 +140,7 @@ const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, vo
         mypageConcertScrap,
         totalScrapNum: mypageConcert.length,
     };
+    return;
 });
 exports.getMypageConcert = getMypageConcert;
 /**
@@ -199,6 +201,7 @@ const getMypageChallenge = (userID, offset, limit) => __awaiter(void 0, void 0, 
         mypageChallengeScrap,
         totalScrapNum: mypageChallenge.length,
     };
+    return;
 });
 exports.getMypageChallenge = getMypageChallenge;
 /**
@@ -273,6 +276,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
             couponBook,
         };
     }
+    return;
 });
 exports.getMypageInfo = getMypageInfo;
 /**
@@ -372,6 +376,7 @@ const getMyComments = (userID, postModel, offset, limit) => __awaiter(void 0, vo
         comments,
         commentNum: totalCommentNum,
     };
+    return;
 });
 exports.getMyComments = getMyComments;
 /**
@@ -414,6 +419,7 @@ const deleteMyComments = (body) => __awaiter(void 0, void 0, void 0, function* (
             $inc: { commentCNT: -1 },
         });
     }));
+    return;
 });
 exports.deleteMyComments = deleteMyComments;
 /**
@@ -456,6 +462,7 @@ const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, funct
     if (marpolicy) {
         yield Badge_1.default.findOneAndUpdate({ user: user.id }, { $set: { marketingBadge: true } });
     }
+    return;
 });
 exports.patchInfo = patchInfo;
 /**
@@ -481,6 +488,7 @@ const patchPW = (userID, body) => __awaiter(void 0, void 0, void 0, function* ()
     // Encrpyt password
     const encrpytPW = yield bcryptjs_1.default.hash(newPassword, salt);
     yield user.update({ $set: { password: encrpytPW } });
+    return;
 });
 exports.patchPW = patchPW;
 //# sourceMappingURL=userService.js.map
