@@ -34,7 +34,7 @@ app.use(function (err, req, res, next) {
     schedulerService_1.challengeOpen;
 });
 const port = process.env.PORT;
-app
+const server = app
     .listen(port, () => {
     console.log(`
     ################################################
@@ -48,4 +48,5 @@ app
     console.error(err);
     process.exit(1);
 });
+server.timeout = 100000;
 //# sourceMappingURL=index.js.map

@@ -8,7 +8,7 @@ const CommentSchema = new mongoose_1.default.Schema({
     postModel: {
         type: String,
         required: true,
-        enum: ["Challenge", "Concert"],
+        enum: ["Challenge", "Concert", "Notice"],
     },
     post: {
         type: mongoose_1.default.Schema.Types.ObjectId,

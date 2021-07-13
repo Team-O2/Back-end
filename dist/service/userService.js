@@ -22,6 +22,7 @@ const Challenge_1 = __importDefault(require("../models/Challenge"));
 const Comment_1 = __importDefault(require("../models/Comment"));
 // library
 const date_1 = require("../library/date");
+// jwt
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 /**
  *  @User_챌린지_신청하기
@@ -346,7 +347,7 @@ exports.getMyWritings = getMyWritings;
  *  @마이페이지_내가_쓴_댓글
  *  @route Get user/mypage/comment
  */
-const getMyComments = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyComments = (userID, postModel, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     if (!limit) {
         return -1;
     }
@@ -356,16 +357,17 @@ const getMyComments = (userID, offset, limit) => __awaiter(void 0, void 0, void 
     let comments;
     comments = yield Comment_1.default.find({
         isDeleted: false,
+        postModel: postModel,
         userID,
     })
         .skip(Number(offset))
         .limit(Number(limit))
         .sort({ _id: -1 });
-    const user = yield User_1.default.findById(userID);
     const totalCommentNum = yield Comment_1.default.find({
         userID,
+        postModel: postModel,
         isDeleted: false,
-    }).count();
+    }).countDocuments();
     return {
         comments,
         commentNum: totalCommentNum,

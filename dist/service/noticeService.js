@@ -185,7 +185,7 @@ const postNoticeComment = (noticeID, userID, body) => __awaiter(void 0, void 0, 
             return -3;
         }
         comment = new Comment_1.default({
-            postModel: "Concert",
+            postModel: "Notice",
             post: noticeID,
             userID: userID,
             parentComment: parentID,
@@ -204,7 +204,7 @@ const postNoticeComment = (noticeID, userID, body) => __awaiter(void 0, void 0, 
     else {
         // 댓글인 경우
         comment = new Comment_1.default({
-            postModel: "Concert",
+            postModel: "Notice",
             post: noticeID,
             userID: userID,
             text,

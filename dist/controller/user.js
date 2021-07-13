@@ -241,7 +241,7 @@ router.get("/mypage/write", auth_1.default, (req, res) => __awaiter(void 0, void
  */
 router.get("/mypage/comment", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.getMyComments(req.body.userID.id, req.query.offset, req.query.limit);
+        const data = yield userService_1.getMyComments(req.body.userID.id, req.query.postModel, req.query.offset, req.query.limit);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
