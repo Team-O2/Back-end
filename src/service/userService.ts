@@ -356,62 +356,41 @@ export const getMyWritings = async (userID, offset, limit) => {
     return -1;
   }
 
-  let challenges;
-  if (offset) {
-    challenges = await Challenge.find({
-      isDeleted: false,
-      _id: { $lt: offset },
-      user: userID,
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
-  } else {
-    challenges = await Challenge.find({ isDeleted: false, user: userID })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
+  if (!offset) {
+    offset = 0;
   }
+
+  let challenges;
+
+  challenges = await Challenge.find({
+    isDeleted: false,
+    user: userID,
+  })
+    .skip(Number(offset))
+    .limit(Number(limit))
+    .sort({ _id: -1 })
+    .populate("user", ["nickname", "img"])
+    .populate({
+      path: "comments",
+      select: { userID: 1, text: 1, isDeleted: 1 },
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
+          populate: {
+            path: "userID",
+            select: ["nickname", "img"],
+          },
+        },
+        {
+          path: "userID",
+          select: ["nickname", "img"],
+        },
+      ],
+    });
+
   return challenges;
 };
 
@@ -423,24 +402,17 @@ export const getMyComments = async (userID, offset, limit) => {
   if (!limit) {
     return -1;
   }
-
-  let comments;
-  if (offset) {
-    comments = await Comment.find({
-      isDeleted: false,
-      userID,
-      _id: { $lt: offset },
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 });
-  } else {
-    comments = await Comment.find({
-      isDeleted: false,
-      userID,
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 });
+  if (!offset) {
+    offset = 0;
   }
+  let comments;
+  comments = await Comment.find({
+    isDeleted: false,
+    userID,
+  })
+    .skip(Number(offset))
+    .limit(Number(limit))
+    .sort({ _id: -1 });
   const user = await User.findById(userID);
 
   const totalCommentNum = await Comment.find({

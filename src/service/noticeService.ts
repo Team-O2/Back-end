@@ -17,63 +17,39 @@ export const getNoticeAll = async (offset, limit) => {
   if (!limit) {
     return -1;
   }
+  if (!offset) {
+    offset = 0;
+  }
 
   let notices;
-  if (offset) {
-    notices = await Concert.find({
-      isDeleted: false,
-      isNotice: true,
-      _id: { $lt: offset },
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
+  notices = await Concert.find({
+    isDeleted: false,
+    isNotice: true,
+  })
+    .skip(Number(offset))
+    .limit(Number(limit))
+    .sort({ _id: -1 })
+    .populate("user", ["nickname", "img"])
+    .populate({
+      path: "comments",
+      select: { userID: 1, text: 1, isDeleted: 1 },
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
+          populate: {
             path: "userID",
             select: ["nickname", "img"],
           },
-        ],
-      });
-  } else {
-    notices = await Concert.find({ isDeleted: false, isNotice: true })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
-  }
+        },
+        {
+          path: "userID",
+          select: ["nickname", "img"],
+        },
+      ],
+    });
 
   return { notices, totalNoticeNum: notices.length };
 };
@@ -125,63 +101,37 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
   if (!limit) {
     return -1;
   }
-
-  let notices;
-  if (offset) {
-    notices = await Concert.find({
-      isDeleted: false,
-      isNotice: true,
-      _id: { $lt: offset },
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
-  } else {
-    notices = await Concert.find({ isDeleted: false, isNotice: true })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: { userID: 1, text: 1, isDeleted: 1 },
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: { userID: 1, text: 1, isDeleted: 1 },
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
+  if (!offset) {
+    offset = 0;
   }
+  let notices;
+  notices = await Concert.find({
+    isDeleted: false,
+    isNotice: true,
+  })
+    .limit(Number(limit))
+    .sort({ _id: -1 })
+    .populate("user", ["nickname", "img"])
+    .populate({
+      path: "comments",
+      select: { userID: 1, text: 1, isDeleted: 1 },
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: { userID: 1, text: 1, isDeleted: 1 },
+          options: { sort: { _id: -1 } },
+          populate: {
+            path: "userID",
+            select: ["nickname", "img"],
+          },
+        },
+        {
+          path: "userID",
+          select: ["nickname", "img"],
+        },
+      ],
+    });
 
   let filteredData = notices;
 

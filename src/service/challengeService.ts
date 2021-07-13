@@ -17,62 +17,39 @@ export const getChallengeAll = async (offset, limit) => {
   if (!limit) {
     return -1;
   }
+  if (!offset) {
+    offset = 0;
+  }
 
   let challenges;
-  if (offset) {
-    challenges = await Challenge.find({
-      isDeleted: false,
-      _id: { $lt: offset },
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: ["userID", "text", "isDeleted"],
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: ["userID", "text", "isDeleted"],
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
+  challenges = await Challenge.find({
+    isDeleted: false,
+  })
+    .skip(Number(offset))
+    .limit(Number(limit))
+    .sort({ _id: -1 })
+    .populate("user", ["nickname", "img"])
+    .populate({
+      path: "comments",
+      select: ["userID", "text", "isDeleted"],
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: ["userID", "text", "isDeleted"],
+          options: { sort: { _id: -1 } },
+          populate: {
             path: "userID",
             select: ["nickname", "img"],
           },
-        ],
-      });
-  } else {
-    challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: ["userID", "text", "isDeleted"],
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: ["userID", "text", "isDeleted"],
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
-  }
+        },
+        {
+          path: "userID",
+          select: ["nickname", "img"],
+        },
+      ],
+    });
+
   return challenges;
 };
 
@@ -137,62 +114,38 @@ export const getChallengeSearch = async (
   if (!limit) {
     return -1;
   }
+  if (!offset) {
+    offset = 0;
+  }
 
   let challenges;
-  if (offset) {
-    challenges = await Challenge.find({
-      isDeleted: false,
-      _id: { $lt: offset },
-    })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: ["userID", "text", "isDeleted"],
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: ["userID", "text", "isDeleted"],
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
+  challenges = await Challenge.find({
+    isDeleted: false,
+  })
+    .skip(Number(offset))
+    .limit(Number(limit))
+    .sort({ _id: -1 })
+    .populate("user", ["nickname", "img"])
+    .populate({
+      path: "comments",
+      select: ["userID", "text", "isDeleted"],
+      options: { sort: { _id: -1 } },
+      populate: [
+        {
+          path: "childrenComment",
+          select: ["userID", "text", "isDeleted"],
+          options: { sort: { _id: -1 } },
+          populate: {
             path: "userID",
             select: ["nickname", "img"],
           },
-        ],
-      });
-  } else {
-    challenges = await Challenge.find({ isDeleted: false })
-      .limit(Number(limit))
-      .sort({ _id: -1 })
-      .populate("user", ["nickname", "img"])
-      .populate({
-        path: "comments",
-        select: ["userID", "text", "isDeleted"],
-        options: { sort: { _id: -1 } },
-        populate: [
-          {
-            path: "childrenComment",
-            select: ["userID", "text", "isDeleted"],
-            options: { sort: { _id: -1 } },
-            populate: {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          },
-          {
-            path: "userID",
-            select: ["nickname", "img"],
-          },
-        ],
-      });
-  }
+        },
+        {
+          path: "userID",
+          select: ["nickname", "img"],
+        },
+      ],
+    });
 
   let filteredData = challenges;
 
