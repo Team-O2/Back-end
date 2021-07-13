@@ -1,6 +1,6 @@
 import express from "express";
 const app = express();
-import connectDB from "./Loader/db";
+import connectDB from "src/Loader/db";
 
 // Connect Database
 connectDB();
@@ -13,15 +13,15 @@ import cors from "cors";
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 // route
-app.use("/auth", require("./controller/auth"));
-app.use("/challenge", require("./controller/challenge"));
-app.use("/admin", require("./controller/admin"));
-app.use("/concert", require("./controller/concert"));
-app.use("/user", require("./controller/user"));
-app.use("/notice", require("./controller/notice"));
+app.use("/auth", require("src/controller/auth"));
+app.use("/challenge", require("src/controller/challenge"));
+app.use("/admin", require("src/controller/admin"));
+app.use("/concert", require("src/controller/concert"));
+app.use("/user", require("src/controller/user"));
+app.use("/notice", require("src/controller/notice"));
 
 // scheduler
-import { challengeOpen } from "./service/schedulerService";
+import { challengeOpen } from "src/service/schedulerService";
 
 // error handler
 app.use(function (err, req, res, next) {
@@ -38,7 +38,7 @@ app.use(function (err, req, res, next) {
 });
 
 const port = process.env.PORT;
-app
+const server = app
   .listen(port, () => {
     console.log(
       `
@@ -54,3 +54,5 @@ app
     console.error(err);
     process.exit(1);
   });
+
+server.timeout = 100000;
