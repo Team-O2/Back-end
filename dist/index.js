@@ -12,7 +12,14 @@ app.use(express_1.default.urlencoded());
 app.use(express_1.default.json());
 // allow cors
 const cors_1 = __importDefault(require("cors"));
-app.use(cors_1.default());
+app.use(cors_1.default({
+    credentials: true,
+    origin: [
+        "http://localhost:3000",
+        "https://dev.opentogether-o2.com",
+        "https://www.opentogether-o2.com",
+    ],
+}));
 // route
 app.use("/auth", require("./controller/auth"));
 app.use("/challenge", require("./controller/challenge"));
