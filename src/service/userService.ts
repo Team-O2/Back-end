@@ -257,40 +257,54 @@ export const getMypageInfo = async (userID) => {
     challengeBadge: userBadge.challengeBadge,
   };
 
-  const shareTogether = await Concert.find(
-    { user: userID },
-    { _id: true, title: true }
-  );
+  var shareTogether = await Concert.find(
+    { user: userID, isNotice: false },
+    { _id: true, title: true },
+    { sort: { _id: -1 } }
+  ).limit(5);
+
+  if (shareTogether.length === 0) {
+    shareTogether = null;
+  }
 
   // 현재 작성 완료 개수
-  const userRM = await Challenge.find(
-    { user: userID },
-    { generation: user.generation }
-  ).count();
+  // const userRM = await Challenge.find(
+  //   { user: userID },
+  //   { generation: user.generation }
+  // ).countDocuments();
 
   const admin = await Admin.findOne({ generation: user.generation });
-  // ischallenge 가 false 이면서 admin === null 이면 현재기수 참여 x
-  if (!user.isRegist && !admin) {
+  // ischallenge 가 false 이거나 admin === null 이면 현재기수 참여 x
+  if (!user.isChallenge || !admin) {
     return {
       nickname: user.nickname,
-      runMyselfAchieve: [],
+      runMyselfAchieve: null,
       shareTogether,
       couponBook,
     };
   }
   // 현재기수 참여
   else {
-    const term = await period(admin.challengeStartDT, admin.challengeEndDT);
+    var term = await period(admin.challengeStartDT, admin.challengeEndDT);
+    if (term < 1) {
+      term = 1;
+    }
     // 내림을 취해서 최대한 많은 %를 달성할 수 있도록 한다
-    const totalNum = user.challengeCNT * Math.floor(term / 7);
+    var totalNum = user.conditionCNT * Math.floor(term / 7);
 
+    if (totalNum < 1) {
+      totalNum = 1;
+    }
     // 퍼센트 올림을 취함
-    const percent = Math.ceil((user.challengeCNT / totalNum) * 100);
+    var percent = Math.ceil((user.writingCNT / totalNum) * 100);
+    if (percent > 100) {
+      percent = 100;
+    }
 
     const runMyselfAchieve = {
       percent,
       totalNum,
-      completeNum: userRM,
+      completeNum: user.writingCNT,
       startDT: admin.challengeStartDT,
       endDT: admin.challengeEndDT,
     };
