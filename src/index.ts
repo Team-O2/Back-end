@@ -55,4 +55,4 @@ const server = app
     process.exit(1);
   });
 
-server.timeout = 100000;
+server.timeout = 1000000;
