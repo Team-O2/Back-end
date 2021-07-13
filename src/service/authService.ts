@@ -200,7 +200,7 @@ export async function postEmail(body) {
 
   let emailTemplate;
   ejs.renderFile(
-    "../library/emailTemplete.ejs",
+    "src/library/emailTemplete.ejs",
     { authCode: authNum },
     (err, data) => {
       if (err) {

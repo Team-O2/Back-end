@@ -55,4 +55,5 @@ const server = app
     process.exit(1);
   });
 
-server.timeout = 1000000;
+server.timeout = 100000;
+server.keepAliveTimeout = 100000;
