@@ -70,9 +70,9 @@ router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  */
 router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // const data: INotice = await getNoticeOne(req.params.id);
         const data = yield noticeService_1.getNoticeOne(req.params.id);
-        const notice = data;
-        response_1.dataResponse(res, returnCode_1.returnCode.OK, "해당 공지사항 불러오기 성공", notice);
+        response_1.dataResponse(res, returnCode_1.returnCode.OK, "해당 공지사항 불러오기 성공", data);
     }
     catch (err) {
         console.error(err.message);
@@ -86,7 +86,8 @@ router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 
  */
 router.post("/comment/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield noticeService_1.postNoticeComment(req.params.id, req.body.userID.id, req.body);
+        const reqData = req.body;
+        const data = yield noticeService_1.postNoticeComment(req.params.id, req.body.userID.id, reqData);
         // 공지사항 id가 잘못된 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

@@ -63,7 +63,15 @@ const getNoticeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, functi
             },
         ],
     });
-    return { notices, totalNoticeNum: notices.length };
+    const totalNoticeNum = yield Concert_1.default.find({
+        isDeleted: false,
+        isNotice: true,
+    }).countDocuments();
+    const resData = {
+        notices,
+        totalNoticeNum,
+    };
+    return resData;
 });
 exports.getNoticeAll = getNoticeAll;
 /**
@@ -96,6 +104,8 @@ const getNoticeOne = (noticeID) => __awaiter(void 0, void 0, void 0, function* (
             },
         ],
     });
+    // const resData: INotice = notice
+    // return resData;
     return notice;
 });
 exports.getNoticeOne = getNoticeOne;
@@ -157,7 +167,11 @@ const getNoticeSearch = (keyword, offset, limit) => __awaiter(void 0, void 0, vo
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         searchData.push(filteredData[i]);
     }
-    return { searchData, totalNoticeSearchNum: filteredData.length };
+    const resData = {
+        searchData: searchData,
+        totalNoticeSearchNum: filteredData.length,
+    };
+    return resData;
 });
 exports.getNoticeSearch = getNoticeSearch;
 /**
@@ -168,8 +182,8 @@ exports.getNoticeSearch = getNoticeSearch;
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-const postNoticeComment = (noticeID, userID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { parentID, text } = body;
+const postNoticeComment = (noticeID, userID, reqData) => __awaiter(void 0, void 0, void 0, function* () {
+    const { parentID, text } = reqData;
     // 1. 공지사항 id 잘못됨
     const notice = yield Concert_1.default.findById(noticeID);
     if (!notice || notice.isDeleted) {

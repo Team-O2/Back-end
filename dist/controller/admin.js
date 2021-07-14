@@ -60,7 +60,8 @@ router.post("/challenge", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.
                 ? req.files.img[0].location
                 : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
         };
-        const data = yield adminService_1.postAdminChallenge(req.body.userID.id, req.body, url);
+        const reqData = req.body;
+        const data = yield adminService_1.postAdminChallenge(req.body.userID.id, reqData, url);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -101,7 +102,8 @@ router.post("/concert", upload.fields([
                 ? req.files.imgThumbnail[0].location
                 : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
         };
-        const data = yield adminService_1.postAdminConcert(req.body.userID.id, req.body, url);
+        const reqData = req.body;
+        const data = yield adminService_1.postAdminConcert(req.body.userID.id, reqData, url);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -138,7 +140,8 @@ router.post("/notice", upload.fields([
                 ? req.files.imgThumbnail[0].location
                 : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
         };
-        const data = yield adminService_1.postAdminNotice(req.body.userID.id, req.body, 
+        const reqData = req.body;
+        const data = yield adminService_1.postAdminNotice(req.body.userID.id, reqData, 
         // JSON.parse(req.body.json),
         url);
         // 요청 바디가 부족할 경우

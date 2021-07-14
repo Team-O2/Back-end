@@ -13,12 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patchPassword = exports.postCode = exports.postEmail = exports.getHamburger = exports.postSignin = exports.postSignup = void 0;
+// models
 const User_1 = __importDefault(require("../models/User"));
 const Badge_1 = __importDefault(require("../models/Badge"));
 const Admin_1 = __importDefault(require("../models/Admin"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../config"));
+// library
 const emailSender_1 = require("../library/emailSender");
 const ejs_1 = __importDefault(require("ejs"));
 /**
@@ -29,9 +31,9 @@ const ejs_1 = __importDefault(require("ejs"));
  *      1. 요청 바디 부족
  *      2. 아이디 중복
  */
-function postSignup(body) {
+function postSignup(data) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { email, password, nickname, gender, marpolicy, interest } = body;
+        const { email, password, nickname, gender, marpolicy, interest } = data;
         // 1. 요청 바디 부족
         if (!email || !password || !nickname || !interest) {
             return -1;
@@ -91,9 +93,9 @@ exports.postSignup = postSignup;
  *      3: 챌린지 하는 유저 (기간은 챌린지 중)
  *      4: 관리자
  */
-function postSignin(body) {
+function postSignin(reqData) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { email, password } = body;
+        const { email, password } = reqData;
         // 1. 요청 바디 부족
         if (!email || !password) {
             return -1;
@@ -201,7 +203,11 @@ function getHamburger() {
         if (progressGen) {
             progressGeneration = progressGen.generation;
         }
-        return { progressGeneration, registGeneration };
+        const resData = {
+            progressGeneration,
+            registGeneration,
+        };
+        return resData;
     });
 }
 exports.getHamburger = getHamburger;
@@ -301,9 +307,9 @@ exports.postCode = postCode;
  *      1. 요청 바디 부족
  *      2. 아이디가 존재하지 않음
  */
-function patchPassword(body) {
+function patchPassword(reqData) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { email, password } = body;
+        const { email, password } = reqData;
         // 1. 요청 바디 부족
         if (!email || !password) {
             return -1;

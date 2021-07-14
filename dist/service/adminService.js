@@ -85,11 +85,11 @@ const postAdminList = (userID, offset, limit) => __awaiter(void 0, void 0, void 
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         offsetAdmin.push(adminList[i]);
     }
-    return {
+    const resData = {
         offsetAdmin,
         totalAdminNum: adminList.length,
     };
-    return;
+    return resData;
 });
 exports.postAdminList = postAdminList;
 /**
@@ -101,9 +101,9 @@ exports.postAdminList = postAdminList;
  *      2. 유저 id가 관리자가 아님
  *      3. 챌린지 기간이 잘못됨
  */
-const postAdminChallenge = (userID, body, url) => __awaiter(void 0, void 0, void 0, function* () {
+const postAdminChallenge = (userID, reqData, url) => __awaiter(void 0, void 0, void 0, function* () {
     const img = url.img;
-    const { title, registerStartDT, registerEndDT, challengeStartDT, challengeEndDT, limitNum, } = body;
+    const { title, registerStartDT, registerEndDT, challengeStartDT, challengeEndDT, limitNum, } = reqData;
     // 1. 요청 바디 부족
     if (!title ||
         !registerStartDT ||
@@ -163,14 +163,14 @@ exports.postAdminChallenge = postAdminChallenge;
  *      2. 유저 id가 관리자가 아님
  *      3. 해당 날짜에 진행되는 기수가 없음
  */
-const postAdminConcert = (userID, body, url) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, text, authorNickname } = body;
-    let interest = body.interest
+const postAdminConcert = (userID, reqData, url) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, text, authorNickname } = reqData;
+    let interest = reqData.interest
         .toLowerCase()
         .slice(1, -1)
         .replace(/"/gi, "")
         .split(/,\s?/);
-    let hashtag = body.hashtag
+    let hashtag = reqData.hashtag
         .toLowerCase()
         .slice(1, -1)
         .replace(/"/gi, "")
@@ -207,14 +207,14 @@ exports.postAdminConcert = postAdminConcert;
  *      1. 요청 바디 부족
  *      2. 유저 id가 관리자가 아님
  */
-const postAdminNotice = (userID, body, url) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, text } = body;
-    let interest = body.interest
+const postAdminNotice = (userID, reqData, url) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, text } = reqData;
+    let interest = reqData.interest
         .toLowerCase()
         .slice(1, -1)
         .replace(/"/gi, "")
         .split(/,\s?/);
-    let hashtag = body.hashtag
+    let hashtag = reqData.hashtag
         .toLowerCase()
         .slice(1, -1)
         .replace(/"/gi, "")

@@ -31,7 +31,8 @@ router.post("/signup", [
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const data = yield authService_1.postSignup(req.body);
+        const reqData = req.body;
+        const data = yield authService_1.postSignup(reqData);
         // 요청 바디가 부족할 경우
         if (data == -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -62,7 +63,8 @@ router.post("/signin", [express_validator_1.check("email", "Please include a val
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const data = yield authService_1.postSignin(req.body);
+        const reqData = req.body;
+        const data = yield authService_1.postSignin(reqData);
         // 요청 바디가 부족할 경우
         if (data == -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -157,7 +159,8 @@ router.patch("/pw", [
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const data = yield authService_1.patchPassword(req.body);
+        const reqData = req.body;
+        const data = yield authService_1.patchPassword(reqData);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");

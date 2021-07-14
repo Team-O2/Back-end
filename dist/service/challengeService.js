@@ -227,14 +227,14 @@ exports.postChallenge = postChallenge;
  *      2. 요청 바디 부족
  */
 const patchChallenge = (challengeID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { good, bad, learn } = body;
+    const { good, bad, learn, interest } = body;
     // 1. 회고록 id 잘못됨
     const challenge = yield Challenge_1.default.findById(challengeID);
     if (!challenge || challenge.isDeleted) {
         return -1;
     }
     // 2. 요청 바디 부족
-    if (!good || !bad || !learn) {
+    if (!good || !bad || !learn || !interest) {
         return -2;
     }
     const updateDate = new Date();
@@ -242,6 +242,7 @@ const patchChallenge = (challengeID, body) => __awaiter(void 0, void 0, void 0, 
         good: good.toLowerCase(),
         bad: bad.toLowerCase(),
         learn: learn.toLowerCase(),
+        interest: interest,
         updatedAt: updateDate,
     });
 });
