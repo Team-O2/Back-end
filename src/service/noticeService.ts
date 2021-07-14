@@ -109,7 +109,6 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
     isDeleted: false,
     isNotice: true,
   })
-    .limit(Number(limit))
     .sort({ _id: -1 })
     .populate("user", ["nickname", "img"])
     .populate({
@@ -136,7 +135,7 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
   let filteredData = notices;
 
   // 검색 단어 필터링
-  if (keyword !== "") {
+  if (keyword !== "" && keyword) {
     filteredData = filteredData.filter((fd) => {
       if (
         fd.text.includes(keyword.toLowerCase().trim()) ||
@@ -148,7 +147,12 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
     });
   }
 
-  return { filteredData, totalNoticeSearchNum: filteredData.length };
+  var searchData = [];
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+    searchData.push(filteredData[i]);
+  }
+
+  return { searchData, totalNoticeSearchNum: filteredData.length };
 };
 
 /**
