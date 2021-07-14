@@ -310,6 +310,7 @@ export const getMypageInfo = async (userID) => {
       completeNum: user.writingCNT,
       startDT: admin.challengeStartDT,
       endDT: admin.challengeEndDT,
+      generation: user.generation,
     };
 
     return {
