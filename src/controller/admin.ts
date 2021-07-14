@@ -16,6 +16,13 @@ import {
   postAdminNotice,
 } from "../service/adminService";
 
+// DTO
+import {
+  adminResDTO,
+  adminRegistReqDTO,
+  adminWriteReqDTO,
+} from "../DTO/adminDTO";
+
 const router = Router();
 
 /**
@@ -23,36 +30,32 @@ const router = Router();
  *  @route Get admin
  *  @access private
  */
-router.get<unknown, unknown, IAdmin>(
-  "/",
-  auth,
-  async (req: Request, res: Response) => {
-    try {
-      const data = await postAdminList(
-        req.body.userID.id,
-        req.query.offset,
-        req.query.limit
-      );
+router.get("/", auth, async (req: Request, res: Response) => {
+  try {
+    const data: adminResDTO | -1 | -2 = await postAdminList(
+      req.body.userID.id,
+      req.query.offset,
+      req.query.limit
+    );
 
-      // limit 없을 때
-      if (data === -1) {
-        response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
-      }
-
-      // 유저 id가 관리자가 아님
-      if (data === -2) {
-        response(res, returnCode.NOT_FOUND, "관리자 아이디가 아닙니다");
-      }
-      // 관리자 챌린지 조회 성공
-      else {
-        dataResponse(res, returnCode.OK, "관리자 페이지 조회 성공", data);
-      }
-    } catch (err) {
-      console.error(err.message);
-      response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    // limit 없을 때
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
     }
+
+    // 유저 id가 관리자가 아님
+    if (data === -2) {
+      response(res, returnCode.NOT_FOUND, "관리자 아이디가 아닙니다");
+    }
+    // 관리자 챌린지 조회 성공
+    else {
+      dataResponse(res, returnCode.OK, "관리자 페이지 조회 성공", data);
+    }
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
   }
-);
+});
 
 /**
  *  @관리자_챌린지_등록
@@ -71,7 +74,8 @@ router.post<unknown, unknown, IAdmin>(
           ? (req as any).files.img[0].location
           : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
-      const data = await postAdminChallenge(req.body.userID.id, req.body, url);
+      const reqData: adminRegistReqDTO = req.body;
+      const data = await postAdminChallenge(req.body.userID.id, reqData, url);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -120,7 +124,8 @@ router.post<unknown, unknown, IConcert>(
           ? (req as any).files.imgThumbnail[0].location
           : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
-      const data = await postAdminConcert(req.body.userID.id, req.body, url);
+      const reqData: adminWriteReqDTO = req.body;
+      const data = await postAdminConcert(req.body.userID.id, reqData, url);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -166,9 +171,10 @@ router.post<unknown, unknown, IConcert>(
           : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
       };
 
+      const reqData: adminWriteReqDTO = req.body;
       const data = await postAdminNotice(
         req.body.userID.id,
-        req.body,
+        reqData,
         // JSON.parse(req.body.json),
         url
       );

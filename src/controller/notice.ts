@@ -13,6 +13,15 @@ import {
 // middlewares
 import auth from "../middleware/auth";
 
+// DTO
+import {
+  noticesResDTO,
+  noticeResDTO,
+  INotice,
+  noticeSearchResDTO,
+} from "../DTO/noticeDTO";
+import { commentReqDTO } from "../DTO/commentDTO";
+
 const router = Router();
 
 /**
@@ -23,7 +32,10 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getNoticeAll(req.query.offset, req.query.limit);
+    const data: noticesResDTO | -1 = await getNoticeAll(
+      req.query.offset,
+      req.query.limit
+    );
 
     // 공지사항 불러오기 성공
     const notice = data;
@@ -55,7 +67,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
     );
 
     // 검색 불러오기 성공
-    const noticeSearch = data;
+    const noticeSearch: noticeSearchResDTO | -1 = data;
 
     // limit 없을 때
     if (data === -1) {
@@ -77,10 +89,10 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 
 router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
+    // const data: INotice = await getNoticeOne(req.params.id);
     const data = await getNoticeOne(req.params.id);
 
-    const notice = data;
-    dataResponse(res, returnCode.OK, "해당 공지사항 불러오기 성공", notice);
+    dataResponse(res, returnCode.OK, "해당 공지사항 불러오기 성공", data);
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
@@ -94,10 +106,11 @@ router.get("/:id", auth, async (req: Request, res: Response) => {
  */
 router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
+    const reqData: commentReqDTO = req.body;
     const data = await postNoticeComment(
       req.params.id,
       req.body.userID.id,
-      req.body
+      reqData
     );
 
     // 공지사항 id가 잘못된 경우
