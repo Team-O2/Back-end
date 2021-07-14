@@ -15,6 +15,7 @@ import {
   postEmail,
   postSignin,
   postSignup,
+  getHamburger,
 } from "../service/authService";
 
 const router = Router();
@@ -210,5 +211,24 @@ router.patch(
     }
   }
 );
+
+/**
+ *  @햄버거바
+ *  @route Post auth/hamburger
+ *  @desc
+ *  @access Public
+ */
+
+router.get("/hamburger", async (req: Request, res: Response) => {
+  try {
+    const data = await getHamburger();
+
+    // 조회 성공
+    dataResponse(res, returnCode.OK, "햄버거바 조회 성공", data);
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
 
 module.exports = router;
