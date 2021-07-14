@@ -188,6 +188,39 @@ export async function postSignin(body) {
 }
 
 /**
+ *  @햄버거바
+ *  @route Post auth/hamburger
+ *  @desc
+ *  @access Public
+ */
+
+export async function getHamburger() {
+  // 신청 진행 중 기수(generation)를 확인하여 오투콘서트에 삽입
+  let dateNow = new Date();
+  const gen = await Admin.findOne({
+    $and: [
+      { registerStartDT: { $lte: dateNow } },
+      { registerEndDT: { $gte: dateNow } },
+    ],
+  });
+
+  const progressGen = await Admin.findOne({
+    $and: [
+      { challengeStartDT: { $lte: dateNow } },
+      { challengeEndDT: { $gte: dateNow } },
+    ],
+  });
+
+  var registGeneration = gen ? gen.generation : null;
+  var progressGeneration = null;
+  if (progressGen) {
+    progressGeneration = progressGen.generation;
+  }
+
+  return { progressGeneration, registGeneration };
+}
+
+/**
  *  @이메일_인증번호_전송
  *  @route Post auth/email
  *  @body email
