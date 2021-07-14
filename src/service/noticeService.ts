@@ -4,6 +4,15 @@ import User from "../models/User";
 import Badge from "../models/Badge";
 import Comment from "../models/Comment";
 
+// DTO
+import {
+  noticesResDTO,
+  noticeResDTO,
+  INotice,
+  noticeSearchResDTO,
+} from "../DTO/noticeDTO";
+
+import { commentReqDTO } from "../DTO/commentDTO";
 /**
  *  @공지사항_전체_가져오기
  *  @route Get /notice
@@ -51,7 +60,15 @@ export const getNoticeAll = async (offset, limit) => {
       ],
     });
 
-  return { notices, totalNoticeNum: notices.length };
+  const totalNoticeNum = await Concert.find({
+    isDeleted: false,
+    isNotice: true,
+  }).countDocuments();
+  const resData: noticesResDTO = {
+    notices,
+    totalNoticeNum,
+  };
+  return resData;
 };
 
 /**
@@ -84,6 +101,9 @@ export const getNoticeOne = async (noticeID) => {
         },
       ],
     });
+
+  // const resData: INotice = notice
+  // return resData;
 
   return notice;
 };
@@ -152,7 +172,12 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
     searchData.push(filteredData[i]);
   }
 
-  return { searchData, totalNoticeSearchNum: filteredData.length };
+  const resData: noticeSearchResDTO = {
+    searchData: searchData,
+    totalNoticeSearchNum: filteredData.length,
+  };
+
+  return resData;
 };
 
 /**
@@ -163,8 +188,12 @@ export const getNoticeSearch = async (keyword, offset, limit) => {
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-export const postNoticeComment = async (noticeID, userID, body) => {
-  const { parentID, text } = body;
+export const postNoticeComment = async (
+  noticeID,
+  userID,
+  reqData: commentReqDTO
+) => {
+  const { parentID, text } = reqData;
 
   // 1. 공지사항 id 잘못됨
   const notice = await Concert.findById(noticeID);

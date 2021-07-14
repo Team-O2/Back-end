@@ -2,12 +2,14 @@ import { Router, Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 // libraries
 import { returnCode } from "../library/returnCode";
+
 import {
   response,
   dataResponse,
   tokenResponse,
   dataTokenResponse,
 } from "../library/response";
+
 // services
 import {
   patchPassword,
@@ -17,6 +19,14 @@ import {
   postSignup,
   getHamburger,
 } from "../service/authService";
+
+//DTO
+import {
+  signupReqDTO,
+  signinReqDTO,
+  hamburgerResDTO,
+  pwReqDTO,
+} from "../DTO/authDTO";
 
 const router = Router();
 
@@ -41,7 +51,8 @@ router.post(
     }
 
     try {
-      const data = await postSignup(req.body);
+      const reqData: signupReqDTO = req.body;
+      const data = await postSignup(reqData);
 
       // 요청 바디가 부족할 경우
       if (data == -1) {
@@ -79,7 +90,8 @@ router.post(
     }
 
     try {
-      const data = await postSignin(req.body);
+      const reqData: signinReqDTO = req.body;
+      const data = await postSignin(reqData);
 
       // 요청 바디가 부족할 경우
       if (data == -1) {
@@ -193,7 +205,8 @@ router.patch(
     }
 
     try {
-      const data = await patchPassword(req.body);
+      const reqData: pwReqDTO = req.body;
+      const data = await patchPassword(reqData);
 
       // 요청 바디가 부족할 경우
       if (data === -1) {
@@ -221,7 +234,7 @@ router.patch(
 
 router.get("/hamburger", async (req: Request, res: Response) => {
   try {
-    const data = await getHamburger();
+    const data: hamburgerResDTO = await getHamburger();
 
     // 조회 성공
     dataResponse(res, returnCode.OK, "햄버거바 조회 성공", data);

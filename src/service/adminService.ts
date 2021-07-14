@@ -7,6 +7,13 @@ import Concert from "../models/Concert";
 import { stringToDate } from "../library/date";
 import Challenge from "../models/Challenge";
 
+// DTO
+import {
+  adminResDTO,
+  adminRegistReqDTO,
+  adminWriteReqDTO,
+} from "../DTO/adminDTO";
+
 /**
  *  @관리자_페이지_조회
  *  @route Get admin
@@ -81,13 +88,12 @@ export const postAdminList = async (userID, offset, limit) => {
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     offsetAdmin.push(adminList[i]);
   }
-
-  return {
+  const resData: adminResDTO = {
     offsetAdmin,
     totalAdminNum: adminList.length,
   };
 
-  return;
+  return resData;
 };
 
 /**
@@ -99,7 +105,11 @@ export const postAdminList = async (userID, offset, limit) => {
  *      2. 유저 id가 관리자가 아님
  *      3. 챌린지 기간이 잘못됨
  */
-export const postAdminChallenge = async (userID, body, url) => {
+export const postAdminChallenge = async (
+  userID,
+  reqData: adminRegistReqDTO,
+  url
+) => {
   const img = url.img;
   const {
     title,
@@ -108,7 +118,7 @@ export const postAdminChallenge = async (userID, body, url) => {
     challengeStartDT,
     challengeEndDT,
     limitNum,
-  } = body;
+  } = reqData;
 
   // 1. 요청 바디 부족
   if (
@@ -175,14 +185,18 @@ export const postAdminChallenge = async (userID, body, url) => {
  *      3. 해당 날짜에 진행되는 기수가 없음
  */
 
-export const postAdminConcert = async (userID, body, url) => {
-  const { title, text, authorNickname } = body;
-  let interest = body.interest
+export const postAdminConcert = async (
+  userID,
+  reqData: adminWriteReqDTO,
+  url
+) => {
+  const { title, text, authorNickname } = reqData;
+  let interest = reqData.interest
     .toLowerCase()
     .slice(1, -1)
     .replace(/"/gi, "")
     .split(/,\s?/);
-  let hashtag = body.hashtag
+  let hashtag = reqData.hashtag
     .toLowerCase()
     .slice(1, -1)
     .replace(/"/gi, "")
@@ -225,14 +239,14 @@ export const postAdminConcert = async (userID, body, url) => {
  *      2. 유저 id가 관리자가 아님
  */
 
-export const postAdminNotice = async (userID, body, url) => {
-  const { title, text } = body;
-  let interest = body.interest
+export const postAdminNotice = async (userID, reqData, url) => {
+  const { title, text } = reqData;
+  let interest = reqData.interest
     .toLowerCase()
     .slice(1, -1)
     .replace(/"/gi, "")
     .split(/,\s?/);
-  let hashtag = body.hashtag
+  let hashtag = reqData.hashtag
     .toLowerCase()
     .slice(1, -1)
     .replace(/"/gi, "")

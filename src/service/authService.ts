@@ -1,3 +1,4 @@
+// models
 import User from "../models/User";
 import Badge from "../models/Badge";
 import Admin from "../models/Admin";
@@ -6,6 +7,16 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import config from "../config";
 
+// DTO
+import {
+  signupReqDTO,
+  signinReqDTO,
+  signinResDTO,
+  hamburgerResDTO,
+  pwReqDTO,
+} from "../DTO/authDTO";
+
+// library
 import { smtpTransport } from "../library/emailSender";
 import ejs from "ejs";
 
@@ -18,8 +29,8 @@ import ejs from "ejs";
  *      2. 아이디 중복
  */
 
-export async function postSignup(body) {
-  const { email, password, nickname, gender, marpolicy, interest } = body;
+export async function postSignup(data: signupReqDTO) {
+  const { email, password, nickname, gender, marpolicy, interest } = data;
 
   // 1. 요청 바디 부족
   if (!email || !password || !nickname || !interest) {
@@ -92,8 +103,8 @@ export async function postSignup(body) {
  *      4: 관리자
  */
 
-export async function postSignin(body) {
-  const { email, password } = body;
+export async function postSignin(reqData: signinReqDTO) {
+  const { email, password } = reqData;
 
   // 1. 요청 바디 부족
   if (!email || !password) {
@@ -177,7 +188,7 @@ export async function postSignin(body) {
   }
 
   var totalGeneration = await Admin.find().countDocuments();
-  const userData = {
+  const userData: signinResDTO = {
     userState,
     progressGeneration,
     registGeneration,
@@ -216,8 +227,11 @@ export async function getHamburger() {
   if (progressGen) {
     progressGeneration = progressGen.generation;
   }
-
-  return { progressGeneration, registGeneration };
+  const resData: hamburgerResDTO = {
+    progressGeneration,
+    registGeneration,
+  };
+  return resData;
 }
 
 /**
@@ -325,8 +339,8 @@ export async function postCode(body) {
  *      1. 요청 바디 부족
  *      2. 아이디가 존재하지 않음
  */
-export async function patchPassword(body) {
-  const { email, password } = body;
+export async function patchPassword(reqData: pwReqDTO) {
+  const { email, password } = reqData;
 
   // 1. 요청 바디 부족
   if (!email || !password) {
