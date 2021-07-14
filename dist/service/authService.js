@@ -85,11 +85,11 @@ exports.postSignup = postSignup;
  *      2. 아이디가 존재하지 않음
  *      3. 패스워드가 올바르지 않음
  *  @response
- *      0 - default(비로그인)
- *      1 - 챌린지 안하는 유저
- *      2 - 챌린지 안하는 유저 (기간은 챌린지 없음)
- *      3 - 챌린지 하는 유저 (기간은 챌린지 중)
- *      4 - 관리자
+ *      0: 비회원,
+ *      1: 챌린지안하는유저 (기간은 신청기간 중)
+ *      2: 챌린지 안하는 유저 (기간은 신청기간이 아님)
+ *      3: 챌린지 하는 유저 (기간은 챌린지 중)
+ *      4: 관리자
  */
 function postSignin(body) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -124,25 +124,37 @@ function postSignin(body) {
       
           console.log(date1 > date2); // true
         */
-        // 현재 기수(generation)를 확인하여 오투콘서트에 삽입
+        // 신청 진행 중 기수(generation)를 확인하여 오투콘서트에 삽입
         let dateNow = new Date();
         const gen = yield Admin_1.default.findOne({
+            $and: [
+                { registerStartDT: { $lte: dateNow } },
+                { registerEndDT: { $gte: dateNow } },
+            ],
+        });
+        const progressGen = yield Admin_1.default.findOne({
             $and: [
                 { challengeStartDT: { $lte: dateNow } },
                 { challengeEndDT: { $gte: dateNow } },
             ],
         });
+        var registGeneration = gen ? gen.generation : null;
+        var progressGeneration = null;
+        if (progressGen) {
+            progressGeneration = progressGen.generation;
+        }
         // 4-관리자
         if (user.userType === 1) {
             userState = 4;
+            registGeneration = null;
         }
         // 챌린지 안하는 유저
         else if (!user.isChallenge) {
-            // 1- 해당 날짜에 진행되는 기수가 있음
+            // 1- 해당 날짜에 신청 가능한 기수가 있음
             if (gen) {
                 userState = 1;
             }
-            // 2- 해당 날짜에 진행되는 기수가 없음
+            // 2- 해당 날짜에 신청 가능한 기수가 없음
             else {
                 userState = 2;
             }
@@ -151,9 +163,11 @@ function postSignin(body) {
         else {
             userState = 3;
         }
-        const totalGeneration = yield Admin_1.default.find().countDocuments();
+        var totalGeneration = yield Admin_1.default.find().countDocuments();
         const userData = {
             userState,
+            progressGeneration,
+            registGeneration,
             totalGeneration,
         };
         return { userData, token };
