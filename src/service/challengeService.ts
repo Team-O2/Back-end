@@ -241,7 +241,7 @@ export const postChallenge = async (userID, body) => {
  *      2. 요청 바디 부족
  */
 export const patchChallenge = async (challengeID, body) => {
-  const { good, bad, learn } = body;
+  const { good, bad, learn, interest } = body;
 
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
@@ -249,7 +249,7 @@ export const patchChallenge = async (challengeID, body) => {
     return -1;
   }
   // 2. 요청 바디 부족
-  if (!good || !bad || !learn) {
+  if (!good || !bad || !learn || !interest) {
     return -2;
   }
 
@@ -261,6 +261,7 @@ export const patchChallenge = async (challengeID, body) => {
       good: good.toLowerCase(),
       bad: bad.toLowerCase(),
       learn: learn.toLowerCase(),
+      interest: interest,
       updatedAt: updateDate,
     }
   );
