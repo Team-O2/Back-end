@@ -268,6 +268,7 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
             completeNum: user.writingCNT,
             startDT: admin.challengeStartDT,
             endDT: admin.challengeEndDT,
+            generation: user.generation,
         };
         return {
             nickname: user.nickname,
