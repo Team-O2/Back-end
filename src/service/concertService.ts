@@ -110,12 +110,11 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
   }
 
   let concerts;
+
   concerts = await Concert.find({
     isDeleted: false,
     isNotice: false,
   })
-    .skip(Number(offset))
-    .limit(Number(limit))
     .sort({ likes: -1 })
     .populate("user", ["nickname", "img"])
     .populate({
@@ -139,17 +138,17 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
       ],
     });
 
-  let filteredData = concerts;
+  let filteredData = await concerts;
 
   // 관심분야 필터링
-  if (tag !== "") {
+  if (tag !== "" && tag) {
     filteredData = filteredData.filter((fd) => {
       if (fd.interest.includes(tag.toLowerCase())) return fd;
     });
   }
 
   // 검색 단어 필터링
-  if (keyword !== "") {
+  if (keyword !== "" && keyword) {
     filteredData = filteredData.filter((fd) => {
       if (
         fd.text.includes(keyword.toLowerCase().trim()) ||
@@ -160,7 +159,11 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
     });
   }
 
-  return filteredData;
+  var searchData = [];
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+    searchData.push(filteredData[i]);
+  }
+  return searchData;
 };
 
 /**

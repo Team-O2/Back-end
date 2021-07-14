@@ -122,8 +122,6 @@ export const getChallengeSearch = async (
   challenges = await Challenge.find({
     isDeleted: false,
   })
-    .skip(Number(offset))
-    .limit(Number(limit))
     .sort({ _id: -1 })
     .populate("user", ["nickname", "img"])
     .populate({
@@ -150,21 +148,21 @@ export const getChallengeSearch = async (
   let filteredData = challenges;
 
   // 관심분야 필터링
-  if (tag !== "") {
+  if (tag !== "" && tag) {
     filteredData = filteredData.filter((fd) => {
       if (fd.interest.includes(tag.toLowerCase())) return fd;
     });
   }
 
   // 내가 쓴 글 필터링
-  if (isMine === "1") {
+  if (isMine === "1" && isMine) {
     filteredData = filteredData.filter((fd) => {
       if (String(fd.user._id) === String(userID.id)) return fd;
     });
   }
 
   // 검색 단어 필터링
-  if (keyword !== "") {
+  if (keyword !== "" && keyword) {
     filteredData = filteredData.filter((fd) => {
       if (
         fd.good.includes(keyword.toLowerCase().trim()) ||
@@ -174,8 +172,11 @@ export const getChallengeSearch = async (
         return fd;
     });
   }
-
-  return filteredData;
+  var searchData = [];
+  for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+    searchData.push(filteredData[i]);
+  }
+  return searchData;
 };
 
 /**
