@@ -120,7 +120,6 @@ const getNoticeSearch = (keyword, offset, limit) => __awaiter(void 0, void 0, vo
         isDeleted: false,
         isNotice: true,
     })
-        .limit(Number(limit))
         .sort({ _id: -1 })
         .populate("user", ["nickname", "img"])
         .populate({
@@ -145,7 +144,7 @@ const getNoticeSearch = (keyword, offset, limit) => __awaiter(void 0, void 0, vo
     });
     let filteredData = notices;
     // 검색 단어 필터링
-    if (keyword !== "") {
+    if (keyword !== "" && keyword) {
         filteredData = filteredData.filter((fd) => {
             if (fd.text.includes(keyword.toLowerCase().trim()) ||
                 fd.title.includes(keyword.toLowerCase().trim()) ||
@@ -154,7 +153,11 @@ const getNoticeSearch = (keyword, offset, limit) => __awaiter(void 0, void 0, vo
                 return fd;
         });
     }
-    return { filteredData, totalNoticeSearchNum: filteredData.length };
+    var searchData = [];
+    for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+        searchData.push(filteredData[i]);
+    }
+    return { searchData, totalNoticeSearchNum: filteredData.length };
 });
 exports.getNoticeSearch = getNoticeSearch;
 /**
