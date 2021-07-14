@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchPassword = exports.postCode = exports.postEmail = exports.postSignin = exports.postSignup = void 0;
+exports.patchPassword = exports.postCode = exports.postEmail = exports.getHamburger = exports.postSignin = exports.postSignup = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Badge_1 = __importDefault(require("../models/Badge"));
 const Admin_1 = __importDefault(require("../models/Admin"));
@@ -174,6 +174,37 @@ function postSignin(body) {
     });
 }
 exports.postSignin = postSignin;
+/**
+ *  @햄버거바
+ *  @route Post auth/hamburger
+ *  @desc
+ *  @access Public
+ */
+function getHamburger() {
+    return __awaiter(this, void 0, void 0, function* () {
+        // 신청 진행 중 기수(generation)를 확인하여 오투콘서트에 삽입
+        let dateNow = new Date();
+        const gen = yield Admin_1.default.findOne({
+            $and: [
+                { registerStartDT: { $lte: dateNow } },
+                { registerEndDT: { $gte: dateNow } },
+            ],
+        });
+        const progressGen = yield Admin_1.default.findOne({
+            $and: [
+                { challengeStartDT: { $lte: dateNow } },
+                { challengeEndDT: { $gte: dateNow } },
+            ],
+        });
+        var registGeneration = gen ? gen.generation : null;
+        var progressGeneration = null;
+        if (progressGen) {
+            progressGeneration = progressGen.generation;
+        }
+        return { progressGeneration, registGeneration };
+    });
+}
+exports.getHamburger = getHamburger;
 /**
  *  @이메일_인증번호_전송
  *  @route Post auth/email

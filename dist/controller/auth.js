@@ -174,5 +174,22 @@ router.patch("/pw", [
         response_1.response(res, returnCode_1.returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
     }
 }));
+/**
+ *  @햄버거바
+ *  @route Post auth/hamburger
+ *  @desc
+ *  @access Public
+ */
+router.get("/hamburger", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield authService_1.getHamburger();
+        // 조회 성공
+        response_1.dataResponse(res, returnCode_1.returnCode.OK, "햄버거바 조회 성공", data);
+    }
+    catch (err) {
+        console.error(err.message);
+        response_1.response(res, returnCode_1.returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+}));
 module.exports = router;
 //# sourceMappingURL=auth.js.map
