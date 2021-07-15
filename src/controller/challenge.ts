@@ -4,6 +4,8 @@ import { returnCode } from "../library/returnCode";
 import { response, dataResponse } from "../library/response";
 // middlewares
 import auth from "../middleware/auth";
+import publicAuth from "../middleware/publicAuth";
+
 // services
 import {
   getChallengeAll,
@@ -28,13 +30,13 @@ const router = Router();
 /**
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
- *  @access Private
+ *  @access public
  */
 
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeAll(
-      req.body.userID.id,
+      req.body.userID,
       req.query.offset,
       req.query.limit
     );
@@ -55,10 +57,10 @@ router.get("/", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
- *  @access Private
+ *  @access public
  */
 
-router.get("/search", auth, async (req: Request, res: Response) => {
+router.get("/search", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeSearch(
       req.query.tag,
@@ -86,10 +88,10 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_가져오기
  *  @route Get /challenge/:challengeID
- *  @access Private
+ *  @access private
  */
 
-router.get("/:id", auth, async (req: Request, res: Response) => {
+router.get("/:id", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO | -1 = await getChallengeOne(req.body.userID.id, req.params.id);
 
