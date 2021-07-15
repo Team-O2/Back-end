@@ -11,7 +11,7 @@ export interface IUser {
   nickname: string;
   interest: [string];
   marpolicy: Boolean;
-  gender: number;
+  gender: 0 | 1 | 2;
   challengeCNT: number;
   conditionCNT: number;
   writingCNT: number;

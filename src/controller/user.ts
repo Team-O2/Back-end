@@ -20,6 +20,21 @@ import {
   patchInfo,
   patchPW,
 } from "../service/userService";
+// DTO
+import mongoose, { Document } from "mongoose";
+import {
+  challengeScrapResDTO,
+  concertScrapResDTO,
+  myCommentsResDTO,
+  mypageInfoResDTO,
+  newPwReqDTO,
+  registerReqDTO,
+  userInfoResDTO,
+} from "src/DTO/userDTO";
+// interface
+import { IUser } from "../interfaces/IUser";
+import { IComment } from "src/interfaces/IComment";
+import { IChallenge } from "src/interfaces/IChallenge";
 
 const router = Router();
 
@@ -31,7 +46,8 @@ const router = Router();
 
 router.post("/register", auth, async (req: Request, res: Response) => {
   try {
-    const data = await postRegister(req.body.userID.id, req.body);
+    const body: registerReqDTO = req.body;
+    const data = await postRegister(req.body.userID.id, body);
 
     // 요청 바디가 부족할 경우
     if (data === -1) {
@@ -73,7 +89,7 @@ router.post("/register", auth, async (req: Request, res: Response) => {
  */
 router.get("/userInfo", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getUserInfo(req.body.userID.id);
+    const data: userInfoResDTO = await getUserInfo(req.body.userID.id);
 
     // 유저정보 조회 성공
     dataResponse(res, returnCode.OK, "유저정보 조회 성공", data);
@@ -82,12 +98,12 @@ router.get("/userInfo", auth, async (req: Request, res: Response) => {
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
   }
 });
+
 /**
  *  @마이페이지_회원정보_수정
  *  @route Patch user
  *  @access private
  */
-
 router.patch(
   "/userInfo",
   upload.fields([{ name: "img", maxCount: 1 }]),
@@ -120,7 +136,8 @@ router.patch(
 
 router.patch("/password", auth, async (req: Request, res: Response) => {
   try {
-    const data = await patchPW(req.body.userID.id, req.body);
+    const body: newPwReqDTO = req.body;
+    const data = await patchPW(body);
 
     // 요청 바디가 부족할 경우
     if (data === -1) {
@@ -135,7 +152,7 @@ router.patch("/password", auth, async (req: Request, res: Response) => {
       );
     }
 
-    dataResponse(res, returnCode.OK, "비밀번호 수정 성공", data);
+    response(res, returnCode.OK, "비밀번호 수정 성공");
   } catch (err) {
     console.error(err.message);
     response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
@@ -150,7 +167,7 @@ router.patch("/password", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageConcert(
+    const data: concertScrapResDTO | -1 | -2 = await getMypageConcert(
       req.body.userID.id,
       req.query.offset,
       req.query.limit
@@ -188,7 +205,7 @@ router.get("/mypage/concert", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageChallenge(
+    const data: challengeScrapResDTO | -1 | -2 = await getMypageChallenge(
       req.body.userID.id,
       req.query.offset,
       req.query.limit
@@ -221,7 +238,7 @@ router.get("/mypage/challenge", auth, async (req: Request, res: Response) => {
  */
 router.get("/mypage/info", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMypageInfo(req.body.userID.id);
+    const data: mypageInfoResDTO = await getMypageInfo(req.body.userID.id);
 
     // 유저정보 조회 성공
     dataResponse(res, returnCode.OK, "마이페이지 유저정보 검색 성공", data);
@@ -271,7 +288,11 @@ router.delete(
 
 router.get("/mypage/write", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMyWritings(
+    const data:
+      | (IChallenge &
+          Document<IUser, mongoose.Schema.Types.ObjectId> &
+          Document<IComment, mongoose.Schema.Types.ObjectId>)[]
+      | -1 = await getMyWritings(
       req.body.userID.id,
       req.query.offset,
       req.query.limit
@@ -297,7 +318,7 @@ router.get("/mypage/write", auth, async (req: Request, res: Response) => {
 
 router.get("/mypage/comment", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getMyComments(
+    const data: myCommentsResDTO | -1 = await getMyComments(
       req.body.userID.id,
       req.query.postModel,
       req.query.offset,
