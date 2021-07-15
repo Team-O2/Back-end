@@ -34,6 +34,7 @@ const router = Router();
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeAll(
+      req.body.userID.id,
       req.query.offset,
       req.query.limit
     );
@@ -90,7 +91,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 
 router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data: IChallengeDTO | -1 = await getChallengeOne(req.params.id);
+    const data: IChallengeDTO | -1 = await getChallengeOne(req.body.userID.id, req.params.id);
 
     // challengeID가 이상할 때
     if (data === -1) {

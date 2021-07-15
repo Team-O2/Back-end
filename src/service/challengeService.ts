@@ -12,7 +12,7 @@ import { commentReqDTO } from "../DTO/commentDTO";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-export const getChallengeAll = async (offset, limit) => {
+export const getChallengeAll = async (userID, offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
@@ -54,7 +54,28 @@ export const getChallengeAll = async (offset, limit) => {
       ],
     });
 
-  const resData: IChallengeDTO[] = challenge;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const newChallenge = challenge.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  const resData: IChallengeDTO[] = newChallenge;
 
   return resData;
 };
@@ -63,13 +84,11 @@ export const getChallengeAll = async (offset, limit) => {
  *  @챌린지_Detail
  *  @route Get /challenge/:challengeID
  */
-export const getChallengeOne = async (challengeID) => {
+export const getChallengeOne = async (userID, challengeID) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
-  const challenge = await Challenge.find(
-    { _id: challengeID },
-    { isDeleted: false }
-  )
+  let challenge;
+  challenge = await Challenge.find({ _id: challengeID }, { isDeleted: false })
     .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
@@ -97,21 +116,25 @@ export const getChallengeOne = async (challengeID) => {
     return -1;
   }
 
-  const resData: IChallengeDTO = {
-    _id: challengeID,
-    createdAt: challenge[0].createdAt,
-    updatedAt: challenge[0].updatedAt,
-    user: challenge[0].user,
-    good: challenge[0].good,
-    learn: challenge[0].learn,
-    bad: challenge[0].bad,
-    likes: challenge[0].likes,
-    commentNum: challenge[0].commentNum,
-    scrapNum: challenge[0].scrapNum,
-    generation: challenge[0].generation,
-    interest: challenge[0].interest,
-    comments: challenge[0].comments,
-  };
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  let resData: IChallengeDTO;
+  if (
+    user.scraps.challengeScraps.includes(challengeID) &&
+    user.likes.challengeLikes.includes(challengeID)
+  ) {
+    resData = { ...challenge._doc, isLike: true, isScrap: true };
+  } else if (user.scraps.challengeScraps.includes(challengeID)) {
+    resData = { ...challenge._doc, isLike: false, isScrap: true };
+  } else if (user.likes.challengeLikes.includes(challengeID)) {
+    resData = { ...challenge._doc, isLike: true, isScrap: false };
+  } else {
+    resData = {
+      ...challenge._doc,
+      isLike: false,
+      isScrap: false,
+    };
+  }
 
   return resData;
 };
@@ -199,7 +222,28 @@ export const getChallengeSearch = async (
     searchData.push(filteredData[i]);
   }
 
-  const resData: IChallengeDTO[] = searchData;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const newChallenge = searchData.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  const resData: IChallengeDTO[] = newChallenge;
 
   return resData;
 };
