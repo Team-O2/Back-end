@@ -19,6 +19,10 @@ import {
   getChallengeOne,
 } from "../service/challengeService";
 
+// DTO
+import { IChallengeDTO, challengeWriteReqDTO } from "../DTO/challengeDTO";
+import { commentReqDTO } from "../DTO/commentDTO";
+
 const router = Router();
 
 /**
@@ -29,7 +33,10 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getChallengeAll(req.query.offset, req.query.limit);
+    const data: IChallengeDTO[] | -1 = await getChallengeAll(
+      req.query.offset,
+      req.query.limit
+    );
 
     // limit 없을 때
     if (data === -1) {
@@ -52,7 +59,7 @@ router.get("/", auth, async (req: Request, res: Response) => {
 
 router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getChallengeSearch(
+    const data: IChallengeDTO[] | -1 = await getChallengeSearch(
       req.query.tag,
       req.query.isMine,
       req.query.keyword,
@@ -83,7 +90,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 
 router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getChallengeOne(req.params.id);
+    const data: IChallengeDTO | -1 = await getChallengeOne(req.params.id);
 
     // challengeID가 이상할 때
     if (data === -1) {
@@ -105,7 +112,8 @@ router.get("/:id", auth, async (req: Request, res: Response) => {
 
 router.post("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await postChallenge(req.body.userID.id, req.body);
+    const reqData: challengeWriteReqDTO = req.body;
+    const data = await postChallenge(req.body.userID.id, reqData);
 
     // 요청 바디가 부족할 경우
     if (data === -1) {
@@ -132,7 +140,8 @@ router.post("/", auth, async (req: Request, res: Response) => {
 
 router.patch("/:id", auth, async (req: Request, res: Response) => {
   try {
-    const data = await patchChallenge(req.params.id, req.body);
+    const reqData: challengeWriteReqDTO = req.body;
+    const data = await patchChallenge(req.params.id, reqData);
 
     // 회고 id가 잘못된 경우
     if (data === -1) {
@@ -182,10 +191,11 @@ router.delete("/:id", auth, async (req: Request, res: Response) => {
 
 router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
+    const reqData: commentReqDTO = req.body;
     const data = await postChallengeComment(
       req.params.id,
       req.body.userID.id,
-      req.body
+      reqData
     );
 
     // 회고 id가 잘못된 경우
