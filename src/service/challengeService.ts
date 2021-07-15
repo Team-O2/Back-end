@@ -203,7 +203,7 @@ export const getChallengeSearch = async (
   let filteredData = challenges;
 
   // 관심분야 필터링
-  if (tag !== "" && tag) {
+  if (tag !== "" && tag && tag !== "전체") {
     filteredData = filteredData.filter((fd) => {
       if (fd.interest.includes(tag.toLowerCase())) return fd;
     });
