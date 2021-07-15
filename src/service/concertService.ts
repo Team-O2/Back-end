@@ -59,36 +59,44 @@ export const getConcertAll = async (userID, offset, limit) => {
       ],
     });
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
-  const newConcerts: IConcertDTO[] = concerts.map((c) => {
-    if (
-      user.scraps.concertScraps.includes(c._id) &&
-      user.likes.concertLikes.includes(c._id)
-    ) {
-      return { ...c._doc, isLike: true, isScrap: true };
-    } else if (user.scraps.concertScraps.includes(c._id)) {
-      return { ...c._doc, isLike: false, isScrap: true };
-    } else if (user.likes.concertLikes.includes(c._id)) {
-      return { ...c._doc, isLike: true, isScrap: false };
-    } else {
-      return {
-        ...c._doc,
-        isLike: false,
-        isScrap: false,
-      };
-    }
-  });
-
   let totalConcertNum = await Concert.find({
     isDeleted: false,
     isNotice: false,
-  }).count();
+  }).countDocuments();
 
-  const resData: concertResDTO = {
-    concerts: newConcerts,
-    totalConcertNum,
-  };
+  let resData: concertResDTO;
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    const newConcerts: IConcertDTO[] = concerts.map((c) => {
+      if (
+        user.scraps.concertScraps.includes(c._id) &&
+        user.likes.concertLikes.includes(c._id)
+      ) {
+        return { ...c._doc, isLike: true, isScrap: true };
+      } else if (user.scraps.concertScraps.includes(c._id)) {
+        return { ...c._doc, isLike: false, isScrap: true };
+      } else if (user.likes.concertLikes.includes(c._id)) {
+        return { ...c._doc, isLike: true, isScrap: false };
+      } else {
+        return {
+          ...c._doc,
+          isLike: false,
+          isScrap: false,
+        };
+      }
+    });
+
+    resData = {
+      concerts: newConcerts,
+      totalConcertNum,
+    };
+  } else {
+    resData = {
+      concerts,
+      totalConcertNum,
+    };
+  }
 
   return resData;
 };
@@ -124,24 +132,28 @@ export const getConcertOne = async (userID, concertID) => {
       ],
     });
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
   let resData: IConcertDTO;
-  if (
-    user.scraps.concertScraps.includes(concertID) &&
-    user.likes.concertLikes.includes(concertID)
-  ) {
-    resData = { ...concert._doc, isLike: true, isScrap: true };
-  } else if (user.scraps.concertScraps.includes(concertID)) {
-    resData = { ...concert._doc, isLike: false, isScrap: true };
-  } else if (user.likes.concertLikes.includes(concertID)) {
-    resData = { ...concert._doc, isLike: true, isScrap: false };
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    if (
+      user.scraps.concertScraps.includes(concertID) &&
+      user.likes.concertLikes.includes(concertID)
+    ) {
+      resData = { ...concert._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.concertScraps.includes(concertID)) {
+      resData = { ...concert._doc, isLike: false, isScrap: true };
+    } else if (user.likes.concertLikes.includes(concertID)) {
+      resData = { ...concert._doc, isLike: true, isScrap: false };
+    } else {
+      resData = {
+        ...concert._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
   } else {
-    resData = {
-      ...concert._doc,
-      isLike: false,
-      isScrap: false,
-    };
+    resData = concert;
   }
 
   return resData;
@@ -151,7 +163,7 @@ export const getConcertOne = async (userID, concertID) => {
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-export const getConcertSearch = async (tag, keyword, offset, limit, userID) => {
+export const getConcertSearch = async (userID, tag, keyword, offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
@@ -216,29 +228,46 @@ export const getConcertSearch = async (tag, keyword, offset, limit, userID) => {
 
   var searchData = [];
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+    if (!filteredData[i]) {
+      break;
+    }
     searchData.push(filteredData[i]);
   }
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
-  const resData: IConcertDTO[] = searchData.map((c) => {
-    if (
-      user.scraps.concertScraps.includes(c._id) &&
-      user.likes.concertLikes.includes(c._id)
-    ) {
-      return { ...c._doc, isLike: true, isScrap: true };
-    } else if (user.scraps.concertScraps.includes(c._id)) {
-      return { ...c._doc, isLike: false, isScrap: true };
-    } else if (user.likes.concertLikes.includes(c._id)) {
-      return { ...c._doc, isLike: true, isScrap: false };
-    } else {
-      return {
-        ...c._doc,
-        isLike: false,
-        isScrap: false,
-      };
-    }
-  });
+  const totalConcertNum = filteredData.lenth;
+  let resData: concertResDTO;
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    const newConcert = searchData.map((c) => {
+      if (
+        user.scraps.concertScraps.includes(c._id) &&
+        user.likes.concertLikes.includes(c._id)
+      ) {
+        return { ...c._doc, isLike: true, isScrap: true };
+      } else if (user.scraps.concertScraps.includes(c._id)) {
+        return { ...c._doc, isLike: false, isScrap: true };
+      } else if (user.likes.concertLikes.includes(c._id)) {
+        return { ...c._doc, isLike: true, isScrap: false };
+      } else {
+        return {
+          ...c._doc,
+          isLike: false,
+          isScrap: false,
+        };
+      }
+    });
+
+    resData = {
+      concerts: newConcert,
+      totalConcertNum,
+    };
+  } else {
+    resData = {
+      concerts: searchData,
+      totalConcertNum,
+    };
+  }
 
   return resData;
 };
