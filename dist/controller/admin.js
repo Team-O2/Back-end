@@ -85,6 +85,28 @@ router.post("/challenge", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.
     }
 }));
 /**
+ *  @관리자_챌린지_신청페이지
+ *  @route Get admin/regist
+ *  @access private
+ */
+router.get("/regist", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield adminService_1.getAdminRegist();
+        // 현재 진행중인 기수가 없음
+        if (data === -1) {
+            response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "현재 신청 기간인 기수가 없습니다");
+        }
+        // 챌린지 신청 페이지 조회 성공
+        else {
+            response_1.dataResponse(res, returnCode_1.returnCode.OK, "신청 페이지 조회 성공", data);
+        }
+    }
+    catch (err) {
+        console.error(err.message);
+        response_1.response(res, returnCode_1.returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+    }
+}));
+/**
  *  @관리자_오픈콘서트_등록
  *  @route Post admin/concert
  *  @access private

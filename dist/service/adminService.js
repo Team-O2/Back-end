@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postAdminNotice = exports.postAdminConcert = exports.postAdminChallenge = exports.postAdminList = void 0;
+exports.postAdminNotice = exports.postAdminConcert = exports.getAdminRegist = exports.postAdminChallenge = exports.postAdminList = void 0;
 // models
 const Admin_1 = __importDefault(require("../models/Admin"));
 const User_1 = __importDefault(require("../models/User"));
@@ -154,6 +154,35 @@ const postAdminChallenge = (userID, reqData, url) => __awaiter(void 0, void 0, v
     return;
 });
 exports.postAdminChallenge = postAdminChallenge;
+/**
+ *  @관리자_챌린지_신청페이지
+ *  @route Get admin/regist
+ *  @access private
+ */
+const getAdminRegist = () => __awaiter(void 0, void 0, void 0, function* () {
+    // 신청 기간을 확인 현재 진행중인 기수를 가져옴
+    let dateNow = new Date();
+    const admin = yield Admin_1.default.findOne({
+        $and: [
+            { registerStartDT: { $lte: dateNow } },
+            { registerEndDT: { $gte: dateNow } },
+        ],
+    });
+    // 현재 진행중인 기수가 없음
+    if (!admin) {
+        return -1;
+    }
+    const resData = {
+        title: admin.title,
+        registerStartDT: admin.registerStartDT,
+        registerEndDT: admin.registerEndDT,
+        challengeStartDT: admin.challengeStartDT,
+        challengeEndDT: admin.challengeEndDT,
+        generation: admin.generation,
+    };
+    return resData;
+});
+exports.getAdminRegist = getAdminRegist;
 /**
  *  @관리자_오투콘서트_등록
  *  @route Post admin/concert

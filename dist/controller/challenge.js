@@ -29,7 +29,7 @@ const router = express_1.Router();
  */
 router.get("/", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeAll(req.body.userID, req.query.offset, req.query.limit);
+        const data = yield challengeService_1.getChallengeAll(req.body.userID, req.query.generation, req.query.offset, req.query.limit);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

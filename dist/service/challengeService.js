@@ -22,7 +22,7 @@ const Badge_1 = __importDefault(require("../models/Badge"));
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-const getChallengeAll = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeAll = (userID, gen, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
@@ -37,6 +37,7 @@ const getChallengeAll = (userID, offset, limit) => __awaiter(void 0, void 0, voi
     let challenge;
     challenge = yield Challenge_1.default.find({
         isDeleted: false,
+        generation: gen,
     })
         .skip(Number(offset))
         .limit(Number(limit))
