@@ -91,14 +91,14 @@ const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, vo
     if (!offset) {
         offset = "0";
     }
-    const userScraps = yield (yield User_1.default.findOne({ _id: userID })).scraps.concertScraps;
-    if (!userScraps[0]) {
+    const user = yield User_1.default.findById(userID);
+    if (!user.scraps.concertScraps[0]) {
         return -1;
     }
     if (!limit) {
         return -2;
     }
-    const concertList = yield Promise.all(userScraps.map(function (scrap) {
+    const concertList = yield Promise.all(user.scraps.concertScraps.map(function (scrap) {
         return __awaiter(this, void 0, void 0, function* () {
             let concertScrap = yield Concert_1.default.find({ _id: scrap }, { isDeleted: false })
                 .populate("user", ["nickname", "img"])
@@ -128,14 +128,30 @@ const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, vo
     const mypageConcert = concertList.sort(function (a, b) {
         return date_1.dateToNumber(b[0].createdAt) - date_1.dateToNumber(a[0].createdAt);
     });
-    let mypageConcertScrap = [];
+    let concertScraps = [];
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         const tmp = mypageConcert[i];
         if (!tmp) {
             break;
         }
-        mypageConcertScrap.push(tmp[0]);
+        concertScraps.push(tmp[0]);
     }
+    // 좋아요, 스크랩 여부 추가
+    const mypageConcertScrap = concertScraps.map((c) => {
+        if (user.scraps.challengeScraps.includes(c._id) &&
+            user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: true });
+        }
+        else if (user.scraps.challengeScraps.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: true });
+        }
+        else if (user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: false });
+        }
+        else {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: false });
+        }
+    });
     const resData = {
         mypageConcertScrap,
         totalScrapNum: mypageConcert.length,
@@ -152,14 +168,14 @@ const getMypageChallenge = (userID, offset, limit) => __awaiter(void 0, void 0, 
     if (!offset) {
         offset = 0;
     }
-    const userScraps = yield (yield User_1.default.findOne({ _id: userID })).scraps.challengeScraps;
-    if (!userScraps[0]) {
+    const user = yield User_1.default.findById(userID);
+    if (!user.scraps.challengeScraps[0]) {
         return -1;
     }
     if (!limit) {
         return -2;
     }
-    const challengeList = yield Promise.all(userScraps.map(function (scrap) {
+    const challengeList = yield Promise.all(user.scraps.challengeScraps.map(function (scrap) {
         return __awaiter(this, void 0, void 0, function* () {
             let challengeScrap = yield Challenge_1.default.find({ _id: scrap }, { isDeleted: false })
                 .populate("user", ["nickname", "img"])
@@ -189,14 +205,30 @@ const getMypageChallenge = (userID, offset, limit) => __awaiter(void 0, void 0, 
     const mypageChallenge = challengeList.sort(function (a, b) {
         return date_1.dateToNumber(b[0].createdAt) - date_1.dateToNumber(a[0].createdAt);
     });
-    var mypageChallengeScrap = [];
+    var challengeScraps = [];
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         const tmp = mypageChallenge[i];
         if (!tmp) {
             break;
         }
-        mypageChallengeScrap.push(tmp[0]);
+        challengeScraps.push(tmp[0]);
     }
+    // 좋아요, 스크랩 여부 추가
+    const mypageChallengeScrap = challengeScraps.map((c) => {
+        if (user.scraps.challengeScraps.includes(c._id) &&
+            user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: true });
+        }
+        else if (user.scraps.challengeScraps.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: true });
+        }
+        else if (user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: false });
+        }
+        else {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: false });
+        }
+    });
     const resData = {
         mypageChallengeScrap,
         totalScrapNum: mypageChallenge.length,
@@ -341,7 +373,24 @@ const getMyWritings = (userID, offset, limit) => __awaiter(void 0, void 0, void 
             },
         ],
     });
-    return challenges;
+    // 좋아요, 스크랩 여부 추가
+    const user = yield User_1.default.findById(userID);
+    const resData = challenges.map((c) => {
+        if (user.scraps.challengeScraps.includes(c._id) &&
+            user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: true });
+        }
+        else if (user.scraps.challengeScraps.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: true });
+        }
+        else if (user.likes.challengeLikes.includes(c._id)) {
+            return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: false });
+        }
+        else {
+            return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: false });
+        }
+    });
+    return resData;
 });
 exports.getMyWritings = getMyWritings;
 /**

@@ -22,7 +22,7 @@ const Badge_1 = __importDefault(require("../models/Badge"));
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-const getChallengeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeAll = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
@@ -62,7 +62,30 @@ const getChallengeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, fun
             },
         ],
     });
-    const resData = challenge;
+    var resData;
+    if (userID) {
+        // 좋아요, 스크랩 여부 추가
+        const user = yield User_1.default.findById(userID.id);
+        const newChallenge = challenge.map((c) => {
+            if (user.scraps.challengeScraps.includes(c._id) &&
+                user.likes.challengeLikes.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: true });
+            }
+            else if (user.scraps.challengeScraps.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: true });
+            }
+            else if (user.likes.challengeLikes.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: false });
+            }
+            else {
+                return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: false });
+            }
+        });
+        resData = newChallenge;
+    }
+    else {
+        resData = challenge;
+    }
     return resData;
 });
 exports.getChallengeAll = getChallengeAll;
@@ -70,10 +93,11 @@ exports.getChallengeAll = getChallengeAll;
  *  @챌린지_Detail
  *  @route Get /challenge/:challengeID
  */
-const getChallengeOne = (challengeID) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeOne = (userID, challengeID) => __awaiter(void 0, void 0, void 0, function* () {
     // 댓글, 답글 populate
     // isDelete = true 인 애들만 가져오기
-    const challenge = yield Challenge_1.default.find({ _id: challengeID }, { isDeleted: false })
+    let challenge;
+    challenge = yield Challenge_1.default.findById(challengeID)
         .populate("user", ["nickname", "img"])
         .populate({
         path: "comments",
@@ -99,21 +123,27 @@ const getChallengeOne = (challengeID) => __awaiter(void 0, void 0, void 0, funct
     if (!challenge) {
         return -1;
     }
-    const resData = {
-        _id: challengeID,
-        createdAt: challenge[0].createdAt,
-        updatedAt: challenge[0].updatedAt,
-        user: challenge[0].user,
-        good: challenge[0].good,
-        learn: challenge[0].learn,
-        bad: challenge[0].bad,
-        likes: challenge[0].likes,
-        commentNum: challenge[0].commentNum,
-        scrapNum: challenge[0].scrapNum,
-        generation: challenge[0].generation,
-        interest: challenge[0].interest,
-        comments: challenge[0].comments,
-    };
+    let resData;
+    if (userID) {
+        // 좋아요, 스크랩 여부 추가
+        const user = yield User_1.default.findById(userID.id);
+        if (user.scraps.challengeScraps.includes(challengeID) &&
+            user.likes.challengeLikes.includes(challengeID)) {
+            resData = Object.assign(Object.assign({}, challenge._doc), { isLike: true, isScrap: true });
+        }
+        else if (user.scraps.challengeScraps.includes(challengeID)) {
+            resData = Object.assign(Object.assign({}, challenge._doc), { isLike: false, isScrap: true });
+        }
+        else if (user.likes.challengeLikes.includes(challengeID)) {
+            resData = Object.assign(Object.assign({}, challenge._doc), { isLike: true, isScrap: false });
+        }
+        else {
+            resData = Object.assign(Object.assign({}, challenge._doc), { isLike: false, isScrap: false });
+        }
+    }
+    else {
+        resData = challenge;
+    }
     return resData;
 });
 exports.getChallengeOne = getChallengeOne;
@@ -166,12 +196,14 @@ const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __aw
                 return fd;
         });
     }
-    // 내가 쓴 글 필터링
-    if (isMine === "1" && isMine) {
-        filteredData = filteredData.filter((fd) => {
-            if (String(fd.user._id) === String(userID.id))
-                return fd;
-        });
+    if (userID) {
+        // 내가 쓴 글 필터링
+        if (isMine === "1" && isMine) {
+            filteredData = filteredData.filter((fd) => {
+                if (String(fd.user._id) === String(userID.id))
+                    return fd;
+            });
+        }
     }
     // 검색 단어 필터링
     if (keyword !== "" && keyword) {
@@ -184,9 +216,36 @@ const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __aw
     }
     var searchData = [];
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+        if (!filteredData[i]) {
+            break;
+        }
         searchData.push(filteredData[i]);
     }
-    const resData = searchData;
+    var resData;
+    if (userID) {
+        // 좋아요, 스크랩 여부 추가
+        const user = yield User_1.default.findById(userID.id);
+        const newChallenge = searchData.map((c) => {
+            // console.log(c);
+            if (user.scraps.challengeScraps.includes(c._id) &&
+                user.likes.challengeLikes.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: true });
+            }
+            else if (user.scraps.challengeScraps.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: true });
+            }
+            else if (user.likes.challengeLikes.includes(c._id)) {
+                return Object.assign(Object.assign({}, c._doc), { isLike: true, isScrap: false });
+            }
+            else {
+                return Object.assign(Object.assign({}, c._doc), { isLike: false, isScrap: false });
+            }
+        });
+        resData = newChallenge;
+    }
+    else {
+        resData = searchData;
+    }
     return resData;
 });
 exports.getChallengeSearch = getChallengeSearch;

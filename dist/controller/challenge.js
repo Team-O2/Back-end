@@ -18,17 +18,18 @@ const returnCode_1 = require("../library/returnCode");
 const response_1 = require("../library/response");
 // middlewares
 const auth_1 = __importDefault(require("../middleware/auth"));
+const publicAuth_1 = __importDefault(require("../middleware/publicAuth"));
 // services
 const challengeService_1 = require("../service/challengeService");
 const router = express_1.Router();
 /**
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
- *  @access Private
+ *  @access public
  */
-router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeAll(req.query.offset, req.query.limit);
+        const data = yield challengeService_1.getChallengeAll(req.body.userID, req.query.offset, req.query.limit);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
@@ -45,9 +46,9 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
 /**
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
- *  @access Private
+ *  @access public
  */
-router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/search", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield challengeService_1.getChallengeSearch(req.query.tag, req.query.isMine, req.query.keyword, req.query.offset, req.query.limit, req.body.userID);
         // limit 없을 때
@@ -66,11 +67,11 @@ router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
 /**
  *  @챌린지_회고_가져오기
  *  @route Get /challenge/:challengeID
- *  @access Private
+ *  @access public
  */
-router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeOne(req.params.id);
+        const data = yield challengeService_1.getChallengeOne(req.body.userID, req.params.id);
         // challengeID가 이상할 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
@@ -85,7 +86,7 @@ router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 
 /**
  *  @챌린지_회고_등록
  *  @route Post /challenge/:userId
- *  @access Private
+ *  @access private
  */
 router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -111,7 +112,7 @@ router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0,
 /**
  *  @챌린지_회고_수정
  *  @route Patch /challenge/:challengeId
- *  @access Private
+ *  @access private
  */
 router.patch("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -137,7 +138,7 @@ router.patch("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, voi
 /**
  *  @챌린지_회고_삭제
  *  @route Delete /challenge/:challengeId
- *  @access Private
+ *  @access private
  */
 router.delete("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -158,7 +159,7 @@ router.delete("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
 /**
  *  @챌린지_회고_댓글_등록
  *  @route Post /challenge/comment/:challengeID
- *  @access Private
+ *  @access private
  */
 router.post("/comment/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -188,7 +189,7 @@ router.post("/comment/:id", auth_1.default, (req, res) => __awaiter(void 0, void
 /**
  *  @챌린지_회고_좋아요_등록
  *  @route Post /challenge/like/:challengeID
- *  @access Private
+ *  @access private
  */
 router.post("/like/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -213,7 +214,7 @@ router.post("/like/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0,
 /**
  *  @챌린지_회고_좋아요_삭제하기
  *  @route Delete /challenge/like/:challengeID
- *  @access Private
+ *  @access private
  */
 router.delete("/like/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -237,7 +238,7 @@ router.delete("/like/:id", auth_1.default, (req, res) => __awaiter(void 0, void 
 /**
  *  @유저_챌린지_회고_스크랩하기
  *  @route Post /challenge/scrap/:challengeID
- *  @access Private
+ *  @access private
  */
 router.post("/scrap/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -261,7 +262,7 @@ router.post("/scrap/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0
 /**
  *  @유저_챌린지_회고_스크랩_취소하기
  *  @route Delete /challenge/scrap/:challengeID
- *  @access Private
+ *  @access private
  */
 router.delete("/scrap/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

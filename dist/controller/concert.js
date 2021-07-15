@@ -20,15 +20,16 @@ const response_1 = require("../library/response");
 const concertService_1 = require("../service/concertService");
 // middlewares
 const auth_1 = __importDefault(require("../middleware/auth"));
+const publicAuth_1 = __importDefault(require("../middleware/publicAuth"));
 const router = express_1.Router();
 /**
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
  *  @access Private
  */
-router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield concertService_1.getConcertAll(req.query.offset, req.query.limit);
+        const data = yield concertService_1.getConcertAll(req.body.userID, req.query.offset, req.query.limit);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
@@ -45,11 +46,11 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
 /**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
- *  @access Private
+ *  @access public
  */
-router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/search", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield concertService_1.getConcertSearch(req.query.tag, req.query.keyword, req.query.offset, req.query.limit);
+        const data = yield concertService_1.getConcertSearch(req.body.userID, req.query.tag, req.query.keyword, req.query.offset, req.query.limit);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
@@ -67,10 +68,10 @@ router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  *  @오투콘서트_Detail
  *  @route Get /concert/:concertID
  */
-router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // const data: IConcrtDTO = await getConcertOne(req.params.id);
-        const data = yield concertService_1.getConcertOne(req.params.id);
+        const data = yield concertService_1.getConcertOne(req.body.userID, req.params.id);
         const concert = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "해당 콘서트 게시글 불러오기 성공", concert);
     }
