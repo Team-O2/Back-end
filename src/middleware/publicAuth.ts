@@ -9,20 +9,21 @@ export default (req, res, next) => {
   if (req.headers.authorization == null) {
     req.body.userID = null;
     next();
-  }
-  const token = req.headers.authorization;
+  } else {
+    const token = req.headers.authorization;
 
-  // Verify token
-  try {
-    const decoded = jwt.verify(token, config.jwtSecret);
+    // Verify token
+    try {
+      const decoded = jwt.verify(token, config.jwtSecret);
 
-    req.body.userID = decoded.user;
-    next();
-  } catch (err) {
-    if (err.message === "jwt expired") {
-      response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
-    } else {
-      response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
+      req.body.userID = decoded.user;
+      next();
+    } catch (err) {
+      if (err.message === "jwt expired") {
+        response(res, returnCode.UNAUTHORIZED, "만료된 토큰입니다");
+      } else {
+        response(res, returnCode.UNAUTHORIZED, "적합하지 않은 토큰입니다");
+      }
     }
   }
 };

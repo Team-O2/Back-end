@@ -54,29 +54,33 @@ export const getChallengeAll = async (userID, offset, limit) => {
       ],
     });
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
-  const newChallenge = challenge.map((c) => {
-    if (
-      user.scraps.challengeScraps.includes(c._id) &&
-      user.likes.challengeLikes.includes(c._id)
-    ) {
-      return { ...c._doc, isLike: true, isScrap: true };
-    } else if (user.scraps.challengeScraps.includes(c._id)) {
-      return { ...c._doc, isLike: false, isScrap: true };
-    } else if (user.likes.challengeLikes.includes(c._id)) {
-      return { ...c._doc, isLike: true, isScrap: false };
-    } else {
-      return {
-        ...c._doc,
-        isLike: false,
-        isScrap: false,
-      };
-    }
-  });
+  var resData: IChallengeDTO[];
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    const newChallenge = challenge.map((c) => {
+      if (
+        user.scraps.challengeScraps.includes(c._id) &&
+        user.likes.challengeLikes.includes(c._id)
+      ) {
+        return { ...c._doc, isLike: true, isScrap: true };
+      } else if (user.scraps.challengeScraps.includes(c._id)) {
+        return { ...c._doc, isLike: false, isScrap: true };
+      } else if (user.likes.challengeLikes.includes(c._id)) {
+        return { ...c._doc, isLike: true, isScrap: false };
+      } else {
+        return {
+          ...c._doc,
+          isLike: false,
+          isScrap: false,
+        };
+      }
+    });
 
-  const resData: IChallengeDTO[] = newChallenge;
-
+    resData = newChallenge;
+  } else {
+    resData = challenge;
+  }
   return resData;
 };
 
@@ -116,25 +120,28 @@ export const getChallengeOne = async (userID, challengeID) => {
     return -1;
   }
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
-  let resData: IChallengeDTO;
-  if (
-    user.scraps.challengeScraps.includes(challengeID) &&
-    user.likes.challengeLikes.includes(challengeID)
-  ) {
-    resData = { ...challenge._doc, isLike: true, isScrap: true };
-    console.log(resData);
-  } else if (user.scraps.challengeScraps.includes(challengeID)) {
-    resData = { ...challenge._doc, isLike: false, isScrap: true };
-  } else if (user.likes.challengeLikes.includes(challengeID)) {
-    resData = { ...challenge._doc, isLike: true, isScrap: false };
+  let resData: IChallengeDTO[];
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    if (
+      user.scraps.challengeScraps.includes(challengeID) &&
+      user.likes.challengeLikes.includes(challengeID)
+    ) {
+      resData = { ...challenge._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(challengeID)) {
+      resData = { ...challenge._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(challengeID)) {
+      resData = { ...challenge._doc, isLike: true, isScrap: false };
+    } else {
+      resData = {
+        ...challenge._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
   } else {
-    resData = {
-      ...challenge._doc,
-      isLike: false,
-      isScrap: false,
-    };
+    resData = challenge;
   }
 
   return resData;
@@ -200,11 +207,13 @@ export const getChallengeSearch = async (
     });
   }
 
-  // 내가 쓴 글 필터링
-  if (isMine === "1" && isMine) {
-    filteredData = filteredData.filter((fd) => {
-      if (String(fd.user._id) === String(userID.id)) return fd;
-    });
+  if (userID) {
+    // 내가 쓴 글 필터링
+    if (isMine === "1" && isMine) {
+      filteredData = filteredData.filter((fd) => {
+        if (String(fd.user._id) === String(userID.id)) return fd;
+      });
+    }
   }
 
   // 검색 단어 필터링
@@ -220,29 +229,40 @@ export const getChallengeSearch = async (
   }
   var searchData = [];
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
+    if (!filteredData[i]) {
+      break;
+    }
     searchData.push(filteredData[i]);
   }
 
-  // 좋아요, 스크랩 여부 추가
-  const user = await User.findById(userID);
-  const resData: IChallengeDTO[] = searchData.map((c) => {
-    if (
-      user.scraps.challengeScraps.includes(c._id) &&
-      user.likes.challengeLikes.includes(c._id)
-    ) {
-      return { ...c._doc, isLike: true, isScrap: true };
-    } else if (user.scraps.challengeScraps.includes(c._id)) {
-      return { ...c._doc, isLike: false, isScrap: true };
-    } else if (user.likes.challengeLikes.includes(c._id)) {
-      return { ...c._doc, isLike: true, isScrap: false };
-    } else {
-      return {
-        ...c._doc,
-        isLike: false,
-        isScrap: false,
-      };
-    }
-  });
+  var resData: IChallengeDTO[];
+  if (userID) {
+    // 좋아요, 스크랩 여부 추가
+    const user = await User.findById(userID.id);
+    const newChallenge = searchData.map((c) => {
+      // console.log(c);
+      if (
+        user.scraps.challengeScraps.includes(c._id) &&
+        user.likes.challengeLikes.includes(c._id)
+      ) {
+        return { ...c._doc, isLike: true, isScrap: true };
+      } else if (user.scraps.challengeScraps.includes(c._id)) {
+        return { ...c._doc, isLike: false, isScrap: true };
+      } else if (user.likes.challengeLikes.includes(c._id)) {
+        return { ...c._doc, isLike: true, isScrap: false };
+      } else {
+        return {
+          ...c._doc,
+          isLike: false,
+          isScrap: false,
+        };
+      }
+    });
+
+    resData = newChallenge;
+  } else {
+    resData = searchData;
+  }
 
   return resData;
 };

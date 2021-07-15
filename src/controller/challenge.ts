@@ -93,7 +93,10 @@ router.get("/search", publicAuth, async (req: Request, res: Response) => {
 
 router.get("/:id", publicAuth, async (req: Request, res: Response) => {
   try {
-    const data: IChallengeDTO | -1 = await getChallengeOne(req.body.userID.id, req.params.id);
+    const data: IChallengeDTO[] | -1 = await getChallengeOne(
+      req.body.userID,
+      req.params.id
+    );
 
     // challengeID가 이상할 때
     if (data === -1) {
