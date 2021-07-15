@@ -12,6 +12,7 @@ import {
   adminResDTO,
   adminRegistReqDTO,
   adminWriteReqDTO,
+  adminRegistResDTO,
 } from "../DTO/adminDTO";
 
 /**
@@ -173,6 +174,38 @@ export const postAdminChallenge = async (
   }
   await admin.save();
   return;
+};
+
+/**
+ *  @관리자_챌린지_신청페이지
+ *  @route Get admin/regist
+ *  @access private
+ */
+export const getAdminRegist = async () => {
+  // 신청 기간을 확인 현재 진행중인 기수를 가져옴
+  let dateNow = new Date();
+  const admin = await Admin.findOne({
+    $and: [
+      { registerStartDT: { $lte: dateNow } },
+      { registerEndDT: { $gte: dateNow } },
+    ],
+  });
+
+  // 현재 진행중인 기수가 없음
+  if (!admin) {
+    return -1;
+  }
+
+  const resData: adminRegistResDTO = {
+    title: admin.title,
+    registerStartDT: admin.registerStartDT,
+    registerEndDT: admin.registerEndDT,
+    challengeStartDT: admin.challengeStartDT,
+    challengeEndDT: admin.challengeEndDT,
+    generation: admin.generation,
+  };
+
+  return resData;
 };
 
 /**

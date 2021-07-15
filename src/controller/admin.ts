@@ -14,6 +14,7 @@ import {
   postAdminChallenge,
   postAdminConcert,
   postAdminNotice,
+  getAdminRegist,
 } from "../service/adminService";
 
 // DTO
@@ -21,6 +22,7 @@ import {
   adminResDTO,
   adminRegistReqDTO,
   adminWriteReqDTO,
+  adminRegistResDTO,
 } from "../DTO/adminDTO";
 
 const router = Router();
@@ -100,6 +102,29 @@ router.post<unknown, unknown, IAdmin>(
     }
   }
 );
+
+/**
+ *  @관리자_챌린지_신청페이지
+ *  @route Get admin/regist
+ *  @access private
+ */
+router.get("/regist", auth, async (req: Request, res: Response) => {
+  try {
+    const data: adminRegistResDTO | -1 | -2 = await getAdminRegist();
+
+    // 현재 진행중인 기수가 없음
+    if (data === -1) {
+      response(res, returnCode.BAD_REQUEST, "현재 신청 기간인 기수가 없습니다");
+    }
+    // 챌린지 신청 페이지 조회 성공
+    else {
+      dataResponse(res, returnCode.OK, "신청 페이지 조회 성공", data);
+    }
+  } catch (err) {
+    console.error(err.message);
+    response(res, returnCode.INTERNAL_SERVER_ERROR, "서버 오류");
+  }
+});
 
 /**
  *  @관리자_오픈콘서트_등록

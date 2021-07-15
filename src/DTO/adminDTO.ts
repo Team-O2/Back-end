@@ -37,6 +37,15 @@ export interface adminRegistReqDTO {
   limitNum: number;
 }
 
+export interface adminRegistResDTO {
+  title: String;
+  registerStartDT: Date;
+  registerEndDT: Date;
+  challengeStartDT: Date;
+  challengeEndDT: Date;
+  generation: Number;
+}
+
 export interface adminWriteReqDTO {
   title: string;
   text: string;
