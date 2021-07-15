@@ -67,7 +67,7 @@ const getConcertAll = (userID, offset, limit) => __awaiter(void 0, void 0, void 
         isDeleted: false,
         isNotice: false,
     }).countDocuments();
-    let resData;
+    var resData;
     if (userID) {
         // 좋아요, 스크랩 여부 추가
         const user = yield User_1.default.findById(userID.id);
