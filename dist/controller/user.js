@@ -30,7 +30,8 @@ const router = express_1.Router();
  */
 router.post("/register", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.postRegister(req.body.userID.id, req.body);
+        const body = req.body;
+        const data = yield userService_1.postRegister(req.body.userID.id, body);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -105,7 +106,8 @@ router.patch("/userInfo", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.
  */
 router.patch("/password", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield userService_1.patchPW(req.body.userID.id, req.body);
+        const body = req.body;
+        const data = yield userService_1.patchPW(body);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -114,7 +116,7 @@ router.patch("/password", auth_1.default, (req, res) => __awaiter(void 0, void 0
         if (data === -2) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "현재 비밀번호가 일치하지 않습니다");
         }
-        response_1.dataResponse(res, returnCode_1.returnCode.OK, "비밀번호 수정 성공", data);
+        response_1.response(res, returnCode_1.returnCode.OK, "비밀번호 수정 성공");
     }
     catch (err) {
         console.error(err.message);

@@ -16,6 +16,8 @@ export interface IChallengeDTO {
   interest: string[];
   isDeleted?: Boolean;
   comments?: typeof mongoose.Schema.Types.ObjectId[];
+  isLike?: boolean;
+  isScrap?: boolean;
 }
 
 export interface challengeWriteReqDTO {

@@ -12,6 +12,29 @@ import { dateToNumber, period } from "../library/date";
 // jwt
 import bcrypt from "bcryptjs";
 
+// DTO
+import mongoose, { Document } from "mongoose";
+import {
+  challengeScrapResDTO,
+  concertScrapResDTO,
+  ICouponBook,
+  ILearnMySelfAchieve,
+  IShareTogether,
+  registerReqDTO,
+  mypageInfoResDTO,
+  myCommentsResDTO,
+  delMyCommentReqDTO,
+  userInfoResDTO,
+  newPwReqDTO,
+} from "../DTO/userDTO";
+// interface
+import { IConcert } from "../interfaces/IConcert";
+import { IUser } from "../interfaces/IUser";
+import { IComment } from "../interfaces/IComment";
+import { IChallenge } from "../interfaces/IChallenge";
+import { IChallengeDTO } from "../DTO/challengeDTO";
+import { IConcertDTO } from "../DTO/concertDTO";
+
 /**
  *  @User_챌린지_신청하기
  *  @route Post user/register
@@ -19,7 +42,7 @@ import bcrypt from "bcryptjs";
  *  @access private
  */
 
-export const postRegister = async (userID, body) => {
+export const postRegister = async (userID, body: registerReqDTO) => {
   const challengeCNT = body.challengeCNT;
 
   // 1. 요청 바디 부족
@@ -98,13 +121,12 @@ export const postRegister = async (userID, body) => {
 
 export const getMypageConcert = async (userID, offset, limit) => {
   if (!offset) {
-    offset = 0;
+    offset = "0";
   }
-  const userScraps = await (
-    await User.findOne({ _id: userID })
-  ).scraps.concertScraps;
 
-  if (!userScraps[0]) {
+  const user = await User.findById(userID);
+
+  if (!user.scraps.concertScraps[0]) {
     return -1;
   }
 
@@ -112,54 +134,80 @@ export const getMypageConcert = async (userID, offset, limit) => {
     return -2;
   }
 
-  const concertList = await Promise.all(
-    userScraps.map(async function (scrap) {
-      let concertScrap = await Concert.find(
-        { _id: scrap },
-        { isDeleted: false }
-      )
-        .populate("user", ["nickname", "img"])
-        .populate({
-          path: "comments",
-          select: { userID: 1, text: 1, isDeleted: 1 },
-          options: { sort: { _id: -1 } },
-          populate: [
-            {
-              path: "childrenComment",
-              select: { userID: 1, text: 1, isDeleted: 1 },
-              options: { sort: { _id: -1 } },
-              populate: {
+  const concertList: (IConcert &
+    Document<IUser, mongoose.Schema.Types.ObjectId> &
+    Document<IComment, mongoose.Schema.Types.ObjectId>)[][] = await Promise.all(
+    user.scraps.concertScraps.map(async function (scrap) {
+      let concertScrap: (IConcert &
+        Document<IUser, mongoose.Schema.Types.ObjectId> &
+        Document<IComment, mongoose.Schema.Types.ObjectId>)[] =
+        await Concert.find({ _id: scrap }, { isDeleted: false })
+          .populate("user", ["nickname", "img"])
+          .populate({
+            path: "comments",
+            select: { userID: 1, text: 1, isDeleted: 1 },
+            options: { sort: { _id: -1 } },
+            populate: [
+              {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
+                  path: "userID",
+                  select: ["nickname", "img"],
+                },
+              },
+              {
                 path: "userID",
                 select: ["nickname", "img"],
               },
-            },
-            {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          ],
-        });
+            ],
+          });
       return concertScrap;
     })
   );
-  const mypageConcert = concertList.sort(function (a, b) {
-    return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
-  });
+  const mypageConcert: (IConcert &
+    Document<IUser, mongoose.Schema.Types.ObjectId> &
+    Document<IComment, mongoose.Schema.Types.ObjectId>)[][] = concertList.sort(
+    function (a, b) {
+      return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
+    }
+  );
 
-  var mypageConcertScrap = [];
+  let concertScraps = [];
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     const tmp = mypageConcert[i];
     if (!tmp) {
       break;
     }
-    mypageConcertScrap.push(tmp[0]);
+    concertScraps.push(tmp[0]);
   }
-  return {
+
+  // 좋아요, 스크랩 여부 추가
+  const mypageConcertScrap: IConcertDTO[] = concertScraps.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  const resData: concertScrapResDTO = {
     mypageConcertScrap,
     totalScrapNum: mypageConcert.length,
   };
-
-  return;
+  return resData;
 };
 
 /**
@@ -172,11 +220,10 @@ export const getMypageChallenge = async (userID, offset, limit) => {
   if (!offset) {
     offset = 0;
   }
-  const userScraps = await (
-    await User.findOne({ _id: userID })
-  ).scraps.challengeScraps;
 
-  if (!userScraps[0]) {
+  const user = await User.findById(userID);
+
+  if (!user.scraps.challengeScraps[0]) {
     return -1;
   }
 
@@ -184,55 +231,80 @@ export const getMypageChallenge = async (userID, offset, limit) => {
     return -2;
   }
 
-  const challengeList = await Promise.all(
-    userScraps.map(async function (scrap) {
-      let challengeScrap = await Challenge.find(
-        { _id: scrap },
-        { isDeleted: false }
-      )
-        .populate("user", ["nickname", "img"])
-        .populate({
-          path: "comments",
-          select: { userID: 1, text: 1, isDeleted: 1 },
-          options: { sort: { _id: -1 } },
-          populate: [
-            {
-              path: "childrenComment",
-              select: { userID: 1, text: 1, isDeleted: 1 },
-              options: { sort: { _id: -1 } },
-              populate: {
+  const challengeList: (IChallenge &
+    Document<IUser, mongoose.Schema.Types.ObjectId> &
+    Document<IComment, mongoose.Schema.Types.ObjectId>)[][] = await Promise.all(
+    user.scraps.challengeScraps.map(async function (scrap) {
+      let challengeScrap: (IChallenge &
+        Document<IUser, mongoose.Schema.Types.ObjectId> &
+        Document<IComment, mongoose.Schema.Types.ObjectId>)[] =
+        await Challenge.find({ _id: scrap }, { isDeleted: false })
+          .populate("user", ["nickname", "img"])
+          .populate({
+            path: "comments",
+            select: { userID: 1, text: 1, isDeleted: 1 },
+            options: { sort: { _id: -1 } },
+            populate: [
+              {
+                path: "childrenComment",
+                select: { userID: 1, text: 1, isDeleted: 1 },
+                options: { sort: { _id: -1 } },
+                populate: {
+                  path: "userID",
+                  select: ["nickname", "img"],
+                },
+              },
+              {
                 path: "userID",
                 select: ["nickname", "img"],
               },
-            },
-            {
-              path: "userID",
-              select: ["nickname", "img"],
-            },
-          ],
-        });
+            ],
+          });
       return challengeScrap;
     })
   );
-  const mypageChallenge = challengeList.sort(function (a, b) {
-    return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
-  });
+  const mypageChallenge: (IChallenge &
+    Document<IUser, mongoose.Schema.Types.ObjectId> &
+    Document<IComment, mongoose.Schema.Types.ObjectId>)[][] =
+    challengeList.sort(function (a, b) {
+      return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
+    });
 
-  var mypageChallengeScrap = [];
+  var challengeScraps = [];
 
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     const tmp = mypageChallenge[i];
     if (!tmp) {
       break;
     }
-    mypageChallengeScrap.push(tmp[0]);
+    challengeScraps.push(tmp[0]);
   }
-  return {
+
+  // 좋아요, 스크랩 여부 추가
+  const mypageChallengeScrap: IChallengeDTO[] = challengeScraps.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  const resData: challengeScrapResDTO = {
     mypageChallengeScrap,
     totalScrapNum: mypageChallenge.length,
   };
-
-  return;
+  return resData;
 };
 
 /**
@@ -244,7 +316,7 @@ export const getMypageInfo = async (userID) => {
   const user = await User.findById(userID);
   const userBadge = await Badge.findOne({ user: userID });
 
-  const couponBook = {
+  const couponBook: ICouponBook = {
     welcomeBadge: userBadge.welcomeBadge,
     firstJoinBadge: userBadge.firstJoinBadge,
     firstWriteBadge: userBadge.firstWriteBadge,
@@ -260,7 +332,7 @@ export const getMypageInfo = async (userID) => {
     challengeBadge: userBadge.challengeBadge,
   };
 
-  var shareTogether = await Concert.find(
+  let shareTogether: IShareTogether[] | null = await Concert.find(
     { user: userID, isNotice: false },
     { _id: true, title: true },
     { sort: { _id: -1 } }
@@ -270,16 +342,12 @@ export const getMypageInfo = async (userID) => {
     shareTogether = null;
   }
 
-  // 현재 작성 완료 개수
-  // const userRM = await Challenge.find(
-  //   { user: userID },
-  //   { generation: user.generation }
-  // ).countDocuments();
-
   const admin = await Admin.findOne({ generation: user.generation });
+
+  let resData: mypageInfoResDTO;
   // ischallenge 가 false 이거나 admin === null 이면 현재기수 참여 x
   if (!user.isChallenge || !admin) {
-    return {
+    resData = {
       nickname: user.nickname,
       learnMyselfAchieve: null,
       shareTogether,
@@ -304,7 +372,7 @@ export const getMypageInfo = async (userID) => {
       percent = 100;
     }
 
-    const learnMyselfAchieve = {
+    const learnMyselfAchieve: ILearnMySelfAchieve = {
       percent,
       totalNum,
       completeNum: user.writingCNT,
@@ -313,14 +381,14 @@ export const getMypageInfo = async (userID) => {
       generation: user.generation,
     };
 
-    return {
+    resData = {
       nickname: user.nickname,
       learnMyselfAchieve,
       shareTogether,
       couponBook,
     };
   }
-  return;
+  return resData;
 };
 
 /**
@@ -347,7 +415,7 @@ export const deleteMypageChallenge = async (userID, challengeID) => {
   user.scraps.challengeScraps.splice(idx, 1);
   await user.save();
 
-  return { _id: challengeID };
+  return;
 };
 
 /**
@@ -396,7 +464,28 @@ export const getMyWritings = async (userID, offset, limit) => {
       ],
     });
 
-  return challenges;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const resData: IChallengeDTO[] = challenges.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  return resData;
 };
 
 /**
@@ -410,7 +499,7 @@ export const getMyComments = async (userID, postModel, offset, limit) => {
   if (!offset) {
     offset = 0;
   }
-  let comments;
+  let comments: IComment[];
   comments = await Comment.find({
     isDeleted: false,
     postModel: postModel,
@@ -420,17 +509,17 @@ export const getMyComments = async (userID, postModel, offset, limit) => {
     .limit(Number(limit))
     .sort({ _id: -1 });
 
-  const totalCommentNum = await Comment.find({
+  const totalCommentNum: number = await Comment.find({
     userID,
     postModel: postModel,
     isDeleted: false,
   }).countDocuments();
 
-  return {
+  const resData: myCommentsResDTO = {
     comments,
     commentNum: totalCommentNum,
   };
-  return;
+  return resData;
 };
 
 /**
@@ -440,7 +529,7 @@ export const getMyComments = async (userID, postModel, offset, limit) => {
  *    1. 요청 바디가 부족할 경우
  */
 export const deleteMyComments = async (body) => {
-  const { userID, commentID } = body;
+  const { userID, commentID }: delMyCommentReqDTO = body;
 
   //1. 요청 바디가 부족할 경우
   if (!commentID || commentID.length === 0) {
@@ -449,42 +538,25 @@ export const deleteMyComments = async (body) => {
 
   commentID.map(async (cmtID) => {
     // 삭제하려는 댓글 isDelete = true로 변경
-    await Comment.findOneAndUpdate(
-      {
-        _id: cmtID,
-        userID: userID.id,
-      },
-      { isDeleted: true }
-    );
+    await Comment.findByIdAndUpdate(cmtID, { isDeleted: true });
     // 게시글 댓글 수 1 감소
     let comment = await Comment.findById(cmtID);
     if (comment.postModel === "Challenge") {
       // challenge
-      await Challenge.findOneAndUpdate(
-        {
-          _id: comment.post,
-        },
-        { $inc: { commentNum: -1 } }
-      );
+      await Challenge.findByIdAndUpdate(comment.post, {
+        $inc: { commentNum: -1 },
+      });
     } else {
       // concert
-      await Concert.findOneAndUpdate(
-        {
-          _id: comment.post,
-        },
-        { $inc: { commentNum: -1 } }
-      );
+      await Concert.findByIdAndUpdate(comment.post, {
+        $inc: { commentNum: -1 },
+      });
     }
     // 유저 댓글 수 1 감소
     // 과연 필요할까??
-    await User.findOneAndUpdate(
-      {
-        _id: userID.id,
-      },
-      {
-        $inc: { commentCNT: -1 },
-      }
-    );
+    // await User.findByIdAndUpdate(userID.id, {
+    //   $inc: { commentCNT: -1 },
+    // });
   });
 
   return;
@@ -497,18 +569,17 @@ export const deleteMyComments = async (body) => {
  */
 
 export const getUserInfo = async (userID) => {
-  const user = await User.find(
-    { _id: userID },
-    {
-      img: true,
-      email: true,
-      nickname: true,
-      interest: true,
-      gender: true,
-      marpolicy: true,
-    }
-  );
-  return user[0];
+  const user = await User.findById(userID);
+  const resData: userInfoResDTO = {
+    img: user.img,
+    email: user.email,
+    nickname: user.nickname,
+    interest: user.interest,
+    gender: user.gender,
+    marpolicy: user.marpolicy,
+    _id: user.id,
+  };
+  return resData;
 };
 
 /**
@@ -549,14 +620,14 @@ export const patchInfo = async (userID, body, url) => {
  *  @route Patch user/pw
  *  @access private
  */
-export const patchPW = async (userID, body) => {
-  const { password, newPassword } = body;
+export const patchPW = async (body: newPwReqDTO) => {
+  const { password, newPassword, userID } = body;
   // 1. 요청 바디 부족
   if (!newPassword) {
     return -1;
   }
 
-  const user = await User.findById(userID);
+  const user = await User.findById(userID.id);
 
   // Encrpyt password
   const salt = await bcrypt.genSalt(10);

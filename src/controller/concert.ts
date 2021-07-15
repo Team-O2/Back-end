@@ -17,6 +17,7 @@ import {
 
 // middlewares
 import auth from "../middleware/auth";
+import publicAuth from "../middleware/publicAuth";
 
 // DTO
 import {
@@ -34,9 +35,10 @@ const router = Router();
  *  @access Private
  */
 
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: concertResDTO | -1 = await getConcertAll(
+      req.body.userID,
       req.query.offset,
       req.query.limit
     );
@@ -57,12 +59,13 @@ router.get("/", auth, async (req: Request, res: Response) => {
 /**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
- *  @access Private
+ *  @access public
  */
 
-router.get("/search", auth, async (req: Request, res: Response) => {
+router.get("/search", publicAuth, async (req: Request, res: Response) => {
   try {
-    const data: IConcertDTO[] | -1 = await getConcertSearch(
+    const data: concertResDTO | -1 = await getConcertSearch(
+      req.body.userID,
       req.query.tag,
       req.query.keyword,
       req.query.offset,
@@ -87,10 +90,10 @@ router.get("/search", auth, async (req: Request, res: Response) => {
  *  @오투콘서트_Detail
  *  @route Get /concert/:concertID
  */
-router.get("/:id", auth, async (req: Request, res: Response) => {
+router.get("/:id", publicAuth, async (req: Request, res: Response) => {
   try {
     // const data: IConcrtDTO = await getConcertOne(req.params.id);
-    const data = await getConcertOne(req.params.id);
+    const data = await getConcertOne(req.body.userID, req.params.id);
     const concert = data;
     dataResponse(
       res,

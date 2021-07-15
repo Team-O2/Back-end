@@ -89,7 +89,7 @@ exports.postRegister = postRegister;
  */
 const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, void 0, function* () {
     if (!offset) {
-        offset = 0;
+        offset = "0";
     }
     const userScraps = yield (yield User_1.default.findOne({ _id: userID })).scraps.concertScraps;
     if (!userScraps[0]) {
@@ -128,7 +128,7 @@ const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, vo
     const mypageConcert = concertList.sort(function (a, b) {
         return date_1.dateToNumber(b[0].createdAt) - date_1.dateToNumber(a[0].createdAt);
     });
-    var mypageConcertScrap = [];
+    let mypageConcertScrap = [];
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         const tmp = mypageConcert[i];
         if (!tmp) {
@@ -136,11 +136,11 @@ const getMypageConcert = (userID, offset, limit) => __awaiter(void 0, void 0, vo
         }
         mypageConcertScrap.push(tmp[0]);
     }
-    return {
+    const resData = {
         mypageConcertScrap,
         totalScrapNum: mypageConcert.length,
     };
-    return;
+    return resData;
 });
 exports.getMypageConcert = getMypageConcert;
 /**
@@ -197,11 +197,11 @@ const getMypageChallenge = (userID, offset, limit) => __awaiter(void 0, void 0, 
         }
         mypageChallengeScrap.push(tmp[0]);
     }
-    return {
+    const resData = {
         mypageChallengeScrap,
         totalScrapNum: mypageChallenge.length,
     };
-    return;
+    return resData;
 });
 exports.getMypageChallenge = getMypageChallenge;
 /**
@@ -227,19 +227,15 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
         concertScrapBadge: userBadge.concertScrapBadge,
         challengeBadge: userBadge.challengeBadge,
     };
-    var shareTogether = yield Concert_1.default.find({ user: userID, isNotice: false }, { _id: true, title: true }, { sort: { _id: -1 } }).limit(5);
+    let shareTogether = yield Concert_1.default.find({ user: userID, isNotice: false }, { _id: true, title: true }, { sort: { _id: -1 } }).limit(5);
     if (shareTogether.length === 0) {
         shareTogether = null;
     }
-    // 현재 작성 완료 개수
-    // const userRM = await Challenge.find(
-    //   { user: userID },
-    //   { generation: user.generation }
-    // ).countDocuments();
     const admin = yield Admin_1.default.findOne({ generation: user.generation });
+    let resData;
     // ischallenge 가 false 이거나 admin === null 이면 현재기수 참여 x
     if (!user.isChallenge || !admin) {
-        return {
+        resData = {
             nickname: user.nickname,
             learnMyselfAchieve: null,
             shareTogether,
@@ -270,14 +266,14 @@ const getMypageInfo = (userID) => __awaiter(void 0, void 0, void 0, function* ()
             endDT: admin.challengeEndDT,
             generation: user.generation,
         };
-        return {
+        resData = {
             nickname: user.nickname,
             learnMyselfAchieve,
             shareTogether,
             couponBook,
         };
     }
-    return;
+    return resData;
 });
 exports.getMypageInfo = getMypageInfo;
 /**
@@ -300,7 +296,7 @@ const deleteMypageChallenge = (userID, challengeID) => __awaiter(void 0, void 0,
     const idx = user.scraps.challengeScraps.indexOf(challengeID);
     user.scraps.challengeScraps.splice(idx, 1);
     yield user.save();
-    return { _id: challengeID };
+    return;
 });
 exports.deleteMypageChallenge = deleteMypageChallenge;
 /**
@@ -373,11 +369,11 @@ const getMyComments = (userID, postModel, offset, limit) => __awaiter(void 0, vo
         postModel: postModel,
         isDeleted: false,
     }).countDocuments();
-    return {
+    const resData = {
         comments,
         commentNum: totalCommentNum,
     };
-    return;
+    return resData;
 });
 exports.getMyComments = getMyComments;
 /**
@@ -394,31 +390,26 @@ const deleteMyComments = (body) => __awaiter(void 0, void 0, void 0, function* (
     }
     commentID.map((cmtID) => __awaiter(void 0, void 0, void 0, function* () {
         // 삭제하려는 댓글 isDelete = true로 변경
-        yield Comment_1.default.findOneAndUpdate({
-            _id: cmtID,
-            userID: userID.id,
-        }, { isDeleted: true });
+        yield Comment_1.default.findByIdAndUpdate(cmtID, { isDeleted: true });
         // 게시글 댓글 수 1 감소
         let comment = yield Comment_1.default.findById(cmtID);
         if (comment.postModel === "Challenge") {
             // challenge
-            yield Challenge_1.default.findOneAndUpdate({
-                _id: comment.post,
-            }, { $inc: { commentNum: -1 } });
+            yield Challenge_1.default.findByIdAndUpdate(comment.post, {
+                $inc: { commentNum: -1 },
+            });
         }
         else {
             // concert
-            yield Concert_1.default.findOneAndUpdate({
-                _id: comment.post,
-            }, { $inc: { commentNum: -1 } });
+            yield Concert_1.default.findByIdAndUpdate(comment.post, {
+                $inc: { commentNum: -1 },
+            });
         }
         // 유저 댓글 수 1 감소
         // 과연 필요할까??
-        yield User_1.default.findOneAndUpdate({
-            _id: userID.id,
-        }, {
-            $inc: { commentCNT: -1 },
-        });
+        // await User.findByIdAndUpdate(userID.id, {
+        //   $inc: { commentCNT: -1 },
+        // });
     }));
     return;
 });
@@ -429,15 +420,17 @@ exports.deleteMyComments = deleteMyComments;
  *  @access private
  */
 const getUserInfo = (userID) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.default.find({ _id: userID }, {
-        img: true,
-        email: true,
-        nickname: true,
-        interest: true,
-        gender: true,
-        marpolicy: true,
-    });
-    return user[0];
+    const user = yield User_1.default.findById(userID);
+    const resData = {
+        img: user.img,
+        email: user.email,
+        nickname: user.nickname,
+        interest: user.interest,
+        gender: user.gender,
+        marpolicy: user.marpolicy,
+        _id: user.id,
+    };
+    return resData;
 });
 exports.getUserInfo = getUserInfo;
 /**
@@ -473,13 +466,13 @@ exports.patchInfo = patchInfo;
  *  @route Patch user/pw
  *  @access private
  */
-const patchPW = (userID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password, newPassword } = body;
+const patchPW = (body) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password, newPassword, userID } = body;
     // 1. 요청 바디 부족
     if (!newPassword) {
         return -1;
     }
-    const user = yield User_1.default.findById(userID);
+    const user = yield User_1.default.findById(userID.id);
     // Encrpyt password
     const salt = yield bcryptjs_1.default.genSalt(10);
     const currentEncrpytPW = yield bcryptjs_1.default.hash(password, salt);

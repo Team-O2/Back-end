@@ -21,6 +21,8 @@ export interface IConcertDTO {
   scrapNum?: number;
   generation?: number;
   comments?: commentResDTO[];
+  isLike?: boolean;
+  isScrap?: boolean;
 }
 
 export interface IConcertDetailDTO {

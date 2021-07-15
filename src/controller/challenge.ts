@@ -4,6 +4,8 @@ import { returnCode } from "../library/returnCode";
 import { response, dataResponse } from "../library/response";
 // middlewares
 import auth from "../middleware/auth";
+import publicAuth from "../middleware/publicAuth";
+
 // services
 import {
   getChallengeAll,
@@ -28,12 +30,13 @@ const router = Router();
 /**
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
- *  @access Private
+ *  @access public
  */
 
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeAll(
+      req.body.userID,
       req.query.offset,
       req.query.limit
     );
@@ -54,10 +57,10 @@ router.get("/", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
- *  @access Private
+ *  @access public
  */
 
-router.get("/search", auth, async (req: Request, res: Response) => {
+router.get("/search", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeSearch(
       req.query.tag,
@@ -85,12 +88,15 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_가져오기
  *  @route Get /challenge/:challengeID
- *  @access Private
+ *  @access public
  */
 
-router.get("/:id", auth, async (req: Request, res: Response) => {
+router.get("/:id", publicAuth, async (req: Request, res: Response) => {
   try {
-    const data: IChallengeDTO | -1 = await getChallengeOne(req.params.id);
+    const data: IChallengeDTO[] | -1 = await getChallengeOne(
+      req.body.userID,
+      req.params.id
+    );
 
     // challengeID가 이상할 때
     if (data === -1) {
@@ -107,7 +113,7 @@ router.get("/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_등록
  *  @route Post /challenge/:userId
- *  @access Private
+ *  @access private
  */
 
 router.post("/", auth, async (req: Request, res: Response) => {
@@ -135,7 +141,7 @@ router.post("/", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_수정
  *  @route Patch /challenge/:challengeId
- *  @access Private
+ *  @access private
  */
 
 router.patch("/:id", auth, async (req: Request, res: Response) => {
@@ -163,7 +169,7 @@ router.patch("/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_삭제
  *  @route Delete /challenge/:challengeId
- *  @access Private
+ *  @access private
  */
 
 router.delete("/:id", auth, async (req: Request, res: Response) => {
@@ -186,7 +192,7 @@ router.delete("/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_댓글_등록
  *  @route Post /challenge/comment/:challengeID
- *  @access Private
+ *  @access private
  */
 
 router.post("/comment/:id", auth, async (req: Request, res: Response) => {
@@ -222,7 +228,7 @@ router.post("/comment/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_좋아요_등록
  *  @route Post /challenge/like/:challengeID
- *  @access Private
+ *  @access private
  */
 
 router.post("/like/:id", auth, async (req: Request, res: Response) => {
@@ -249,7 +255,7 @@ router.post("/like/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @챌린지_회고_좋아요_삭제하기
  *  @route Delete /challenge/like/:challengeID
- *  @access Private
+ *  @access private
  */
 
 router.delete("/like/:id", auth, async (req: Request, res: Response) => {
@@ -275,7 +281,7 @@ router.delete("/like/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @유저_챌린지_회고_스크랩하기
  *  @route Post /challenge/scrap/:challengeID
- *  @access Private
+ *  @access private
  */
 router.post("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
@@ -300,7 +306,7 @@ router.post("/scrap/:id", auth, async (req: Request, res: Response) => {
 /**
  *  @유저_챌린지_회고_스크랩_취소하기
  *  @route Delete /challenge/scrap/:challengeID
- *  @access Private
+ *  @access private
  */
 router.delete("/scrap/:id", auth, async (req: Request, res: Response) => {
   try {
