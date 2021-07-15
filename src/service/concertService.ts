@@ -64,11 +64,11 @@ export const getConcertAll = async (userID, offset, limit) => {
     isNotice: false,
   }).countDocuments();
 
-  let resData: concertResDTO;
+  var resData: concertResDTO;
   if (userID) {
     // 좋아요, 스크랩 여부 추가
     const user = await User.findById(userID.id);
-    const newConcerts: IConcertDTO[] = concerts.map((c) => {
+    const newConcerts = concerts.map((c) => {
       if (
         user.scraps.concertScraps.includes(c._id) &&
         user.likes.concertLikes.includes(c._id)
