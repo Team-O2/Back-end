@@ -37,6 +37,7 @@ const router = Router();
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
     const data: concertResDTO | -1 = await getConcertAll(
+      req.body.userID.id,
       req.query.offset,
       req.query.limit
     );
@@ -66,7 +67,8 @@ router.get("/search", auth, async (req: Request, res: Response) => {
       req.query.tag,
       req.query.keyword,
       req.query.offset,
-      req.query.limit
+      req.query.limit,
+      req.body.userID.id
     );
 
     // limit 없을 때
@@ -90,7 +92,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
 router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
     // const data: IConcrtDTO = await getConcertOne(req.params.id);
-    const data = await getConcertOne(req.params.id);
+    const data = await getConcertOne(req.body.userID.id, req.params.id);
     const concert = data;
     dataResponse(
       res,

@@ -16,7 +16,7 @@ import { commentReqDTO } from "../DTO/commentDTO";
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
  */
-export const getConcertAll = async (offset, limit) => {
+export const getConcertAll = async (userID, offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
@@ -59,13 +59,34 @@ export const getConcertAll = async (offset, limit) => {
       ],
     });
 
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const newConcerts: IConcertDTO[] = concerts.map((c) => {
+    if (
+      user.scraps.concertScraps.includes(c._id) &&
+      user.likes.concertLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.concertScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.concertLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
   let totalConcertNum = await Concert.find({
     isDeleted: false,
     isNotice: false,
   }).count();
 
   const resData: concertResDTO = {
-    concerts,
+    concerts: newConcerts,
     totalConcertNum,
   };
 
@@ -76,10 +97,11 @@ export const getConcertAll = async (offset, limit) => {
  *  @오투콘서트_Detail
  *  @route Get /concert/:concertID
  */
-export const getConcertOne = async (concertID) => {
+export const getConcertOne = async (userID, concertID) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
-  const concert = await Concert.find({ _id: concertID }, { isDeleted: false })
+  let concert;
+  concert = await Concert.findById(concertID)
     .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
@@ -102,38 +124,34 @@ export const getConcertOne = async (concertID) => {
       ],
     });
 
-  // const resData: IConcrtDTO = concert[0];
-  // return resData;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  let resData: IConcertDTO;
+  if (
+    user.scraps.concertScraps.includes(concertID) &&
+    user.likes.concertLikes.includes(concertID)
+  ) {
+    resData = { ...concert._doc, isLike: true, isScrap: true };
+  } else if (user.scraps.concertScraps.includes(concertID)) {
+    resData = { ...concert._doc, isLike: false, isScrap: true };
+  } else if (user.likes.concertLikes.includes(concertID)) {
+    resData = { ...concert._doc, isLike: true, isScrap: false };
+  } else {
+    resData = {
+      ...concert._doc,
+      isLike: false,
+      isScrap: false,
+    };
+  }
 
-  // const resData: IConcertDTO = {
-  //   _id: concertID,
-  //   createdAt: concert[0].createdAt,
-  //   updatedAt: concert[0].updatedAt,
-  //   user: concert[0].user,
-  //   title: concert[0].title,
-  //   videoLink: concert[0].videoLink,
-  //   imgThumbnail: concert[0].imgThumbnail,
-  //   text: concert[0].text,
-  //   likes: concert[0].likes,
-  //   interest: concert[0].interest,
-  //   hashtag: concert[0].hashtag,
-  //   isDeleted: concert[0].isDeleted,
-  //   isNotice: concert[0].isNotice,
-  //   authorNickname: concert[0].authorNickname,
-  //   commentNum: concert[0].commentNum,
-  //   scrapNum: concert[0].scrapNum,
-  //   generation: concert[0].generation,
-  //   comments: concert[0].comments,
-  // };
-
-  return concert[0];
+  return resData;
 };
 
 /**
  *  @오투콘서트_검색_또는_필터
  *  @route Get /concert/search?tag=관심분야&ismine=내글만보기여부&keyword=검색할단어
  */
-export const getConcertSearch = async (tag, keyword, offset, limit) => {
+export const getConcertSearch = async (tag, keyword, offset, limit, userID) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
@@ -201,7 +219,26 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
     searchData.push(filteredData[i]);
   }
 
-  const resData: IConcertDTO[] = searchData;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const resData: IConcertDTO[] = searchData.map((c) => {
+    if (
+      user.scraps.concertScraps.includes(c._id) &&
+      user.likes.concertLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.concertScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.concertLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
 
   return resData;
 };

@@ -88,7 +88,7 @@ export const getChallengeOne = async (userID, challengeID) => {
   // 댓글, 답글 populate
   // isDelete = true 인 애들만 가져오기
   let challenge;
-  challenge = await Challenge.find({ _id: challengeID }, { isDeleted: false })
+  challenge = await Challenge.findById(challengeID)
     .populate("user", ["nickname", "img"])
     .populate({
       path: "comments",
@@ -124,6 +124,7 @@ export const getChallengeOne = async (userID, challengeID) => {
     user.likes.challengeLikes.includes(challengeID)
   ) {
     resData = { ...challenge._doc, isLike: true, isScrap: true };
+    console.log(resData);
   } else if (user.scraps.challengeScraps.includes(challengeID)) {
     resData = { ...challenge._doc, isLike: false, isScrap: true };
   } else if (user.likes.challengeLikes.includes(challengeID)) {
@@ -224,7 +225,7 @@ export const getChallengeSearch = async (
 
   // 좋아요, 스크랩 여부 추가
   const user = await User.findById(userID);
-  const newChallenge = searchData.map((c) => {
+  const resData: IChallengeDTO[] = searchData.map((c) => {
     if (
       user.scraps.challengeScraps.includes(c._id) &&
       user.likes.challengeLikes.includes(c._id)
@@ -242,8 +243,6 @@ export const getChallengeSearch = async (
       };
     }
   });
-
-  const resData: IChallengeDTO[] = newChallenge;
 
   return resData;
 };
