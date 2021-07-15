@@ -37,6 +37,7 @@ router.get("/", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeAll(
       req.body.userID,
+      req.query.generation,
       req.query.offset,
       req.query.limit
     );

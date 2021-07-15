@@ -13,7 +13,7 @@ import { commentReqDTO } from "../DTO/commentDTO";
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
  */
-export const getChallengeAll = async (userID, offset, limit) => {
+export const getChallengeAll = async (userID, gen, offset, limit) => {
   // isDelete = true 인 애들만 가져오기
   // offset 뒤에서 부터 가져오기
   // 최신순으로 정렬
@@ -26,21 +26,10 @@ export const getChallengeAll = async (userID, offset, limit) => {
     offset = 0;
   }
 
-  // 챌린지 현재 기수
-  let dateNow = new Date();
-  const progressGen = await Admin.findOne({
-    $and: [
-      { challengeStartDT: { $lte: dateNow } },
-      { challengeEndDT: { $gte: dateNow } },
-    ],
-  });
-
-  const currentGeneration = progressGen.generation;
-
   let challenge;
   challenge = await Challenge.find({
     isDeleted: false,
-    generation: currentGeneration,
+    generation: gen,
   })
     .skip(Number(offset))
     .limit(Number(limit))
