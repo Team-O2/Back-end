@@ -517,7 +517,7 @@ export const getUserInfo = async (userID) => {
  *  @access private
  */
 export const patchInfo = async (userID, body, url) => {
-  const imgUrl = url.img;
+  var imgUrl = url.img;
   const { nickname, gender, marpolicy } = body;
 
   const interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
@@ -526,7 +526,9 @@ export const patchInfo = async (userID, body, url) => {
     return -1;
   }
   const user = await User.findById(userID);
-  await user.update({ $set: { img: imgUrl } });
+  if (imgUrl !== "") {
+    await user.update({ $set: { img: imgUrl } });
+  }
   await user.update({ $set: { nickname: nickname } });
   await user.update({ $set: { interest: interest } });
   await user.update({ $set: { gender: gender } });
