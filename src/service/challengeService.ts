@@ -3,6 +3,7 @@ import Challenge from "../models/Challenge";
 import User from "../models/User";
 import Comment from "../models/Comment";
 import Badge from "../models/Badge";
+import Admin from "../models/Admin";
 
 // DTO
 import { IChallengeDTO, challengeWriteReqDTO } from "../DTO/challengeDTO";
@@ -25,9 +26,21 @@ export const getChallengeAll = async (userID, offset, limit) => {
     offset = 0;
   }
 
+  // 챌린지 현재 기수
+  let dateNow = new Date();
+  const progressGen = await Admin.findOne({
+    $and: [
+      { challengeStartDT: { $lte: dateNow } },
+      { challengeEndDT: { $gte: dateNow } },
+    ],
+  });
+
+  const currentGeneration = progressGen.generation;
+
   let challenge;
   challenge = await Challenge.find({
     isDeleted: false,
+    generation: currentGeneration,
   })
     .skip(Number(offset))
     .limit(Number(limit))

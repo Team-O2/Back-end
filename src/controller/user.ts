@@ -4,6 +4,7 @@ import { returnCode } from "../library/returnCode";
 import { response, dataResponse } from "../library/response";
 // middlewares
 import auth from "../middleware/auth";
+import publicAuth from "../middleware/publicAuth";
 // modules
 const upload = require("../modules/upload");
 // services
