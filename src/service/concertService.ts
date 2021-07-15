@@ -4,6 +4,14 @@ import User from "../models/User";
 import Comment from "../models/Comment";
 import Badge from "../models/Badge";
 
+// DTO
+import {
+  IConcertDTO,
+  concertResDTO,
+  IConcertDetailDTO,
+} from "../DTO/concertDTO";
+import { commentReqDTO } from "../DTO/commentDTO";
+
 /**
  *  @오투콘서트_전체_가져오기
  *  @route Get /concert
@@ -56,7 +64,12 @@ export const getConcertAll = async (offset, limit) => {
     isNotice: false,
   }).count();
 
-  return { concerts, totalConcertNum };
+  const resData: concertResDTO = {
+    concerts,
+    totalConcertNum,
+  };
+
+  return resData;
 };
 
 /**
@@ -88,6 +101,30 @@ export const getConcertOne = async (concertID) => {
         },
       ],
     });
+
+  // const resData: IConcrtDTO = concert[0];
+  // return resData;
+
+  // const resData: IConcertDTO = {
+  //   _id: concertID,
+  //   createdAt: concert[0].createdAt,
+  //   updatedAt: concert[0].updatedAt,
+  //   user: concert[0].user,
+  //   title: concert[0].title,
+  //   videoLink: concert[0].videoLink,
+  //   imgThumbnail: concert[0].imgThumbnail,
+  //   text: concert[0].text,
+  //   likes: concert[0].likes,
+  //   interest: concert[0].interest,
+  //   hashtag: concert[0].hashtag,
+  //   isDeleted: concert[0].isDeleted,
+  //   isNotice: concert[0].isNotice,
+  //   authorNickname: concert[0].authorNickname,
+  //   commentNum: concert[0].commentNum,
+  //   scrapNum: concert[0].scrapNum,
+  //   generation: concert[0].generation,
+  //   comments: concert[0].comments,
+  // };
 
   return concert[0];
 };
@@ -163,7 +200,10 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     searchData.push(filteredData[i]);
   }
-  return searchData;
+
+  const resData: IConcertDTO[] = searchData;
+
+  return resData;
 };
 
 /**
@@ -175,8 +215,12 @@ export const getConcertSearch = async (tag, keyword, offset, limit) => {
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-export const postConcertComment = async (concertID, userID, body) => {
-  const { parentID, text } = body;
+export const postConcertComment = async (
+  concertID,
+  userID,
+  reqData: commentReqDTO
+) => {
+  const { parentID, text } = reqData;
 
   // 1. 회고록 id 잘못됨
   const concert = await Concert.findById(concertID);

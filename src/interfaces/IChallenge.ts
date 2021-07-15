@@ -18,32 +18,5 @@ export interface IChallenge {
   generation: Number;
   interest: [string];
   isDeleted: Boolean;
-  comments: (typeof mongoose.Schema.Types.ObjectId)[];
-}
-
-export interface IChallengeDTO {
-  createdAt: Date;
-  updatedAt: Date;
-  user: IUserNickName;
-  good: string;
-  learn: string;
-  bad: string;
-  likes: Number;
-  generation: Number;
-  interest: [string];
-  isDeleted: Boolean;
-  comments: (typeof mongoose.Schema.Types.ObjectId)[];
-}
-
-export interface IChallengePostDTO {
-  _id: mongoose.Schema.Types.ObjectId;
-  createdAt: Date;
-  upDatedAt: Date;
-  user: IUserNickName;
-  good: string;
-  bad: string;
-  learn: string;
-  likes: number;
-  generation: number;
-  interest: [string];
+  comments: typeof mongoose.Schema.Types.ObjectId[];
 }

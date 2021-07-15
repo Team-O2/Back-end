@@ -4,6 +4,10 @@ import User from "../models/User";
 import Comment from "../models/Comment";
 import Badge from "../models/Badge";
 
+// DTO
+import { IChallengeDTO, challengeWriteReqDTO } from "../DTO/challengeDTO";
+import { commentReqDTO } from "../DTO/commentDTO";
+
 /**
  *  @챌린지_회고_전체_가져오기
  *  @route Get /challenge
@@ -21,8 +25,8 @@ export const getChallengeAll = async (offset, limit) => {
     offset = 0;
   }
 
-  let challenges;
-  challenges = await Challenge.find({
+  let challenge;
+  challenge = await Challenge.find({
     isDeleted: false,
   })
     .skip(Number(offset))
@@ -50,7 +54,9 @@ export const getChallengeAll = async (offset, limit) => {
       ],
     });
 
-  return challenges;
+  const resData: IChallengeDTO[] = challenge;
+
+  return resData;
 };
 
 /**
@@ -91,7 +97,23 @@ export const getChallengeOne = async (challengeID) => {
     return -1;
   }
 
-  return challenge;
+  const resData: IChallengeDTO = {
+    _id: challengeID,
+    createdAt: challenge[0].createdAt,
+    updatedAt: challenge[0].updatedAt,
+    user: challenge[0].user,
+    good: challenge[0].good,
+    learn: challenge[0].learn,
+    bad: challenge[0].bad,
+    likes: challenge[0].likes,
+    commentNum: challenge[0].commentNum,
+    scrapNum: challenge[0].scrapNum,
+    generation: challenge[0].generation,
+    interest: challenge[0].interest,
+    comments: challenge[0].comments,
+  };
+
+  return resData;
 };
 
 /**
@@ -176,7 +198,10 @@ export const getChallengeSearch = async (
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
     searchData.push(filteredData[i]);
   }
-  return searchData;
+
+  const resData: IChallengeDTO[] = searchData;
+
+  return resData;
 };
 
 /**
@@ -187,11 +212,11 @@ export const getChallengeSearch = async (
  *      1. 요청 바디 부족
  *      2. 유저 id 잘못됨
  */
-export const postChallenge = async (userID, body) => {
-  const { good, bad, learn, interest, generation } = body;
+export const postChallenge = async (userID, reqData: challengeWriteReqDTO) => {
+  const { good, bad, learn, interest } = reqData;
 
   // 1. 요청 바디 부족
-  if (!good || !bad || !learn || !interest || !generation) {
+  if (!good || !bad || !learn || !interest) {
     return -1;
   }
 
@@ -207,7 +232,7 @@ export const postChallenge = async (userID, body) => {
     bad: bad.toLowerCase(),
     learn: learn.toLowerCase(),
     interest: interest.map((it) => it.toLowerCase()),
-    generation,
+    generation: user.generation,
   });
 
   await challenge.save();
@@ -240,8 +265,11 @@ export const postChallenge = async (userID, body) => {
  *      1. 회고록 id 잘못됨
  *      2. 요청 바디 부족
  */
-export const patchChallenge = async (challengeID, body) => {
-  const { good, bad, learn, interest } = body;
+export const patchChallenge = async (
+  challengeID,
+  reqData: challengeWriteReqDTO
+) => {
+  const { good, bad, learn, interest } = reqData;
 
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);
@@ -304,8 +332,12 @@ export const deleteChallenge = async (userID, challengeID) => {
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-export const postChallengeComment = async (challengeID, userID, body) => {
-  const { parentID, text } = body;
+export const postChallengeComment = async (
+  challengeID,
+  userID,
+  reqData: commentReqDTO
+) => {
+  const { parentID, text } = reqData;
 
   // 1. 회고록 id 잘못됨
   const challenge = await Challenge.findById(challengeID);

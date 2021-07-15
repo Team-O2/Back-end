@@ -3,6 +3,7 @@ import { Router, Request, Response } from "express";
 import { returnCode } from "../library/returnCode";
 import { response, dataResponse } from "../library/response";
 // services
+
 import {
   postConcertComment,
   postConcertLike,
@@ -17,6 +18,14 @@ import {
 // middlewares
 import auth from "../middleware/auth";
 
+// DTO
+import {
+  IConcertDTO,
+  concertResDTO,
+  IConcertDetailDTO,
+} from "../DTO/concertDTO";
+import { commentReqDTO } from "../DTO/commentDTO";
+
 const router = Router();
 
 /**
@@ -27,7 +36,10 @@ const router = Router();
 
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getConcertAll(req.query.offset, req.query.limit);
+    const data: concertResDTO | -1 = await getConcertAll(
+      req.query.offset,
+      req.query.limit
+    );
 
     // limit 없을 때
     if (data === -1) {
@@ -50,7 +62,7 @@ router.get("/", auth, async (req: Request, res: Response) => {
 
 router.get("/search", auth, async (req: Request, res: Response) => {
   try {
-    const data = await getConcertSearch(
+    const data: IConcertDTO[] | -1 = await getConcertSearch(
       req.query.tag,
       req.query.keyword,
       req.query.offset,
@@ -77,8 +89,8 @@ router.get("/search", auth, async (req: Request, res: Response) => {
  */
 router.get("/:id", auth, async (req: Request, res: Response) => {
   try {
+    // const data: IConcrtDTO = await getConcertOne(req.params.id);
     const data = await getConcertOne(req.params.id);
-
     const concert = data;
     dataResponse(
       res,
@@ -100,10 +112,11 @@ router.get("/:id", auth, async (req: Request, res: Response) => {
 
 router.post("/comment/:id", auth, async (req: Request, res: Response) => {
   try {
+    const reqData: commentReqDTO = req.body;
     const data = await postConcertComment(
       req.params.id,
       req.body.userID.id,
-      req.body
+      reqData
     );
 
     // 회고 id가 잘못된 경우

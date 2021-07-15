@@ -1,24 +1,50 @@
 import mongoose from "mongoose";
-import { IUser } from "../interfaces/IUser";
+import { userHeaderDTO } from "./userDTO";
+import { commentResDTO } from "./commentDTO";
 
-interface IUserNickName {
-  _id: mongoose.Schema.Types.ObjectId;
-  nickname: string;
+export interface IConcertDTO {
+  _id?: mongoose.Schema.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+  user?: userHeaderDTO;
+  title?: string;
+  videoLink?: string;
+  imgThumbnail?: string;
+  text?: string;
+  likes?: Number;
+  interest?: [string];
+  hashtag?: [string];
+  isDeleted?: Boolean;
+  isNotice?: Boolean;
+  authorNickname?: string;
+  commentNum?: number;
+  scrapNum?: number;
+  generation?: number;
+  comments?: commentResDTO[];
 }
 
-export interface IConcert {
-  createdAt: Date;
-  updatedAt: Date;
-  user: IUser;
-  title: string;
-  videoLink: string;
-  imgThumbnail: string;
-  text: string;
-  likes: Number;
-  interest: [string];
-  hashtag: [string];
-  isDeleted: Boolean;
-  comments: typeof mongoose.Schema.Types.ObjectId[];
-  isNotice: Boolean;
-  authorNickname: string;
+export interface IConcertDetailDTO {
+  _id?: mongoose.Schema.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+  user?: userHeaderDTO;
+  title?: string;
+  videoLink?: string;
+  imgThumbnail?: string;
+  text?: string;
+  likes?: Number;
+  interest?: [string];
+  hashtag?: [string];
+  isDeleted?: Boolean;
+  isNotice?: Boolean;
+  authorNickname?: string;
+  commentNum?: number;
+  scrapNum?: number;
+  generation?: number;
+  comments?: typeof mongoose.Schema.Types.ObjectId[];
+}
+
+export interface concertResDTO {
+  concerts: IConcertDTO[];
+  totalConcertNum?: number;
 }
