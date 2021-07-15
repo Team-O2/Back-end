@@ -69,6 +69,7 @@ router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  */
 router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // const data: IConcrtDTO = await getConcertOne(req.params.id);
         const data = yield concertService_1.getConcertOne(req.params.id);
         const concert = data;
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "해당 콘서트 게시글 불러오기 성공", concert);
@@ -85,7 +86,8 @@ router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 
  */
 router.post("/comment/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield concertService_1.postConcertComment(req.params.id, req.body.userID.id, req.body);
+        const reqData = req.body;
+        const data = yield concertService_1.postConcertComment(req.params.id, req.body.userID.id, reqData);
         // 회고 id가 잘못된 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

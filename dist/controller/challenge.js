@@ -89,7 +89,8 @@ router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 
  */
 router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.postChallenge(req.body.userID.id, req.body);
+        const reqData = req.body;
+        const data = yield challengeService_1.postChallenge(req.body.userID.id, reqData);
         // 요청 바디가 부족할 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
@@ -114,7 +115,8 @@ router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0,
  */
 router.patch("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.patchChallenge(req.params.id, req.body);
+        const reqData = req.body;
+        const data = yield challengeService_1.patchChallenge(req.params.id, reqData);
         // 회고 id가 잘못된 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");
@@ -160,7 +162,8 @@ router.delete("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  */
 router.post("/comment/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.postChallengeComment(req.params.id, req.body.userID.id, req.body);
+        const reqData = req.body;
+        const data = yield challengeService_1.postChallengeComment(req.params.id, req.body.userID.id, reqData);
         // 회고 id가 잘못된 경우
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

@@ -34,8 +34,8 @@ const getChallengeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, fun
     if (!offset) {
         offset = 0;
     }
-    let challenges;
-    challenges = yield Challenge_1.default.find({
+    let challenge;
+    challenge = yield Challenge_1.default.find({
         isDeleted: false,
     })
         .skip(Number(offset))
@@ -62,7 +62,8 @@ const getChallengeAll = (offset, limit) => __awaiter(void 0, void 0, void 0, fun
             },
         ],
     });
-    return challenges;
+    const resData = challenge;
+    return resData;
 });
 exports.getChallengeAll = getChallengeAll;
 /**
@@ -98,7 +99,22 @@ const getChallengeOne = (challengeID) => __awaiter(void 0, void 0, void 0, funct
     if (!challenge) {
         return -1;
     }
-    return challenge;
+    const resData = {
+        _id: challengeID,
+        createdAt: challenge[0].createdAt,
+        updatedAt: challenge[0].updatedAt,
+        user: challenge[0].user,
+        good: challenge[0].good,
+        learn: challenge[0].learn,
+        bad: challenge[0].bad,
+        likes: challenge[0].likes,
+        commentNum: challenge[0].commentNum,
+        scrapNum: challenge[0].scrapNum,
+        generation: challenge[0].generation,
+        interest: challenge[0].interest,
+        comments: challenge[0].comments,
+    };
+    return resData;
 });
 exports.getChallengeOne = getChallengeOne;
 /**
@@ -170,7 +186,8 @@ const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __aw
     for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
         searchData.push(filteredData[i]);
     }
-    return searchData;
+    const resData = searchData;
+    return resData;
 });
 exports.getChallengeSearch = getChallengeSearch;
 /**
@@ -181,10 +198,10 @@ exports.getChallengeSearch = getChallengeSearch;
  *      1. 요청 바디 부족
  *      2. 유저 id 잘못됨
  */
-const postChallenge = (userID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { good, bad, learn, interest, generation } = body;
+const postChallenge = (userID, reqData) => __awaiter(void 0, void 0, void 0, function* () {
+    const { good, bad, learn, interest } = reqData;
     // 1. 요청 바디 부족
-    if (!good || !bad || !learn || !interest || !generation) {
+    if (!good || !bad || !learn || !interest) {
         return -1;
     }
     // 2. 유저 id 잘못됨
@@ -198,7 +215,7 @@ const postChallenge = (userID, body) => __awaiter(void 0, void 0, void 0, functi
         bad: bad.toLowerCase(),
         learn: learn.toLowerCase(),
         interest: interest.map((it) => it.toLowerCase()),
-        generation,
+        generation: user.generation,
     });
     yield challenge.save();
     // 유저의 writingCNT 증가
@@ -226,8 +243,8 @@ exports.postChallenge = postChallenge;
  *      1. 회고록 id 잘못됨
  *      2. 요청 바디 부족
  */
-const patchChallenge = (challengeID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { good, bad, learn, interest } = body;
+const patchChallenge = (challengeID, reqData) => __awaiter(void 0, void 0, void 0, function* () {
+    const { good, bad, learn, interest } = reqData;
     // 1. 회고록 id 잘못됨
     const challenge = yield Challenge_1.default.findById(challengeID);
     if (!challenge || challenge.isDeleted) {
@@ -275,8 +292,8 @@ exports.deleteChallenge = deleteChallenge;
  *      2. 요청 바디 부족
  *      3. 부모 댓글 id 값이 유효하지 않을 경우
  */
-const postChallengeComment = (challengeID, userID, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { parentID, text } = body;
+const postChallengeComment = (challengeID, userID, reqData) => __awaiter(void 0, void 0, void 0, function* () {
+    const { parentID, text } = reqData;
     // 1. 회고록 id 잘못됨
     const challenge = yield Challenge_1.default.findById(challengeID);
     if (!challenge || challenge.isDeleted) {
