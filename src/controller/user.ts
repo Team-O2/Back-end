@@ -31,6 +31,7 @@ import {
   registerReqDTO,
   userInfoResDTO,
 } from "../DTO/userDTO";
+import { IChallengeDTO } from "../DTO/challengeDTO";
 // interface
 import { IUser } from "../interfaces/IUser";
 import { IComment } from "../interfaces/IComment";
@@ -288,11 +289,7 @@ router.delete(
 
 router.get("/mypage/write", auth, async (req: Request, res: Response) => {
   try {
-    const data:
-      | (IChallenge &
-          Document<IUser, mongoose.Schema.Types.ObjectId> &
-          Document<IComment, mongoose.Schema.Types.ObjectId>)[]
-      | -1 = await getMyWritings(
+    const data: IChallengeDTO[] | -1 = await getMyWritings(
       req.body.userID.id,
       req.query.offset,
       req.query.limit

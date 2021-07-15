@@ -87,7 +87,7 @@ export interface userInfoResDTO {
   _id: mongoose.Schema.Types.ObjectId;
   email: string;
   nickname?: string;
-  gender: 0 | 1 | 2;
+  gender: number;
 }
 
 export interface userInfoReqDTO {
