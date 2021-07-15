@@ -234,7 +234,7 @@ export const getConcertSearch = async (userID, tag, keyword, offset, limit) => {
     searchData.push(filteredData[i]);
   }
 
-  const totalConcertNum = filteredData.lenth;
+  const totalConcertNum = filteredData.length;
   let resData: concertResDTO;
   if (userID) {
     // 좋아요, 스크랩 여부 추가
