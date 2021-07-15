@@ -446,7 +446,7 @@ exports.getUserInfo = getUserInfo;
  *  @access private
  */
 const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, function* () {
-    const imgUrl = url.img;
+    var imgUrl = url.img;
     const { nickname, gender, marpolicy } = body;
     const interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
     // 1. 요청 바디 부족
@@ -454,7 +454,9 @@ const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, funct
         return -1;
     }
     const user = yield User_1.default.findById(userID);
-    yield user.update({ $set: { img: imgUrl } });
+    if (imgUrl !== "") {
+        yield user.update({ $set: { img: imgUrl } });
+    }
     yield user.update({ $set: { nickname: nickname } });
     yield user.update({ $set: { interest: interest } });
     yield user.update({ $set: { gender: gender } });

@@ -84,9 +84,7 @@ router.get("/userInfo", auth_1.default, (req, res) => __awaiter(void 0, void 0, 
 router.patch("/userInfo", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const url = {
-            img: req.files.img
-                ? req.files.img[0].location
-                : "https://o2-server.s3.ap-northeast-2.amazonaws.com/origin/default_img_100%403x.jpg",
+            img: req.files.img ? req.files.img[0].location : "",
         };
         const data = yield userService_1.patchInfo(req.body.userID.id, req.body, url);
         // 요청 바디가 부족할 경우
