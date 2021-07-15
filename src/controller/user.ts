@@ -30,11 +30,11 @@ import {
   newPwReqDTO,
   registerReqDTO,
   userInfoResDTO,
-} from "src/DTO/userDTO";
+} from "../DTO/userDTO";
 // interface
 import { IUser } from "../interfaces/IUser";
-import { IComment } from "src/interfaces/IComment";
-import { IChallenge } from "src/interfaces/IChallenge";
+import { IComment } from "../interfaces/IComment";
+import { IChallenge } from "../interfaces/IChallenge";
 
 const router = Router();
 

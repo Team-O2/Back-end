@@ -30,8 +30,10 @@ import {
 // interface
 import { IConcert } from "../interfaces/IConcert";
 import { IUser } from "../interfaces/IUser";
-import { IComment } from "src/interfaces/IComment";
-import { IChallenge } from "src/interfaces/IChallenge";
+import { IComment } from "../interfaces/IComment";
+import { IChallenge } from "../interfaces/IChallenge";
+import { IChallengeDTO } from "../DTO/challengeDTO";
+import { IConcertDTO } from "../DTO/concertDTO";
 
 /**
  *  @User_챌린지_신청하기
@@ -121,11 +123,10 @@ export const getMypageConcert = async (userID, offset, limit) => {
   if (!offset) {
     offset = "0";
   }
-  const userScraps = await (
-    await User.findOne({ _id: userID })
-  ).scraps.concertScraps;
 
-  if (!userScraps[0]) {
+  const user = await User.findById(userID);
+
+  if (!user.scraps.concertScraps[0]) {
     return -1;
   }
 
@@ -136,7 +137,7 @@ export const getMypageConcert = async (userID, offset, limit) => {
   const concertList: (IConcert &
     Document<IUser, mongoose.Schema.Types.ObjectId> &
     Document<IComment, mongoose.Schema.Types.ObjectId>)[][] = await Promise.all(
-    userScraps.map(async function (scrap) {
+    user.scraps.concertScraps.map(async function (scrap) {
       let concertScrap: (IConcert &
         Document<IUser, mongoose.Schema.Types.ObjectId> &
         Document<IComment, mongoose.Schema.Types.ObjectId>)[] =
@@ -173,18 +174,34 @@ export const getMypageConcert = async (userID, offset, limit) => {
     }
   );
 
-  let mypageConcertScrap: (IConcert &
-    Document<IUser, mongoose.Schema.Types.ObjectId> &
-    Document<IComment, mongoose.Schema.Types.ObjectId>)[] = [];
+  let concertScraps = [];
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
-    const tmp: (IConcert &
-      Document<IUser, mongoose.Schema.Types.ObjectId> &
-      Document<IComment, mongoose.Schema.Types.ObjectId>)[] = mypageConcert[i];
+    const tmp = mypageConcert[i];
     if (!tmp) {
       break;
     }
-    mypageConcertScrap.push(tmp[0]);
+    concertScraps.push(tmp[0]);
   }
+
+  // 좋아요, 스크랩 여부 추가
+  const mypageConcertScrap: IConcertDTO[] = concertScraps.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
 
   const resData: concertScrapResDTO = {
     mypageConcertScrap,
@@ -203,11 +220,10 @@ export const getMypageChallenge = async (userID, offset, limit) => {
   if (!offset) {
     offset = 0;
   }
-  const userScraps = await (
-    await User.findOne({ _id: userID })
-  ).scraps.challengeScraps;
 
-  if (!userScraps[0]) {
+  const user = await User.findById(userID);
+
+  if (!user.scraps.challengeScraps[0]) {
     return -1;
   }
 
@@ -218,7 +234,7 @@ export const getMypageChallenge = async (userID, offset, limit) => {
   const challengeList: (IChallenge &
     Document<IUser, mongoose.Schema.Types.ObjectId> &
     Document<IComment, mongoose.Schema.Types.ObjectId>)[][] = await Promise.all(
-    userScraps.map(async function (scrap) {
+    user.scraps.challengeScraps.map(async function (scrap) {
       let challengeScrap: (IChallenge &
         Document<IUser, mongoose.Schema.Types.ObjectId> &
         Document<IComment, mongoose.Schema.Types.ObjectId>)[] =
@@ -254,20 +270,35 @@ export const getMypageChallenge = async (userID, offset, limit) => {
       return dateToNumber(b[0].createdAt) - dateToNumber(a[0].createdAt);
     });
 
-  var mypageChallengeScrap: (IChallenge &
-    Document<IUser, mongoose.Schema.Types.ObjectId> &
-    Document<IComment, mongoose.Schema.Types.ObjectId>)[] = [];
+  var challengeScraps = [];
 
   for (var i = Number(offset); i < Number(offset) + Number(limit); i++) {
-    const tmp: (IChallenge &
-      Document<IUser, mongoose.Schema.Types.ObjectId> &
-      Document<IComment, mongoose.Schema.Types.ObjectId>)[] =
-      mypageChallenge[i];
+    const tmp = mypageChallenge[i];
     if (!tmp) {
       break;
     }
-    mypageChallengeScrap.push(tmp[0]);
+    challengeScraps.push(tmp[0]);
   }
+
+  // 좋아요, 스크랩 여부 추가
+  const mypageChallengeScrap: IChallengeDTO[] = challengeScraps.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
 
   const resData: challengeScrapResDTO = {
     mypageChallengeScrap,
@@ -402,9 +433,7 @@ export const getMyWritings = async (userID, offset, limit) => {
     offset = 0;
   }
 
-  let challenges: (IChallenge &
-    Document<IUser, mongoose.Schema.Types.ObjectId> &
-    Document<IComment, mongoose.Schema.Types.ObjectId>)[];
+  let challenges;
 
   challenges = await Challenge.find({
     isDeleted: false,
@@ -435,7 +464,28 @@ export const getMyWritings = async (userID, offset, limit) => {
       ],
     });
 
-  return challenges;
+  // 좋아요, 스크랩 여부 추가
+  const user = await User.findById(userID);
+  const resData: IChallengeDTO[] = challenges.map((c) => {
+    if (
+      user.scraps.challengeScraps.includes(c._id) &&
+      user.likes.challengeLikes.includes(c._id)
+    ) {
+      return { ...c._doc, isLike: true, isScrap: true };
+    } else if (user.scraps.challengeScraps.includes(c._id)) {
+      return { ...c._doc, isLike: false, isScrap: true };
+    } else if (user.likes.challengeLikes.includes(c._id)) {
+      return { ...c._doc, isLike: true, isScrap: false };
+    } else {
+      return {
+        ...c._doc,
+        isLike: false,
+        isScrap: false,
+      };
+    }
+  });
+
+  return resData;
 };
 
 /**

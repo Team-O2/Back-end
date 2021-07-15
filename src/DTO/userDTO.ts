@@ -1,8 +1,10 @@
 import mongoose, { Document } from "mongoose";
-import { IComment } from "src/interfaces/IComment";
-import { IUser } from "src/interfaces/IUser";
-import { IConcert } from "src/interfaces/IConcert";
-import { IChallenge } from "src/interfaces/IChallenge";
+import { IComment } from "../interfaces/IComment";
+import { IUser } from "../interfaces/IUser";
+import { IConcert } from "../interfaces/IConcert";
+import { IChallenge } from "../interfaces/IChallenge";
+import { IChallengeDTO } from "./challengeDTO";
+import { IConcertDTO } from "./concertDTO";
 
 export interface userHeaderDTO {
   _id?: mongoose.Schema.Types.ObjectId;
@@ -52,16 +54,12 @@ export interface mypageInfoResDTO {
 }
 
 export interface concertScrapResDTO {
-  mypageConcertScrap: (IConcert &
-    Document<IUser, mongoose.Schema.Types.ObjectId> &
-    Document<IComment, mongoose.Schema.Types.ObjectId>)[];
+  mypageConcertScrap: IConcertDTO[];
   totalScrapNum: number;
 }
 
 export interface challengeScrapResDTO {
-  mypageChallengeScrap: (IChallenge &
-    Document<IUser, mongoose.Schema.Types.ObjectId> &
-    Document<IComment, mongoose.Schema.Types.ObjectId>)[];
+  mypageChallengeScrap: IChallengeDTO[];
   totalScrapNum: number;
 }
 
