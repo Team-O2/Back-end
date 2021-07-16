@@ -173,6 +173,7 @@ const getAdminRegist = () => __awaiter(void 0, void 0, void 0, function* () {
         return -1;
     }
     const resData = {
+        img: admin.img,
         title: admin.title,
         registerStartDT: admin.registerStartDT,
         registerEndDT: admin.registerEndDT,
