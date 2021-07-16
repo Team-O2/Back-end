@@ -159,6 +159,7 @@ export const getChallengeSearch = async (
   keyword,
   offset,
   limit,
+  gen,
   userID
 ) => {
   // isDelete = true 인 애들만 가져오기
@@ -176,6 +177,7 @@ export const getChallengeSearch = async (
   let challenges;
   challenges = await Challenge.find({
     isDeleted: false,
+    generation: gen,
   })
     .sort({ _id: -1 })
     .populate("user", ["nickname", "img"])

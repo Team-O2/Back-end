@@ -69,6 +69,7 @@ router.get("/search", publicAuth, async (req: Request, res: Response) => {
       req.query.keyword,
       req.query.offset,
       req.query.limit,
+      req.query.generation,
       req.body.userID
     );
 
