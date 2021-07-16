@@ -47,6 +47,7 @@
 ┃ ┣ 📂config
 ┃ ┃ ┗ 📜index.ts
 ┃ ┣ 📂library
+┃ ┃ ┣ 📜array.ts
 ┃ ┃ ┣ 📜returnCode.ts
 ┃ ┃ ┣ 📜response.ts
 ┃ ┃ ┣ 📜emailSender.ts
