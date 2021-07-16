@@ -197,6 +197,7 @@ export const getAdminRegist = async () => {
   }
 
   const resData: adminRegistResDTO = {
+    img: admin.img,
     title: admin.title,
     registerStartDT: admin.registerStartDT,
     registerEndDT: admin.registerEndDT,

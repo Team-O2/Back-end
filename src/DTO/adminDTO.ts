@@ -38,6 +38,7 @@ export interface adminRegistReqDTO {
 }
 
 export interface adminRegistResDTO {
+  img: String;
   title: String;
   registerStartDT: Date;
   registerEndDT: Date;
