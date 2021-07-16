@@ -12,6 +12,7 @@ import {
 
 // middlewares
 import auth from "../middleware/auth";
+import publicAuth from "../middleware/publicAuth";
 
 // DTO
 import {
@@ -30,7 +31,7 @@ const router = Router();
  *  @access private
  */
 
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: noticesResDTO | -1 = await getNoticeAll(
       req.query.offset,
@@ -58,7 +59,7 @@ router.get("/", auth, async (req: Request, res: Response) => {
  *  @access private
  */
 
-router.get("/search", auth, async (req: Request, res: Response) => {
+router.get("/search", publicAuth, async (req: Request, res: Response) => {
   try {
     const data = await getNoticeSearch(
       req.query.keyword,
@@ -87,7 +88,7 @@ router.get("/search", auth, async (req: Request, res: Response) => {
  *  @access private
  */
 
-router.get("/:id", auth, async (req: Request, res: Response) => {
+router.get("/:id", publicAuth, async (req: Request, res: Response) => {
   try {
     // const data: INotice = await getNoticeOne(req.params.id);
     const data = await getNoticeOne(req.params.id);
