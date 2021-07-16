@@ -1,4 +1,5 @@
 # <p align="center">Open Together, O2 　<img src="https://github.com/Team-O2/Back-end/blob/develop/README/Logo@2x.png?raw=true" alt="아이콘" width="6%" /></p>
+ ![badge](https://img.shields.io/badge/Part-Back--end-brightgreen) ![lang](https://img.shields.io/badge/Language-TypeScript-blue) ![react](https://img.shields.io/badge/Tech--stack-Node.js-orange) ![realease](https://img.shields.io/badge/release-v1.0.0-yellow)
 
 <p align="center"><img src="./README/Banner@2x.png" alt="배너" width="100%" /></p>
 
@@ -160,14 +161,15 @@
 # 배포  
 
 - AWS EC2 - 클라우드 컴퓨팅 시스템  
-
 - AWS S3 - 클라우드 데이터 저장소
-- AWS RDS - 클라우드 환경 데이터베이스 관리 시스템
+
+- AWS Load Balancer - 트래픽 분산 시스템
+
 <br></br>
 
 # Team
-
-- [고성용](https://github.com/holmir97)
-
-- [이현진](https://github.com/hyundang)
-
+| **🙋 [고성용](https://github.com/holmir97)** | **🙋 [이현진](https://github.com/hyundang)** |
+| :---: | :---: |
+| [![FVCproductions](https://avatars.githubusercontent.com/u/64517473?v=4)]()    | [![FVCproductions](https://avatars.githubusercontent.com/u/69850106?v=4)]() |
+| 서버 개발자 | 서버 개발자 |
+|프로젝트 세팅<br /> Auth API <br /> User API <br /> Concert API <br /> Admin API <br /> Notice API <br />|프로젝트 세팅 <br /> Auth API <br /> User API <br /> Challenge API <br /> Scheduler <br /> 서버 배포</br>| 
