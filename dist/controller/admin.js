@@ -89,7 +89,7 @@ router.post("/challenge", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.
  *  @route Get admin/regist
  *  @access private
  */
-router.get("/regist", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/regist", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield adminService_1.getAdminRegist();
         // 현재 진행중인 기수가 없음
