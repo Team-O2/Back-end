@@ -488,6 +488,11 @@ export const postConcertScrap = async (concertID, userID) => {
   if (user.scraps.concertScraps.includes(concertID)) {
     return -2;
   }
+  // 3. 자신의 회고인 경우
+  if (concert.user.toString() === user._id.toString()) {
+    console.log("dd");
+    return -3;
+  }
 
   // 게시글 스크랩 수 1 증가
   await Concert.findOneAndUpdate(

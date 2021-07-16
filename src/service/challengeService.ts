@@ -592,6 +592,7 @@ export const deleteChallengeLike = async (challengeID, userID) => {
  *  @error
  *      1. 회고록 id 잘못됨
  *      2. 이미 스크랩 한 회고일 경우
+ *      3. 자기 자신의 글인 경우
  */
 export const postChallengeScrap = async (challengeID, userID) => {
   // 1. 회고 id 잘못됨
@@ -605,6 +606,12 @@ export const postChallengeScrap = async (challengeID, userID) => {
   // 2. 이미 스크랩 한 회고인 경우
   if (user.scraps.challengeScraps.includes(challengeID)) {
     return -2;
+  }
+
+  // 3. 자신의 회고인 경우
+  if (challenge.user.toString() === user._id.toString()) {
+    console.log("dd");
+    return -3;
   }
 
   user.scraps.challengeScraps.push(challengeID);

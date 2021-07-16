@@ -297,6 +297,15 @@ router.post("/scrap/:id", auth, async (req: Request, res: Response) => {
     if (data === -2) {
       response(res, returnCode.BAD_REQUEST, "이미 스크랩 된 글입니다");
     }
+
+    // 자신의 회고인 경우
+    if (data === -3) {
+      response(
+        res,
+        returnCode.BAD_REQUEST,
+        "자신의 글은 스크랩 할 수 없습니다"
+      );
+    }
     // 회고 스크랩 성공
     dataResponse(res, returnCode.OK, "회고 스크랩 성공", data);
   } catch (err) {
