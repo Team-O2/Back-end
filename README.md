@@ -106,7 +106,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@types/lodash":^4.14.171",
+    "@types/lodash": "^4.14.171",
     "aws-sdk": "^2.939.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
