@@ -282,19 +282,27 @@ export const postAdminConcert = async (
 
 export const postAdminNotice = async (userID, reqData, url) => {
   const { title, text } = reqData;
-  let interest = reqData.interest
-    .toLowerCase()
-    .slice(1, -1)
-    .replace(/"/gi, "")
-    .split(/,\s?/);
-  let hashtag = reqData.hashtag
-    .toLowerCase()
-    .slice(1, -1)
-    .replace(/"/gi, "")
-    .split(/,\s?/);
+
+  let interest;
+  if (reqData.interest) {
+    interest = reqData.interest
+      .toLowerCase()
+      .slice(1, -1)
+      .replace(/"/gi, "")
+      .split(/,\s?/);
+  }
+
+  let hashtag;
+  if (reqData.hashtag) {
+    hashtag = reqData.hashtag
+      .toLowerCase()
+      .slice(1, -1)
+      .replace(/"/gi, "")
+      .split(/,\s?/);
+  }
 
   // 1. 요청 바디 부족
-  if (!title || !text || !interest || !hashtag) {
+  if (!title || !text) {
     return -1;
   }
 
