@@ -20,6 +20,7 @@ const Concert_1 = __importDefault(require("../models/Concert"));
 // library
 const date_1 = require("../library/date");
 const Challenge_1 = __importDefault(require("../models/Challenge"));
+const array_1 = require("../library/array");
 /**
  *  @관리자_페이지_조회
  *  @route Get admin
@@ -195,16 +196,16 @@ exports.getAdminRegist = getAdminRegist;
  */
 const postAdminConcert = (userID, reqData, url) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, text, authorNickname } = reqData;
-    let interest = reqData.interest
-        .toLowerCase()
-        .slice(1, -1)
-        .replace(/"/gi, "")
-        .split(/,\s?/);
-    let hashtag = reqData.hashtag
-        .toLowerCase()
-        .slice(1, -1)
-        .replace(/"/gi, "")
-        .split(/,\s?/);
+    let interest = array_1.stringToArray(reqData.interest);
+    // .toLowerCase()
+    // .slice(1, -1)
+    // .replace(/"/gi, "")
+    // .split(/,\s?/);
+    let hashtag = array_1.stringToArray(reqData.hashtag);
+    // .toLowerCase()
+    // .slice(1, -1)
+    // .replace(/"/gi, "")
+    // .split(/,\s?/);
     // 1. 요청 바디 부족
     if (!title || !text || !interest || !hashtag || !authorNickname) {
         return -1;
@@ -249,19 +250,19 @@ const postAdminNotice = (userID, reqData, url) => __awaiter(void 0, void 0, void
     const { title, text } = reqData;
     let interest;
     if (reqData.interest) {
-        interest = reqData.interest
-            .toLowerCase()
-            .slice(1, -1)
-            .replace(/"/gi, "")
-            .split(/,\s?/);
+        interest = array_1.stringToArray(reqData.interest);
+        // .toLowerCase()
+        // .slice(1, -1)
+        // .replace(/"/gi, "")
+        // .split(/,\s?/);
     }
     let hashtag;
     if (reqData.hashtag) {
-        hashtag = reqData.hashtag
-            .toLowerCase()
-            .slice(1, -1)
-            .replace(/"/gi, "")
-            .split(/,\s?/);
+        hashtag = array_1.stringToArray(reqData.hashtag);
+        // .toLowerCase()
+        // .slice(1, -1)
+        // .replace(/"/gi, "")
+        // .split(/,\s?/);
     }
     // 1. 요청 바디 부족
     if (!title || !text) {

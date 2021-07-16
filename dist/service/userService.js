@@ -22,6 +22,7 @@ const Challenge_1 = __importDefault(require("../models/Challenge"));
 const Comment_1 = __importDefault(require("../models/Comment"));
 // library
 const date_1 = require("../library/date");
+const array_1 = require("../library/array");
 // jwt
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 /**
@@ -493,7 +494,7 @@ const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, funct
     let rawInterest = body.interest;
     var interest;
     if (rawInterest !== "") {
-        interest = rawInterest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+        interest = array_1.stringToArray(rawInterest);
     }
     else {
         interest = rawInterest;
