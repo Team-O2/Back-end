@@ -1,4 +1,4 @@
-# <p align="center">Open Together, O2 　<img src="./README/LOGO@2x.png" alt="아이콘" width="6%" /></p>
+# <p align="center">Open Together, O2 　<img src="https://github.com/Team-O2/Back-end/blob/develop/README/Logo@2x.png?raw=true" alt="아이콘" width="6%" /></p>
 
 <p align="center"><img src="./README/Banner@2x.png" alt="배너" width="100%" /></p>
 
