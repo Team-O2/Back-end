@@ -247,9 +247,16 @@ export const postAdminConcert = async (
     return -2;
   }
 
+  const authorUser = await User.findOne({ nickname: authorNickname });
+  var authorID;
+  if (authorUser) {
+    authorID = authorUser._id;
+  } else {
+    authorID = userID;
+  }
   const concert = new Concert({
     title: title.toLowerCase(),
-    user: userID,
+    user: authorID,
     createdAt: new Date(),
     videoLink: url.videoLink,
     imgThumbnail: url.imgThumbnail,
