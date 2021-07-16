@@ -50,7 +50,7 @@ router.get("/", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  */
 router.get("/search", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield challengeService_1.getChallengeSearch(req.query.tag, req.query.isMine, req.query.keyword, req.query.offset, req.query.limit, req.query.generation, req.body.userID);
+        const data = yield challengeService_1.getChallengeSearch(req.query.tag, req.query.ismine, req.query.keyword, req.query.offset, req.query.limit, req.query.generation, req.body.userID);
         // limit 없을 때
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.NOT_FOUND, "요청 경로가 올바르지 않습니다");

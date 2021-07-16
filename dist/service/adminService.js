@@ -247,18 +247,24 @@ exports.postAdminConcert = postAdminConcert;
  */
 const postAdminNotice = (userID, reqData, url) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, text } = reqData;
-    let interest = reqData.interest
-        .toLowerCase()
-        .slice(1, -1)
-        .replace(/"/gi, "")
-        .split(/,\s?/);
-    let hashtag = reqData.hashtag
-        .toLowerCase()
-        .slice(1, -1)
-        .replace(/"/gi, "")
-        .split(/,\s?/);
+    let interest;
+    if (reqData.interest) {
+        interest = reqData.interest
+            .toLowerCase()
+            .slice(1, -1)
+            .replace(/"/gi, "")
+            .split(/,\s?/);
+    }
+    let hashtag;
+    if (reqData.hashtag) {
+        hashtag = reqData.hashtag
+            .toLowerCase()
+            .slice(1, -1)
+            .replace(/"/gi, "")
+            .split(/,\s?/);
+    }
     // 1. 요청 바디 부족
-    if (!title || !text || !interest || !hashtag) {
+    if (!title || !text) {
         return -1;
     }
     // 2. 유저 id가 관리자가 아님
