@@ -35,7 +35,7 @@
 <br></br>
 # Server Architecture
 
-<p align="center"><img src="./README/server.png" alt="아기텍쳐" width="100%" /></p>
+<p align="center"><img src="https://github.com/Team-O2/Back-end/blob/develop/README/Server.png?raw=true" alt="아키텍쳐" width="100%" /></p>
 
 ```
 📦src
