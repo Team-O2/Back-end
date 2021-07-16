@@ -20,13 +20,14 @@ const response_1 = require("../library/response");
 const noticeService_1 = require("../service/noticeService");
 // middlewares
 const auth_1 = __importDefault(require("../middleware/auth"));
+const publicAuth_1 = __importDefault(require("../middleware/publicAuth"));
 const router = express_1.Router();
 /**
  *  @공지사항_전체_가져오기
  *  @route Get /notice
  *  @access private
  */
-router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield noticeService_1.getNoticeAll(req.query.offset, req.query.limit);
         // 공지사항 불러오기 성공
@@ -47,7 +48,7 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
  *  @route Get /notice/search?keyword=검색할단어
  *  @access private
  */
-router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/search", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield noticeService_1.getNoticeSearch(req.query.keyword, req.query.offset, req.query.limit);
         // 검색 불러오기 성공
@@ -68,7 +69,7 @@ router.get("/search", auth_1.default, (req, res) => __awaiter(void 0, void 0, vo
  *  @route Get /notice/:noticeID
  *  @access private
  */
-router.get("/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", publicAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // const data: INotice = await getNoticeOne(req.params.id);
         const data = yield noticeService_1.getNoticeOne(req.params.id);

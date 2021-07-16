@@ -152,7 +152,7 @@ exports.getChallengeOne = getChallengeOne;
  *  @챌린지_회고_검색_또는_필터
  *  @route Get /challenge/search
  */
-const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __awaiter(void 0, void 0, void 0, function* () {
+const getChallengeSearch = (tag, isMine, keyword, offset, limit, gen, userID) => __awaiter(void 0, void 0, void 0, function* () {
     // isDelete = true 인 애들만 가져오기
     // offset 뒤에서 부터 가져오기
     // 최신순으로 정렬
@@ -166,6 +166,7 @@ const getChallengeSearch = (tag, isMine, keyword, offset, limit, userID) => __aw
     let challenges;
     challenges = yield Challenge_1.default.find({
         isDeleted: false,
+        generation: gen,
     })
         .sort({ _id: -1 })
         .populate("user", ["nickname", "img"])
