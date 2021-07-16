@@ -490,24 +490,44 @@ exports.getUserInfo = getUserInfo;
 const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, function* () {
     var imgUrl = url.img;
     const { nickname, gender, marpolicy } = body;
-    const interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
-    // 1. 요청 바디 부족
-    if (!nickname || !interest || !gender || !marpolicy) {
-        return -1;
+    let rawInterest = body.interest;
+    var interest;
+    if (rawInterest !== "") {
+        interest = rawInterest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
     }
-    // 3. 닉네임 중복
-    let checkNickname = yield User_1.default.findOne({ nickname });
-    if (checkNickname) {
-        return -2;
+    else {
+        interest = rawInterest;
     }
     const user = yield User_1.default.findById(userID);
+    // 1. 요청 바디 부족
+    if (nickname === undefined ||
+        interest === undefined ||
+        gender === undefined ||
+        marpolicy === undefined) {
+        return -1;
+    }
+    if (user.nickname !== nickname) {
+        // 3. 닉네임 중복
+        let checkNickname = yield User_1.default.findOne({ nickname });
+        if (checkNickname) {
+            return -2;
+        }
+    }
     if (imgUrl !== "") {
         yield user.update({ $set: { img: imgUrl } });
     }
-    yield user.update({ $set: { nickname: nickname } });
-    yield user.update({ $set: { interest: interest } });
-    yield user.update({ $set: { gender: gender } });
-    yield user.update({ $set: { marpolicy: marpolicy } });
+    if (nickname !== "") {
+        yield user.update({ $set: { nickname: nickname } });
+    }
+    if (interest !== "") {
+        yield user.update({ $set: { interest: interest } });
+    }
+    if (gender !== "") {
+        yield user.update({ $set: { gender: gender } });
+    }
+    if (marpolicy !== "") {
+        yield user.update({ $set: { marpolicy: marpolicy } });
+    }
     // 마케팅 동의(marpolicy == true) 시 뱃지 발급
     if (marpolicy) {
         yield Badge_1.default.findOneAndUpdate({ user: user.id }, { $set: { marketingBadge: true } });
