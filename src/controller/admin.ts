@@ -108,7 +108,7 @@ router.post<unknown, unknown, IAdmin>(
  *  @route Get admin/regist
  *  @access private
  */
-router.get("/regist", auth, async (req: Request, res: Response) => {
+router.get("/regist", async (req: Request, res: Response) => {
   try {
     const data: adminRegistResDTO | -1 | -2 = await getAdminRegist();
 
