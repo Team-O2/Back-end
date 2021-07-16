@@ -42,47 +42,71 @@
 <p align="center"><img src="https://github.com/Team-O2/Back-end/blob/develop/README/Server.png?raw=true" alt="아키텍쳐" width="100%" /></p>
 
 ```
-📦src
- ┣ 📂config
- ┃ ┗ 📜index.ts
- ┣ 📂library
- ┃ ┣ 📜response.ts
- ┃ ┣ 📜returnCode.ts
- ┃ ┣ 📜jwt.ts
- ┃ ┗ 📜date.ts
- ┣ 📂Loader
- ┃ ┗ 📜db.ts
- ┣ 📂interfaces
- ┃ ┣ 📜IComment.ts
- ┃ ┣ 📜ILikes.ts
- ┃ ┣ 📜IScraps.ts
- ┃ ┣ 📜IAdmin.ts
- ┃ ┣ 📜IConcert.ts
- ┃ ┣ 📜IBadge.ts
- ┃ ┣ 📜IChallenge.ts
- ┃ ┗ 📜IUser.ts
- ┣ 📂middleware
- ┃ ┣ 📜auth.ts
- ┃ ┣ 📜challenge.ts
- ┃ ┗ 📜upload.ts
- ┣ 📂models
- ┃ ┣ 📜Comment.ts
- ┃ ┣ 📜Admin.ts
- ┃ ┣ 📜Concert.ts
- ┃ ┣ 📜Badge.ts
- ┃ ┣ 📜Challenge.ts
- ┃ ┗ 📜User.ts
- ┣ 📂service
- ┃ ┣ 📜authService.ts
- ┃ ┣ 📜adminService.ts
- ┃ ┣ 📜challengeService.ts
- ┃ ┗ 📜concertService.ts
- ┣ 📂controller
- ┃ ┣ 📜admin.ts
- ┃ ┣ 📜auth.ts
- ┃ ┣ 📜challenge.ts
- ┃ ┗ 📜concert.ts
- ┗ 📜index.ts
+📦Back-end
+┣ 📂src
+┃ ┣ 📂config
+┃ ┃ ┗ 📜index.ts
+┃ ┣ 📂library
+┃ ┃ ┣ 📜returnCode.ts
+┃ ┃ ┣ 📜response.ts
+┃ ┃ ┣ 📜emailSender.ts
+┃ ┃ ┣ 📜date.ts
+┃ ┃ ┣ 📜jwt.ts
+┃ ┃ ┗ 📜emailTemplete.ejs
+┃ ┣ 📂Loader
+┃ ┃ ┗ 📜db.ts
+┃ ┣ 📂interfaces
+┃ ┃ ┣ 📜IComment.ts
+┃ ┃ ┣ 📜ILikes.ts
+┃ ┃ ┣ 📜IScraps.ts
+┃ ┃ ┣ 📜IAdmin.ts
+┃ ┃ ┣ 📜IUser.ts
+┃ ┃ ┣ 📜IBadge.ts
+┃ ┃ ┣ 📜IChallenge.ts
+┃ ┃ ┗ 📜IConcert.ts
+┃ ┣ 📂middleware
+┃ ┃ ┗ 📜auth.ts
+┃ ┣ 📂models
+┃ ┃ ┣ 📜Admin.ts
+┃ ┃ ┣ 📜Concert.ts
+┃ ┃ ┣ 📜Badge.ts
+┃ ┃ ┣ 📜Challenge.ts
+┃ ┃ ┣ 📜User.ts
+┃ ┃ ┗ 📜Comment.ts
+┃ ┣ 📂service
+┃ ┃ ┣ 📜schedulerService.ts
+┃ ┃ ┣ 📜adminService.ts
+┃ ┃ ┣ 📜authService.ts
+┃ ┃ ┣ 📜challengeService.ts
+┃ ┃ ┣ 📜concertService.ts
+┃ ┃ ┣ 📜noticeService.ts
+┃ ┃ ┗ 📜userService.ts
+┃ ┣ 📂controller
+┃ ┃ ┣ 📜admin.ts
+┃ ┃ ┣ 📜auth.ts
+┃ ┃ ┣ 📜challenge.ts
+┃ ┃ ┣ 📜concert.ts
+┃ ┃ ┣ 📜notice.ts
+┃ ┃ ┗ 📜user.ts
+┃ ┣ 📂modules
+┃ ┃ ┗ 📜upload.ts
+┃ ┣ 📂DTO
+┃ ┃ ┣ 📜authDTO.ts
+┃ ┃ ┣ 📜challengeDTO.ts
+┃ ┃ ┣ 📜commentDTO.ts
+┃ ┃ ┣ 📜concertDTO.ts
+┃ ┃ ┣ 📜noticeDTO.ts
+┃ ┃ ┣ 📜userDTO.ts
+┃ ┃ ┗ 📜adminDTO.ts
+┃ ┗ 📜index.ts
+┣ 📜eslintrc.json
+┣ 📜prettierrc.json
+┣ 📜tsconfig.json
+┣ 📜tsconfig.paths.json
+┣ 📜README.md
+┣ 📜.gitignore
+┣ 📜nodemon.json
+┗ 📜package.json
 ```
 <br></br>
 # dependencies module
