@@ -34,11 +34,15 @@ router.post("/signup", [
         const reqData = req.body;
         const data = yield authService_1.postSignup(reqData);
         // 요청 바디가 부족할 경우
-        if (data == -1) {
+        if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다");
         } // 이미 존재하는 아이디
-        else if (data == -2) {
+        else if (data === -2) {
             response_1.response(res, returnCode_1.returnCode.CONFLICT, "중복된 아이디 입니다");
+        }
+        // 중복된 닉네임
+        else if (data === -3) {
+            response_1.response(res, returnCode_1.returnCode.CONFLICT, "중복된 닉네임 입니다");
         }
         // 회원가입 성공
         else {

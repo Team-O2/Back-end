@@ -43,6 +43,11 @@ function postSignup(data) {
         if (user) {
             return -2;
         }
+        // 3. 닉네임 중복
+        let checkNickname = yield User_1.default.findOne({ nickname });
+        if (checkNickname) {
+            return -3;
+        }
         user = new User_1.default({
             email,
             password,
