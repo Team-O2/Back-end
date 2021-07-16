@@ -19,15 +19,18 @@
 
 <br></b>
 # O2
-예비 창업가가 회고와 강연을 통해 더 성장할 수 있는 기회를 제공하는 커뮤니티 플랫폼. 오투의 메인 기능으로는 회고를 원하는 기간에 맞춰서 쓰는 Learn Myself와 본인이 직접 연사가 되어볼 수 있고 다른 사람들의 성장 및 창업 스토리를 들어볼 수 있는 Share Together가 있습니다.
+> 예비 창업가가 회고와 강연을 통해 더 성장할 수 있는 기회를 제공하는 커뮤니티 플랫폼. 오투의 메인 기능으로는 회고를 원하는 기간에 맞춰서 쓰는 Learn Myself와 본인이 직접 연사가 되어볼 수 있고 다른 사람들의 성장 및 창업 스토리를 들어볼 수 있는 Share Together가 있습니다.
 
 <br></br>
 # Team Core Value 👬👭
-<p align="center"><img src="./README/CoreValue2.jpg" alt="핵심가치" width="100%" /></p>
+<p align="center"><img src="./README/CoreValue.jpg" alt="핵심가치" width="100%" /></p>
 
 - Share 
+  - 자신의 창업 스토리와 오늘의 회고를 다른 사람들과 공유함으로써 "CEO"에 대한 인사이트 넓히기 
 - Growth
+  - 공유받은 인사이트와 내 스스로 돌아본 내 모습을 통해 더 나은 CEO로 성장하기
 - Success
+  - 모두와 함께 성공적인 창업가의 길로 나아가기
 
 <br></br>
 # Workflow
@@ -150,7 +153,7 @@
 - Node.js  
 
 - Express.js
-- Visual Studio Code - Node.js - editor
+- Visual Studio Code - Node.js  editor
 - NPM - 자바 스크립트 패키지 관리자
 - YARN - 자바 스크립트 패키지 관리자
 - MongoDB 
