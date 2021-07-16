@@ -590,26 +590,50 @@ export const getUserInfo = async (userID) => {
 export const patchInfo = async (userID, body, url) => {
   var imgUrl = url.img;
   const { nickname, gender, marpolicy } = body;
+  let rawInterest = body.interest;
+  var interest;
+  if (rawInterest !== "") {
+    interest = rawInterest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+  } else {
+    interest = rawInterest;
+  }
+  const user = await User.findById(userID);
 
-  const interest = body.interest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
   // 1. 요청 바디 부족
-  if (!nickname || !interest || !gender || !marpolicy) {
+  if (
+    nickname === undefined ||
+    interest === undefined ||
+    gender === undefined ||
+    marpolicy === undefined
+  ) {
     return -1;
   }
-  // 3. 닉네임 중복
-  let checkNickname = await User.findOne({ nickname });
-  if (checkNickname) {
-    return -2;
+
+  if (user.nickname !== nickname) {
+    // 3. 닉네임 중복
+    let checkNickname = await User.findOne({ nickname });
+    if (checkNickname) {
+      return -2;
+    }
   }
 
-  const user = await User.findById(userID);
   if (imgUrl !== "") {
     await user.update({ $set: { img: imgUrl } });
   }
-  await user.update({ $set: { nickname: nickname } });
-  await user.update({ $set: { interest: interest } });
-  await user.update({ $set: { gender: gender } });
-  await user.update({ $set: { marpolicy: marpolicy } });
+
+  if (nickname !== "") {
+    await user.update({ $set: { nickname: nickname } });
+  }
+
+  if (interest !== "") {
+    await user.update({ $set: { interest: interest } });
+  }
+  if (gender !== "") {
+    await user.update({ $set: { gender: gender } });
+  }
+  if (marpolicy !== "") {
+    await user.update({ $set: { marpolicy: marpolicy } });
+  }
 
   // 마케팅 동의(marpolicy == true) 시 뱃지 발급
   if (marpolicy) {
