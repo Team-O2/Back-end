@@ -155,7 +155,7 @@ export const getChallengeOne = async (userID, challengeID) => {
  */
 export const getChallengeSearch = async (
   tag,
-  isMine,
+  ismine,
   keyword,
   offset,
   limit,
@@ -213,7 +213,7 @@ export const getChallengeSearch = async (
 
   if (userID) {
     // 내가 쓴 글 필터링
-    if (isMine === "1" && isMine) {
+    if (ismine === "1" && ismine) {
       filteredData = filteredData.filter((fd) => {
         if (String(fd.user._id) === String(userID.id)) return fd;
       });

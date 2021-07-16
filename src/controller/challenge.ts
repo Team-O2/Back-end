@@ -65,7 +65,7 @@ router.get("/search", publicAuth, async (req: Request, res: Response) => {
   try {
     const data: IChallengeDTO[] | -1 = await getChallengeSearch(
       req.query.tag,
-      req.query.isMine,
+      req.query.ismine,
       req.query.keyword,
       req.query.offset,
       req.query.limit,
