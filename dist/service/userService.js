@@ -499,7 +499,6 @@ const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, funct
         interest = rawInterest;
     }
     const user = yield User_1.default.findById(userID);
-    console.log(user);
     // 1. 요청 바디 부족
     if (nickname === undefined ||
         interest === undefined ||
