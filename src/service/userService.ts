@@ -596,6 +596,12 @@ export const patchInfo = async (userID, body, url) => {
   if (!nickname || !interest || !gender || !marpolicy) {
     return -1;
   }
+  // 3. 닉네임 중복
+  let checkNickname = await User.findOne({ nickname });
+  if (checkNickname) {
+    return -2;
+  }
+
   const user = await User.findById(userID);
   if (imgUrl !== "") {
     await user.update({ $set: { img: imgUrl } });

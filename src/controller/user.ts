@@ -120,6 +120,8 @@ router.patch(
       // 요청 바디가 부족할 경우
       if (data === -1) {
         response(res, returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
+      } else if (data === -2) {
+        response(res, returnCode.CONFLICT, "중복된 닉네임 입니다");
       }
 
       dataResponse(res, returnCode.OK, "회원정보 수정 성공", data);
