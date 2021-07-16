@@ -92,6 +92,9 @@ router.patch("/userInfo", upload.fields([{ name: "img", maxCount: 1 }]), auth_1.
         if (data === -1) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "요청 값이 올바르지 않습니다.");
         }
+        else if (data === -2) {
+            response_1.response(res, returnCode_1.returnCode.CONFLICT, "중복된 닉네임 입니다");
+        }
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "회원정보 수정 성공", data);
     }
     catch (err) {

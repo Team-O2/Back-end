@@ -214,9 +214,17 @@ const postAdminConcert = (userID, reqData, url) => __awaiter(void 0, void 0, voi
     if (!(user.userType === 1)) {
         return -2;
     }
+    const authorUser = yield User_1.default.findOne({ nickname: authorNickname });
+    var authorID;
+    if (authorUser) {
+        authorID = authorUser._id;
+    }
+    else {
+        authorID = userID;
+    }
     const concert = new Concert_1.default({
         title: title.toLowerCase(),
-        user: userID,
+        user: authorID,
         createdAt: new Date(),
         videoLink: url.videoLink,
         imgThumbnail: url.imgThumbnail,

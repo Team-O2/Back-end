@@ -495,6 +495,11 @@ const patchInfo = (userID, body, url) => __awaiter(void 0, void 0, void 0, funct
     if (!nickname || !interest || !gender || !marpolicy) {
         return -1;
     }
+    // 3. 닉네임 중복
+    let checkNickname = yield User_1.default.findOne({ nickname });
+    if (checkNickname) {
+        return -2;
+    }
     const user = yield User_1.default.findById(userID);
     if (imgUrl !== "") {
         yield user.update({ $set: { img: imgUrl } });
