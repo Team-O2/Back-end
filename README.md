@@ -11,7 +11,7 @@
 - 프로젝트 기간: 2021.06.26 ~ 2020.07.17
 - [API 명세서](https://www.notion.so/API-docs-7ea0d6ba794942c09e1850200a63bdf6)
 - [Notion](https://chatter-gallium-16e.notion.site/Server-e02ec53e702a4f53a15737edfb394f5b)
-- [Code Convention](README\CodeConvention.md)
+- [Code Convention](https://github.com/Team-O2/Back-end/blob/develop/README/CodeConvention.md)
 - [Git 전략](README\Git.md)
 
 
