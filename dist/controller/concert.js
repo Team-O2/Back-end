@@ -175,6 +175,10 @@ router.post("/scrap/:id", auth_1.default, (req, res) => __awaiter(void 0, void 0
         if (data === -2) {
             response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "이미 스크랩 된 글입니다");
         }
+        //자신의 회고인 경우
+        if (data === -3) {
+            response_1.response(res, returnCode_1.returnCode.BAD_REQUEST, "자신의 글은 스크랩 할 수 없습니다");
+        }
         // 회고 스크랩 성공
         response_1.dataResponse(res, returnCode_1.returnCode.OK, "콘서트 스크랩 성공", data);
     }
