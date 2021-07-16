@@ -6,6 +6,7 @@ import Concert from "../models/Concert";
 // library
 import { stringToDate } from "../library/date";
 import Challenge from "../models/Challenge";
+import { stringToArray } from "../library/array";
 
 // DTO
 import {
@@ -225,16 +226,16 @@ export const postAdminConcert = async (
   url
 ) => {
   const { title, text, authorNickname } = reqData;
-  let interest = reqData.interest
-    .toLowerCase()
-    .slice(1, -1)
-    .replace(/"/gi, "")
-    .split(/,\s?/);
-  let hashtag = reqData.hashtag
-    .toLowerCase()
-    .slice(1, -1)
-    .replace(/"/gi, "")
-    .split(/,\s?/);
+  let interest = stringToArray(reqData.interest);
+  // .toLowerCase()
+  // .slice(1, -1)
+  // .replace(/"/gi, "")
+  // .split(/,\s?/);
+  let hashtag = stringToArray(reqData.hashtag);
+  // .toLowerCase()
+  // .slice(1, -1)
+  // .replace(/"/gi, "")
+  // .split(/,\s?/);
 
   // 1. 요청 바디 부족
   if (!title || !text || !interest || !hashtag || !authorNickname) {
@@ -285,20 +286,20 @@ export const postAdminNotice = async (userID, reqData, url) => {
 
   let interest;
   if (reqData.interest) {
-    interest = reqData.interest
-      .toLowerCase()
-      .slice(1, -1)
-      .replace(/"/gi, "")
-      .split(/,\s?/);
+    interest = stringToArray(reqData.interest);
+    // .toLowerCase()
+    // .slice(1, -1)
+    // .replace(/"/gi, "")
+    // .split(/,\s?/);
   }
 
   let hashtag;
   if (reqData.hashtag) {
-    hashtag = reqData.hashtag
-      .toLowerCase()
-      .slice(1, -1)
-      .replace(/"/gi, "")
-      .split(/,\s?/);
+    hashtag = stringToArray(reqData.hashtag);
+    // .toLowerCase()
+    // .slice(1, -1)
+    // .replace(/"/gi, "")
+    // .split(/,\s?/);
   }
 
   // 1. 요청 바디 부족

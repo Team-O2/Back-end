@@ -8,6 +8,7 @@ import Comment from "../models/Comment";
 
 // library
 import { dateToNumber, period } from "../library/date";
+import { stringToArray } from "../library/array";
 
 // jwt
 import bcrypt from "bcryptjs";
@@ -593,7 +594,7 @@ export const patchInfo = async (userID, body, url) => {
   let rawInterest = body.interest;
   var interest;
   if (rawInterest !== "") {
-    interest = rawInterest.slice(1, -1).replace(/"/gi, "").split(/,\s?/);
+    interest = stringToArray(rawInterest);
   } else {
     interest = rawInterest;
   }
