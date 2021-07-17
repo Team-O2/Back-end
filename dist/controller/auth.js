@@ -22,10 +22,7 @@ const router = express_1.Router();
  *  @route Post auth/signup
  *  @access Public
  */
-router.post("/signup", [
-    express_validator_1.check("email", "Please include a valid email").isEmail(),
-    express_validator_1.check("password", "Please enter a password with 6 or more characters").isLength({ min: 6 }),
-], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/signup", [express_validator_1.check("email", "Please include a valid email").isEmail()], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = express_validator_1.validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
