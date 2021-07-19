@@ -8,6 +8,19 @@ export function stringToDate(str: String) {
   );
 }
 
+export function stringToEndDate(str: String) {
+  var dateParts = str.split("-");
+
+  return new Date(
+    parseInt(dateParts[0]),
+    parseInt(dateParts[1]) - 1,
+    parseInt(dateParts[2]),
+    23,
+    59,
+    59
+  );
+}
+
 export function dateToNumber(Dt: Date) {
   return new Date(Dt).getTime();
 }

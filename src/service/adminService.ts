@@ -4,7 +4,7 @@ import User from "../models/User";
 import Concert from "../models/Concert";
 
 // library
-import { stringToDate } from "../library/date";
+import { stringToDate, stringToEndDate } from "../library/date";
 import Challenge from "../models/Challenge";
 import { stringToArray } from "../library/array";
 
@@ -152,9 +152,9 @@ export const postAdminChallenge = async (
   const admin = new Admin({
     title,
     registerStartDT: stringToDate(registerStartDT),
-    registerEndDT: stringToDate(registerEndDT),
+    registerEndDT: stringToEndDate(registerEndDT),
     challengeStartDT: stringToDate(challengeStartDT),
-    challengeEndDT: stringToDate(challengeEndDT),
+    challengeEndDT: stringToEndDate(challengeEndDT),
     generation: changeGen,
     limitNum,
     img,
