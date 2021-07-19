@@ -130,9 +130,9 @@ const postAdminChallenge = (userID, reqData, url) => __awaiter(void 0, void 0, v
     const admin = new Admin_1.default({
         title,
         registerStartDT: date_1.stringToDate(registerStartDT),
-        registerEndDT: date_1.stringToDate(registerEndDT),
+        registerEndDT: date_1.stringToEndDate(registerEndDT),
         challengeStartDT: date_1.stringToDate(challengeStartDT),
-        challengeEndDT: date_1.stringToDate(challengeEndDT),
+        challengeEndDT: date_1.stringToEndDate(challengeEndDT),
         generation: changeGen,
         limitNum,
         img,
